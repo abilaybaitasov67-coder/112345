@@ -1,5 +1,11 @@
 import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
-import { ShooterBullet, ShooterCover, ShooterPoint, ShooterWorld } from './shooterTypes';
+import {
+  ShooterBullet,
+  ShooterCover,
+  ShooterPoint,
+  ShooterUnit,
+  ShooterWorld,
+} from './shooterTypes';
 import { weaponInfo } from './shooterWeapons';
 import { updateBomb } from './shooterBomb';
 
@@ -23,6 +29,23 @@ function movePlayer(world: ShooterWorld, x: number, y: number) {
   if (!blocked(nextY, world.covers)) world.player.y = nextY.y;
   world.player.x = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_WIDTH - UNIT_RADIUS, world.player.x));
   world.player.y = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_HEIGHT - UNIT_RADIUS, world.player.y));
+}
+
+function moveEnemyToBomb(
+  enemy: ShooterUnit,
+  bomb: ShooterPoint,
+  covers: ShooterCover[],
+  elapsed: number,
+) {
+  const dx = bomb.x - enemy.x;
+  const dy = bomb.y - enemy.y;
+  const length = Math.hypot(dx, dy);
+  if (length < 48) return;
+  const speed = elapsed * .075;
+  const nextX = { x: enemy.x + dx / length * speed, y: enemy.y };
+  if (!blocked(nextX, covers)) enemy.x = nextX.x;
+  const nextY = { x: enemy.x, y: enemy.y + dy / length * speed };
+  if (!blocked(nextY, covers)) enemy.y = nextY.y;
 }
 
 function createBullet(from: ShooterPoint, to: ShooterPoint, enemy: boolean): ShooterBullet {
@@ -75,6 +98,9 @@ export function updateShooter(
   updateBomb(world, elapsed);
 
   if (!world.pvpMode) world.enemies.forEach((enemy) => {
+    if (world.bomb.planted && !world.bomb.exploded) {
+      moveEnemyToBomb(enemy, world.bomb, world.covers, elapsed);
+    }
     enemy.cooldown -= elapsed;
     if (enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
       world.bullets.push(createBullet(enemy, world.player, true));
