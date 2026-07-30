@@ -111,7 +111,7 @@ export class Shooter3dRenderer {
       this.weapon.rotation.y = Math.PI - .18;
     }
     const flashTime = world.weapon && world.weapon !== 'knife'
-      ? weaponInfo[world.weapon].cooldown - 65
+      ? Math.max(0, weaponInfo[world.weapon].cooldown - 45)
       : Number.POSITIVE_INFINITY;
     this.muzzleFlash.visible = !world.aiming && world.player.cooldown > flashTime;
     if (this.muzzleFlash.visible) {

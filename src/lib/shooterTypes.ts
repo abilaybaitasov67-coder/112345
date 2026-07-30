@@ -19,6 +19,7 @@ export interface RemoteShooter extends ShooterUnit {
 export interface ShooterBullet extends ShooterPoint {
   dx: number;
   dy: number;
+  speed: number;
   enemy: boolean;
 }
 
