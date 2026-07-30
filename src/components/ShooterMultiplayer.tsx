@@ -11,6 +11,7 @@ interface Props {
 
 export function ShooterMultiplayer(props: Props) {
   const [code, setCode] = useState('PVP1');
+  const [hidden, setHidden] = useState(false);
 
   if (props.status === 'online') {
     return (
@@ -19,6 +20,14 @@ export function ShooterMultiplayer(props: Props) {
         <small>Соперников: {props.players}</small>
         <button onClick={props.onLeave}>Выйти</button>
       </div>
+    );
+  }
+
+  if (hidden) {
+    return (
+      <button className="pvp-open" onClick={() => setHidden(false)}>
+        PvP онлайн
+      </button>
     );
   }
 
@@ -42,6 +51,9 @@ export function ShooterMultiplayer(props: Props) {
         {props.error && <small>{props.error}</small>}
         <button type="submit" disabled={props.status === 'connecting'}>
           {props.status === 'connecting' ? 'Подключение…' : 'Войти в комнату'}
+        </button>
+        <button className="pvp-solo" type="button" onClick={() => setHidden(true)}>
+          Играть с ботами
         </button>
       </form>
     </div>

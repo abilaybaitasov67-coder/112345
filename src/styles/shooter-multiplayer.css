@@ -40,6 +40,16 @@
 }
 
 .pvp-lobby button { background: #a53b34; }
+.pvp-lobby .pvp-solo { background: #4f5f58; }
+
+.pvp-open {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  padding: 8px 12px;
+  background: rgba(40, 58, 51, .9);
+}
 
 .pvp-status {
   position: absolute;
