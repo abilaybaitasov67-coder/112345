@@ -121,15 +121,15 @@ export function ShooterCanvas(props: Props) {
           props.onAim(true);
           return;
         }
-        firingRef.current = true;
         if (event.pointerType === 'mouse') {
+          firingRef.current = true;
           void canvasRef.current?.requestPointerLock();
+          onFireRef.current();
         } else {
           pointerX.current = event.clientX;
           pointerY.current = event.clientY;
           canvasRef.current?.setPointerCapture(event.pointerId);
         }
-        onFireRef.current();
       }}
       onPointerUp={(event) => {
         firingRef.current = false;

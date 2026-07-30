@@ -1,0 +1,76 @@
+@media (max-width: 720px), (pointer: coarse) {
+  .shooter-page {
+    min-height: 100dvh;
+    padding: 6px;
+    overflow-x: hidden;
+  }
+
+  .shooter-header { margin-bottom: 6px; font-size: 12px; }
+  .shooter-header strong { display: none; }
+  .shooter-header button { padding: 8px 10px; }
+
+  .shooter-hud {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    margin-bottom: 6px;
+    padding: 7px;
+    font-size: 10px;
+  }
+
+  .shooter-hud > span {
+    min-width: 0;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .shooter-hud__mission, .shooter-hud__bomb { grid-column: 1 / -1; }
+  .shooter-hud__help { display: none; }
+  .shooter-hud b { font-size: 14px; }
+  .shooter-stage canvas { border-width: 1px; }
+  .shooter-message { margin: 6px auto; font-size: 11px; }
+
+  .shooter-controls {
+    position: sticky;
+    bottom: 4px;
+    z-index: 10;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 7px;
+    border-radius: 12px;
+    background: rgba(16, 23, 21, .86);
+    backdrop-filter: blur(7px);
+  }
+
+  .shooter-dpad {
+    width: 132px;
+    grid-template-columns: repeat(3, 40px);
+    gap: 5px;
+  }
+
+  .shooter-dpad button { width: 40px; min-height: 40px; padding: 7px 4px; }
+  .shooter-actions { gap: 5px; }
+  .shooter-actions .shooter-aim {
+    max-width: 68px;
+    padding: 10px 6px;
+    font-size: 9px;
+  }
+
+  .shooter-fire {
+    width: 68px;
+    height: 68px;
+    padding: 4px;
+    font-size: 11px;
+  }
+
+  .pvp-lobby { padding: 10px; }
+  .pvp-lobby form, .pvp-lobby__choice { padding: 20px; }
+  .pvp-status { top: 6px; left: 6px; }
+}
+
+@media (max-width: 390px) {
+  .shooter-dpad { width: 111px; grid-template-columns: repeat(3, 34px); }
+  .shooter-dpad button { width: 34px; min-height: 36px; }
+  .shooter-actions .shooter-aim { max-width: 58px; font-size: 8px; }
+  .shooter-fire { width: 58px; height: 58px; }
+}

@@ -11,6 +11,7 @@ import '../styles/shooter.css';
 import '../styles/shooter-aim.css';
 import '../styles/shooter-inventory.css';
 import '../styles/shooter-multiplayer.css';
+import '../styles/shooter-mobile.css';
 
 export function ShooterPage() {
   const shooter = useShooterGame();
