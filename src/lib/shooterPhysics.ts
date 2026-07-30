@@ -104,10 +104,17 @@ export function updateShooter(
   updateBomb(world, elapsed);
 
   world.bullets = world.bullets.filter((bullet) => {
-    const start = moveShooterBullet(bullet, elapsed);
+    const start = { ...bullet };
+    moveShooterBullet(bullet, elapsed);
     if (bullet.x < 0 || bullet.x > SHOOTER_WORLD_WIDTH
       || bullet.y < 0 || bullet.y > SHOOTER_WORLD_HEIGHT) return false;
-    if (!hasShooterLineOfSight(start, bullet, world.covers)) return false;
+    if (!hasShooterLineOfSight(
+      start,
+      bullet,
+      world.covers,
+      start.height,
+      bullet.height,
+    )) return false;
     const targets = bullet.enemy ? [world.player] : world.enemies;
     const hit = targets.find((target) =>
       distanceToBulletPath(target, start, bullet) < SHOOTER_UNIT_RADIUS);

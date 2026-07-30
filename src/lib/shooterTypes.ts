@@ -28,6 +28,7 @@ export interface ShooterBullet extends ShooterPoint {
 export interface ShooterCover extends ShooterPoint {
   width: number;
   height: number;
+  wallHeight?: number;
 }
 
 export interface DroppedWeapon extends ShooterPoint {

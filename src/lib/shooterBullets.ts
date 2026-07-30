@@ -40,11 +40,9 @@ export function getShotOffset(shot: number, pellets: number, spread: number) {
 }
 
 export function moveShooterBullet(bullet: ShooterBullet, elapsed: number) {
-  const start = { x: bullet.x, y: bullet.y };
   bullet.x += bullet.dx * elapsed * bullet.speed;
   bullet.y += bullet.dy * elapsed * bullet.speed;
   bullet.height += elapsed * bullet.speed * WORLD_TO_SCENE * bullet.verticalSlope;
-  return start;
 }
 
 export function distanceToBulletPath(

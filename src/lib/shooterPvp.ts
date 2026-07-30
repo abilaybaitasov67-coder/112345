@@ -1,4 +1,5 @@
 import { hasShooterLineOfSight } from './shooterCollision';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 import { RemoteShooter, ShooterBomb, ShooterWorld } from './shooterTypes';
 import { pvpSpawnPoints } from './shooterWorld';
 
@@ -76,6 +77,12 @@ export function findVisiblePvpTarget(world: ShooterWorld) {
       player.health > 0
       && distance <= maxDistance
       && difference < Math.max(.04, 18 / distance)
-      && hasShooterLineOfSight(world.player, player, world.covers))
+      && hasShooterLineOfSight(
+        world.player,
+        player,
+        world.covers,
+        1.7 + getShooterFloorHeight(world.player.x, world.player.y),
+        1.7 + getShooterFloorHeight(player.x, player.y),
+      ))
     .sort((a, b) => a.difference - b.difference)[0]?.player;
 }

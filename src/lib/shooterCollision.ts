@@ -42,6 +42,8 @@ function segmentHitsCover(
   from: ShooterPoint,
   to: ShooterPoint,
   cover: ShooterCover,
+  fromHeight?: number,
+  toHeight?: number,
 ) {
   const padding = SHOOTER_UNIT_RADIUS;
   const axes = [
@@ -61,13 +63,21 @@ function segmentHitsCover(
     far = Math.min(far, Math.max(first, second));
     if (near > far) return false;
   }
-  return far > .001 && near < .999;
+  if (far <= .001 || near >= .999) return false;
+  if (fromHeight === undefined || toHeight === undefined
+    || cover.wallHeight === undefined) return true;
+  const entryHeight = fromHeight + (toHeight - fromHeight) * Math.max(0, near);
+  const exitHeight = fromHeight + (toHeight - fromHeight) * Math.min(1, far);
+  return Math.min(entryHeight, exitHeight) <= cover.wallHeight + .04;
 }
 
 export function hasShooterLineOfSight(
   from: ShooterPoint,
   to: ShooterPoint,
   covers: ShooterCover[],
+  fromHeight?: number,
+  toHeight?: number,
 ) {
-  return !covers.some((cover) => segmentHitsCover(from, to, cover));
+  return !covers.some((cover) =>
+    segmentHitsCover(from, to, cover, fromHeight, toHeight));
 }
