@@ -1,11 +1,16 @@
-import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
+import {
+  SHOOTER_HEIGHT,
+  SHOOTER_WIDTH,
+  SHOOTER_WORLD_HEIGHT,
+  SHOOTER_WORLD_WIDTH,
+} from './shooterWorld';
 import { ShooterCover, ShooterWorld } from './shooterTypes';
 import { drawFirstPersonWeapon } from './shooterWeaponDraw';
 import { weaponInfo } from './shooterWeapons';
 
 const DEFAULT_FOV = Math.PI / 3;
 const RAYS = 240;
-const MAX_DEPTH = 900;
+const MAX_DEPTH = 1400;
 
 function insideCover(x: number, y: number, covers: ShooterCover[]) {
   return covers.some((cover) => x > cover.x && x < cover.x + cover.width
@@ -16,7 +21,7 @@ function castRay(world: ShooterWorld, angle: number) {
   for (let depth = 5; depth < MAX_DEPTH; depth += 4) {
     const x = world.player.x + Math.cos(angle) * depth;
     const y = world.player.y + Math.sin(angle) * depth;
-    if (x < 4 || x > SHOOTER_WIDTH - 4 || y < 4 || y > SHOOTER_HEIGHT - 4
+    if (x < 4 || x > SHOOTER_WORLD_WIDTH - 4 || y < 4 || y > SHOOTER_WORLD_HEIGHT - 4
       || insideCover(x, y, world.covers)) return depth;
   }
   return MAX_DEPTH;
@@ -115,7 +120,7 @@ export function drawShooter(context: CanvasRenderingContext2D, world: ShooterWor
   });
   if (world.enemies.length === 0) {
     const exitAngle = normalizeAngle(
-      Math.atan2(45 - world.player.y, 915 - world.player.x) - world.angle,
+      Math.atan2(68 - world.player.y, 1372 - world.player.x) - world.angle,
     );
     const markerX = Math.max(55, Math.min(905, SHOOTER_WIDTH / 2 + exitAngle / fov * SHOOTER_WIDTH));
     context.fillStyle = '#facc15';

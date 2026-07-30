@@ -30,7 +30,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     .find(([, site]) => Math.hypot(
       site.x - world.player.x,
       site.y - world.player.y,
-    ) < 72)?.[0];
+    ) < 100)?.[0];
   return {
     health: Math.max(0, world.player.health),
     enemies: world.enemies.length,

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { ShooterWorld } from './shooterTypes';
-import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
+import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
 
 const SCALE = .025;
 const stone = new THREE.MeshStandardMaterial({ color: 0x9d7951, roughness: .94 });
@@ -68,7 +68,7 @@ function addArch(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 function addBarrels(scene: THREE.Scene) {
-  const positions = [[3.2, 2.1], [3.65, 2.15], [20.2, 2.2], [20.65, 2.15]];
+  const positions = [[4.8, 3.15], [5.48, 3.22], [30.3, 3.3], [30.98, 3.22]];
   positions.forEach(([x, z]) => {
     const barrel = new THREE.Mesh(
       new THREE.CylinderGeometry(.24, .24, .72, 12),
@@ -83,8 +83,8 @@ function addBarrels(scene: THREE.Scene) {
 
 function addCrates(scene: THREE.Scene) {
   const spots = [
-    [3.6, 2.8, 0], [4.35, 2.8, 0], [3.95, 3.5, 0],
-    [20.1, 2.8, .3], [20.85, 2.8, -.15], [20.45, 3.5, 0],
+    [5.4, 4.2, 0], [6.52, 4.2, 0], [5.92, 5.25, 0],
+    [30.15, 4.2, .3], [31.27, 4.2, -.15], [30.67, 5.25, 0],
   ] as const;
   const cratePath = `${import.meta.env.BASE_URL}models/tactical-crate.glb`;
   new GLTFLoader().load(cratePath, ({ scene: crate }) => {
@@ -101,28 +101,28 @@ function addCrates(scene: THREE.Scene) {
 
 export function buildTacticalMap(scene: THREE.Scene, world: ShooterWorld) {
   const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(SHOOTER_WIDTH * SCALE, SHOOTER_HEIGHT * SCALE),
+    new THREE.PlaneGeometry(SHOOTER_WORLD_WIDTH * SCALE, SHOOTER_WORLD_HEIGHT * SCALE),
     floorMaterial,
   );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.set(SHOOTER_WIDTH * SCALE / 2, 0, SHOOTER_HEIGHT * SCALE / 2);
+  floor.position.set(SHOOTER_WORLD_WIDTH * SCALE / 2, 0, SHOOTER_WORLD_HEIGHT * SCALE / 2);
   floor.receiveShadow = true;
   scene.add(floor);
   const walls = [
-    [SHOOTER_WIDTH / 2, 0, SHOOTER_WIDTH, 8],
-    [SHOOTER_WIDTH / 2, SHOOTER_HEIGHT, SHOOTER_WIDTH, 8],
-    [0, SHOOTER_HEIGHT / 2, 8, SHOOTER_HEIGHT],
-    [SHOOTER_WIDTH, SHOOTER_HEIGHT / 2, 8, SHOOTER_HEIGHT],
+    [SHOOTER_WORLD_WIDTH / 2, 0, SHOOTER_WORLD_WIDTH, 8],
+    [SHOOTER_WORLD_WIDTH / 2, SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH, 8],
+    [0, SHOOTER_WORLD_HEIGHT / 2, 8, SHOOTER_WORLD_HEIGHT],
+    [SHOOTER_WORLD_WIDTH, SHOOTER_WORLD_HEIGHT / 2, 8, SHOOTER_WORLD_HEIGHT],
     ...world.covers.map((cover) => [
       cover.x + cover.width / 2, cover.y + cover.height / 2,
       cover.width, cover.height,
     ]),
   ];
   walls.forEach(([x, y, width, depth]) => addWall(scene, x, y, width, depth));
-  addSiteMarker(scene, 20.4, 2.5, 'A');
-  addSiteMarker(scene, 3.7, 2.5, 'B');
-  addArch(scene, 12, 7.9);
-  addArch(scene, 7.6, 5.5, Math.PI / 2);
+  addSiteMarker(scene, 30.6, 3.75, 'A');
+  addSiteMarker(scene, 5.55, 3.75, 'B');
+  addArch(scene, 18, 11.85);
+  addArch(scene, 11.4, 8.25, Math.PI / 2);
   addBarrels(scene);
   addCrates(scene);
 }

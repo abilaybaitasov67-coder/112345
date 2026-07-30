@@ -1,4 +1,4 @@
-import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
+import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
 import { ShooterBullet, ShooterCover, ShooterPoint, ShooterWorld } from './shooterTypes';
 import { weaponInfo } from './shooterWeapons';
 import { updateBomb } from './shooterBomb';
@@ -21,8 +21,8 @@ function movePlayer(world: ShooterWorld, x: number, y: number) {
   if (!blocked(nextX, world.covers)) world.player.x = nextX.x;
   const nextY = { x: world.player.x, y: world.player.y + y };
   if (!blocked(nextY, world.covers)) world.player.y = nextY.y;
-  world.player.x = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WIDTH - UNIT_RADIUS, world.player.x));
-  world.player.y = Math.max(UNIT_RADIUS, Math.min(SHOOTER_HEIGHT - UNIT_RADIUS, world.player.y));
+  world.player.x = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_WIDTH - UNIT_RADIUS, world.player.x));
+  world.player.y = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_HEIGHT - UNIT_RADIUS, world.player.y));
 }
 
 function createBullet(from: ShooterPoint, to: ShooterPoint, enemy: boolean): ShooterBullet {
@@ -76,7 +76,7 @@ export function updateShooter(
 
   if (!world.pvpMode) world.enemies.forEach((enemy) => {
     enemy.cooldown -= elapsed;
-    if (enemy.cooldown <= 0 && distance(enemy, world.player) < 430) {
+    if (enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
       world.bullets.push(createBullet(enemy, world.player, true));
       enemy.cooldown = 900 + Math.random() * 600;
     }
@@ -87,7 +87,8 @@ export function updateShooter(
     bullet.y += bullet.dy * elapsed * 0.55;
   });
   world.bullets = world.bullets.filter((bullet) => {
-    if (bullet.x < 0 || bullet.x > SHOOTER_WIDTH || bullet.y < 0 || bullet.y > SHOOTER_HEIGHT) return false;
+    if (bullet.x < 0 || bullet.x > SHOOTER_WORLD_WIDTH
+      || bullet.y < 0 || bullet.y > SHOOTER_WORLD_HEIGHT) return false;
     if (world.covers.some((cover) => blocked(bullet, [cover]))) return false;
     const targets = bullet.enemy ? [world.player] : world.enemies;
     const hit = targets.find((target) => distance(bullet, target) < UNIT_RADIUS);
@@ -109,7 +110,7 @@ export function updateShooter(
     world.status = 'lost';
     world.message = 'Миссия провалена. Отряд потерял бойца.';
   } else if (!world.pvpMode && world.enemies.length === 0) {
-    if (distance(world.player, { x: 915, y: 45 }) < 55) {
+    if (distance(world.player, { x: 1372, y: 68 }) < 70) {
       world.status = 'won';
       world.message = 'Миссия выполнена! Отряд добрался до точки эвакуации.';
     } else {
