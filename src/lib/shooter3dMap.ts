@@ -1,14 +1,15 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { bombSites } from './shooterBomb';
 import { ShooterWorld } from './shooterTypes';
 import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
 import { addHelenaProps } from './shooter3dHelenaProps';
 
 const SCALE = .025;
-const stone = new THREE.MeshStandardMaterial({ color: 0x817a70, roughness: .94 });
-const plaster = new THREE.MeshStandardMaterial({ color: 0xc8b9a2, roughness: .9 });
-const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x918a7e, roughness: 1 });
-const darkWood = new THREE.MeshStandardMaterial({ color: 0x47382e, roughness: .82 });
+const stone = new THREE.MeshStandardMaterial({ color: 0x59636a, roughness: .94 });
+const plaster = new THREE.MeshStandardMaterial({ color: 0x89969a, roughness: .9 });
+const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x59666b, roughness: 1 });
+const darkWood = new THREE.MeshStandardMaterial({ color: 0x283238, roughness: .82 });
 
 function box(width: number, height: number, depth: number, material: THREE.Material) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
@@ -120,11 +121,11 @@ export function buildTacticalMap(scene: THREE.Scene, world: ShooterWorld) {
     ]),
   ];
   walls.forEach(([x, y, width, depth]) => addWall(scene, x, y, width, depth));
-  addSiteMarker(scene, 30.6, 3.75, 'A');
-  addSiteMarker(scene, 5.55, 3.75, 'B');
-  addArch(scene, 18, 15.1);
-  addArch(scene, 10.25, 10.6, Math.PI / 2);
-  addArch(scene, 25.75, 10.6, Math.PI / 2);
+  addSiteMarker(scene, bombSites.A.x * SCALE, bombSites.A.y * SCALE, 'A');
+  addSiteMarker(scene, bombSites.B.x * SCALE, bombSites.B.y * SCALE, 'B');
+  addArch(scene, 18, 15.8);
+  addArch(scene, 14.5, 11.1, Math.PI / 2);
+  addArch(scene, 26.8, 10.6, Math.PI / 2);
   addBarrels(scene);
   addCrates(scene);
   addHelenaProps(scene);

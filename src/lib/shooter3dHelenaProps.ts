@@ -1,13 +1,9 @@
 import * as THREE from 'three';
 
-const stone = new THREE.MeshStandardMaterial({ color: 0x746f68, roughness: .92 });
-const water = new THREE.MeshStandardMaterial({
-  color: 0x4e9aa5,
-  roughness: .35,
-  metalness: .08,
-});
-const green = new THREE.MeshStandardMaterial({ color: 0x456846, roughness: 1 });
-const terracotta = new THREE.MeshStandardMaterial({ color: 0xa85f3e, roughness: .9 });
+const stone = new THREE.MeshStandardMaterial({ color: 0x46545b, roughness: .92 });
+const metal = new THREE.MeshStandardMaterial({ color: 0x87989f, roughness: .38 });
+const green = new THREE.MeshStandardMaterial({ color: 0x294b42, roughness: 1 });
+const planterMaterial = new THREE.MeshStandardMaterial({ color: 0x3d484d, roughness: .9 });
 
 function box(width: number, height: number, depth: number, material: THREE.Material) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
@@ -16,21 +12,21 @@ function box(width: number, height: number, depth: number, material: THREE.Mater
   return mesh;
 }
 
-function addFountain(scene: THREE.Scene) {
-  const fountain = new THREE.Group();
+function addMonument(scene: THREE.Scene) {
+  const monument = new THREE.Group();
   const base = box(2.6, .32, 2.1, stone);
-  const pool = box(2.22, .08, 1.72, water);
+  const plate = box(2.22, .08, 1.72, metal);
   const column = box(.34, 1.15, .34, stone);
   base.position.y = .16;
-  pool.position.y = .35;
+  plate.position.y = .35;
   column.position.y = .9;
-  fountain.add(base, pool, column);
-  fountain.position.set(18, 0, 10.6);
-  scene.add(fountain);
+  monument.add(base, plate, column);
+  monument.position.set(18, 0, 13.8);
+  scene.add(monument);
 }
 
 function addPlanter(scene: THREE.Scene, x: number, z: number) {
-  const planter = box(.74, .5, .74, terracotta);
+  const planter = box(.74, .5, .74, planterMaterial);
   const leaves = new THREE.Mesh(
     new THREE.SphereGeometry(.54, 8, 6),
     green,
@@ -60,7 +56,7 @@ function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 export function addHelenaProps(scene: THREE.Scene) {
-  addFountain(scene);
+  addMonument(scene);
   addPlanter(scene, 13.2, 10.55);
   addPlanter(scene, 22.8, 10.55);
   addPlanter(scene, 5.2, 17.6);
