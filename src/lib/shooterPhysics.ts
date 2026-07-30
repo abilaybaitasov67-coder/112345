@@ -46,9 +46,12 @@ export function firePlayer(world: ShooterWorld) {
     return;
   }
   const aimScale = world.aiming ? .18 : 1;
-  const totalSpread = weapon.spread * aimScale;
+  const movementSpread = world.moving ? .045 : 0;
+  const accuracySpread = (world.recoil + movementSpread) * aimScale;
+  const pelletSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {
-    const spread = getShotOffset(shot, weapon.pellets, totalSpread);
+    const accuracyOffset = (Math.random() - .5) * accuracySpread;
+    const spread = accuracyOffset + getShotOffset(shot, weapon.pellets, pelletSpread);
     world.bullets.push(createShooterBullet(world.player, {
       x: world.player.x + Math.cos(world.angle + spread) * 1000,
       y: world.player.y + Math.sin(world.angle + spread) * 1000,
