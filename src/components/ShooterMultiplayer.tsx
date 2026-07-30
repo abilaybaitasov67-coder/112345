@@ -12,6 +12,7 @@ interface Props {
 export function ShooterMultiplayer(props: Props) {
   const [code, setCode] = useState('PVP1');
   const [hidden, setHidden] = useState(false);
+  const [showRoom, setShowRoom] = useState(false);
 
   if (props.status === 'online') {
     return (
@@ -38,6 +39,18 @@ export function ShooterMultiplayer(props: Props) {
 
   return (
     <div className="pvp-lobby">
+      {!showRoom ? (
+        <div className="pvp-lobby__choice">
+          <p>ВЫБЕРИ РЕЖИМ</p>
+          <h2>Как будем играть?</h2>
+          <button className="pvp-solo" type="button" onClick={() => setHidden(true)}>
+            Играть с ботами
+          </button>
+          <button type="button" onClick={() => setShowRoom(true)}>
+            Играть с игроками
+          </button>
+        </div>
+      ) : (
       <form onSubmit={submit}>
         <p>ОНЛАЙН-РЕЖИМ</p>
         <h2>PvP-комната</h2>
@@ -52,10 +65,11 @@ export function ShooterMultiplayer(props: Props) {
         <button type="submit" disabled={props.status === 'connecting'}>
           {props.status === 'connecting' ? 'Подключение…' : 'Войти в комнату'}
         </button>
-        <button className="pvp-solo" type="button" onClick={() => setHidden(true)}>
-          Играть с ботами
+        <button className="pvp-solo" type="button" onClick={() => setShowRoom(false)}>
+          Назад
         </button>
       </form>
+      )}
     </div>
   );
 }

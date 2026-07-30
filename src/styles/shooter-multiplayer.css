@@ -9,7 +9,7 @@
   backdrop-filter: blur(8px);
 }
 
-.pvp-lobby form {
+.pvp-lobby form, .pvp-lobby__choice {
   width: min(420px, 100%);
   display: grid;
   gap: 14px;
@@ -19,7 +19,7 @@
   box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
 }
 
-.pvp-lobby p {
+.pvp-lobby p, .pvp-lobby__choice p {
   margin: 0;
   color: #e2bd55;
   font-size: 12px;
@@ -27,7 +27,7 @@
   letter-spacing: .16em;
 }
 
-.pvp-lobby h2 { margin: 0; }
+.pvp-lobby h2, .pvp-lobby__choice h2 { margin: 0; }
 .pvp-lobby label, .pvp-lobby small { color: #abb8b2; }
 .pvp-lobby input {
   padding: 14px;
