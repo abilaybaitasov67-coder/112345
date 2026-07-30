@@ -83,6 +83,9 @@ export function ShooterPage() {
         )}
       </div>
       <p className="shooter-message">{game.message}</p>
+      <p className="shooter-credit">
+        Карта «Елена» вдохновлена Helena из BloxStrike · идея оригинала — команда BloxStrike
+      </p>
       <ShooterControls
         onMove={shooter.setMobile}
         onFire={() => {
