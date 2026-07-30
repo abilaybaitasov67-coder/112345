@@ -5,51 +5,24 @@ import {
 } from './shooterWorld';
 import {
   ShooterBullet,
-  ShooterCover,
   ShooterPoint,
-  ShooterUnit,
   ShooterWorld,
 } from './shooterTypes';
 import { weaponInfo } from './shooterWeapons';
 import { updateBomb } from './shooterBomb';
-
-const UNIT_RADIUS = 15;
+import {
+  SHOOTER_UNIT_RADIUS,
+  isShooterPointBlocked,
+  moveShooterPoint,
+} from './shooterCollision';
+import { moveEnemyWithNavigation } from './shooterNavigation';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-function blocked(point: ShooterPoint, covers: ShooterCover[]) {
-  return covers.some((cover) => point.x + UNIT_RADIUS > cover.x
-    && point.x - UNIT_RADIUS < cover.x + cover.width
-    && point.y + UNIT_RADIUS > cover.y
-    && point.y - UNIT_RADIUS < cover.y + cover.height);
-}
-
 function movePlayer(world: ShooterWorld, x: number, y: number) {
-  const nextX = { x: world.player.x + x, y: world.player.y };
-  if (!blocked(nextX, world.covers)) world.player.x = nextX.x;
-  const nextY = { x: world.player.x, y: world.player.y + y };
-  if (!blocked(nextY, world.covers)) world.player.y = nextY.y;
-  world.player.x = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_WIDTH - UNIT_RADIUS, world.player.x));
-  world.player.y = Math.max(UNIT_RADIUS, Math.min(SHOOTER_WORLD_HEIGHT - UNIT_RADIUS, world.player.y));
-}
-
-function moveEnemyToBomb(
-  enemy: ShooterUnit,
-  bomb: ShooterPoint,
-  covers: ShooterCover[],
-  elapsed: number,
-) {
-  const dx = bomb.x - enemy.x;
-  const dy = bomb.y - enemy.y;
-  const length = Math.hypot(dx, dy);
-  if (length < 48) return;
-  const speed = elapsed * .075;
-  const nextX = { x: enemy.x + dx / length * speed, y: enemy.y };
-  if (!blocked(nextX, covers)) enemy.x = nextX.x;
-  const nextY = { x: enemy.x, y: enemy.y + dy / length * speed };
-  if (!blocked(nextY, covers)) enemy.y = nextY.y;
+  moveShooterPoint(world.player, x, y, world.covers);
 }
 
 function createBullet(from: ShooterPoint, to: ShooterPoint, enemy: boolean): ShooterBullet {
@@ -103,7 +76,7 @@ export function updateShooter(
 
   if (!world.pvpMode) world.enemies.forEach((enemy) => {
     if (world.bomb.planted && !world.bomb.exploded) {
-      moveEnemyToBomb(enemy, world.bomb, world.covers, elapsed);
+      moveEnemyWithNavigation(enemy, world.bomb, world.covers, elapsed);
     }
     enemy.cooldown -= elapsed;
     if (enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
@@ -119,9 +92,9 @@ export function updateShooter(
   world.bullets = world.bullets.filter((bullet) => {
     if (bullet.x < 0 || bullet.x > SHOOTER_WORLD_WIDTH
       || bullet.y < 0 || bullet.y > SHOOTER_WORLD_HEIGHT) return false;
-    if (world.covers.some((cover) => blocked(bullet, [cover]))) return false;
+    if (isShooterPointBlocked(bullet, world.covers)) return false;
     const targets = bullet.enemy ? [world.player] : world.enemies;
-    const hit = targets.find((target) => distance(bullet, target) < UNIT_RADIUS);
+    const hit = targets.find((target) => distance(bullet, target) < SHOOTER_UNIT_RADIUS);
     if (!hit) return true;
     const playerDamage = selectedWeapon.damage;
     hit.health -= bullet.enemy ? 12 : playerDamage;

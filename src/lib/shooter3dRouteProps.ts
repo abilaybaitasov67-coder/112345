@@ -72,24 +72,39 @@ function addTunnelNetwork(scene: THREE.Scene) {
   addTunnelSection(
     scene,
     9.125,
-    15.575,
-    9.1,
-    9.6,
-    [11.4, 14.1, 16.8, 19.4],
-    [13, 17.8],
+    13.5,
+    9.4,
+    5.65,
+    [11.2, 13.5, 15.7],
+    [13.2],
+  );
+  addTunnelSection(
+    scene,
+    11.125,
+    18.375,
+    5.4,
+    4.25,
+    [16.7, 18.5, 20.1],
+    [18.4],
   );
   addTunnelSection(
     scene,
     12,
     26.75,
-    14.7,
-    5.2,
+    15.1,
+    5.5,
     [24.5, 26.75, 29],
     [25.5, 28],
   );
   const connector = box(5.5, .28, 1.5, dustRoofMaterial);
   connector.position.set(13.375, 3.42, 22.25);
-  scene.add(connector);
+  const firstElbow = box(3.05, .28, 1.13, dustRoofMaterial);
+  firstElbow.position.set(12.15, 3.42, 20.94);
+  const secondElbow = box(5.5, .28, 1.15, dustRoofMaterial);
+  secondElbow.position.set(13.375, 3.42, 23.575);
+  const turnBeam = box(5.5, .34, .24, dustStoneMaterial);
+  turnBeam.position.set(13.375, 3.17, 22.25);
+  scene.add(connector, firstElbow, secondElbow, turnBeam);
   addTunnelLamp(scene, 13.375, 22.25);
 }
 

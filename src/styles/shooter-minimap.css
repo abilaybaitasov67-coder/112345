@@ -26,6 +26,11 @@
 .shooter-minimap .site { font-size: 92px; }
 .shooter-minimap .site--a { fill: #ef765c; }
 .shooter-minimap .site--b { fill: #68b8c0; }
+.shooter-minimap .callout {
+  fill: rgba(246, 233, 205, .72);
+  font-size: 62px;
+  stroke-width: 10px;
+}
 
 @media (max-width: 720px), (pointer: coarse) {
   .shooter-minimap {
@@ -33,4 +38,6 @@
     right: 7px;
     width: 108px;
   }
+
+  .shooter-minimap .callout { display: none; }
 }

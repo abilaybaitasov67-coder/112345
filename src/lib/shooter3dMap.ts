@@ -10,6 +10,8 @@ import { dustGroundMaterial } from './shooter3dMaterials';
 import { addSiteProps } from './shooter3dSiteProps';
 import { addShooterElevations } from './shooter3dElevations';
 import { getShooterFloorHeight } from './shooterFloorHeight';
+import { addMapDoorways } from './shooter3dDoorways';
+import { addSiteSilhouettes } from './shooter3dSiteSilhouettes';
 
 const SCALE = .025;
 
@@ -60,5 +62,7 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   addSiteProps(scene);
   addRouteProps(scene);
   addDustLandmarks(scene);
+  addMapDoorways(scene);
+  addSiteSilhouettes(scene);
   addMapSigns(scene);
 }

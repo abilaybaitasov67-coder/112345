@@ -14,18 +14,29 @@ const blockColors = {
 };
 
 const routeAreas = [
+  { x: 150, y: 0, width: 130, height: 180 },
   { x: 150, y: 100, width: 450, height: 310 },
+  { x: 600, y: 300, width: 220, height: 110 },
   { x: 180, y: 410, width: 370, height: 410 },
   { x: 420, y: 820, width: 230, height: 140 },
   { x: 180, y: 960, width: 600, height: 220 },
   { x: 600, y: 1180, width: 220, height: 260 },
-  { x: 820, y: 240, width: 300, height: 1200 },
+  { x: 820, y: 240, width: 300, height: 540 },
+  { x: 850, y: 740, width: 230, height: 620 },
   { x: 1120, y: 620, width: 360, height: 160 },
-  { x: 1320, y: 300, width: 160, height: 480 },
-  { x: 1400, y: 100, width: 400, height: 300 },
+  { x: 1320, y: 300, width: 200, height: 480 },
+  { x: 1480, y: 100, width: 320, height: 300 },
   { x: 1600, y: 400, width: 200, height: 880 },
   { x: 1400, y: 1120, width: 400, height: 320 },
+  { x: 1120, y: 1280, width: 480, height: 160 },
   { x: 600, y: 1360, width: 800, height: 220 },
+];
+
+const callouts = [
+  { label: 'ТЕМКА', x: 430, y: 1050 },
+  { label: 'МИД', x: 960, y: 900 },
+  { label: 'ШОРТ', x: 1300, y: 690 },
+  { label: 'ЛОНГ', x: 1700, y: 850 },
 ];
 
 export function ShooterMinimap({ worldRef }: Props) {
@@ -41,7 +52,7 @@ export function ShooterMinimap({ worldRef }: Props) {
             {...area}
             rx="24"
             fill="#8d7656"
-            stroke="#d2b684"
+            stroke="#8d7656"
             strokeWidth="7"
           />
         ))}
@@ -57,17 +68,23 @@ export function ShooterMinimap({ worldRef }: Props) {
             strokeWidth="6"
           />
         ))}
-        <text x={shooterBombSites.A.x} y={shooterBombSites.A.y} className="site site--a">A</text>
-        <text x={shooterBombSites.B.x} y={shooterBombSites.B.y} className="site site--b">B</text>
-        <text x={shooterTeamSpawns.terrorists.x} y={shooterTeamSpawns.terrorists.y}>T</text>
-        <text x={shooterTeamSpawns.counter.x} y={shooterTeamSpawns.counter.y}>CT</text>
+        {callouts.map((callout) => (
+          <text
+            key={callout.label}
+            x={callout.x}
+            y={callout.y}
+            className="callout"
+          >
+            {callout.label}
+          </text>
+        ))}
         {world.enemies.map((enemy, index) => (
           <circle key={index} cx={enemy.x} cy={enemy.y} r="24" fill="#d45b4f" />
         ))}
-        {world.remotePlayers.map((player) => (
+        {world.remotePlayers.filter((player) => player.health > 0).map((player) => (
           <circle key={player.id} cx={player.x} cy={player.y} r="22" fill="#63b7d1" />
         ))}
-        {world.bomb.planted && (
+        {world.bomb.planted && !world.bomb.exploded && (
           <circle cx={world.bomb.x} cy={world.bomb.y} r="30" fill="#ffcf48" stroke="#2a1d16" strokeWidth="10" />
         )}
         <polygon
@@ -77,6 +94,10 @@ export function ShooterMinimap({ worldRef }: Props) {
           strokeWidth="8"
           transform={`translate(${world.player.x} ${world.player.y}) rotate(${rotation})`}
         />
+        <text x={shooterBombSites.A.x} y={shooterBombSites.A.y - 70} className="site site--a">A</text>
+        <text x={shooterBombSites.B.x} y={shooterBombSites.B.y - 70} className="site site--b">B</text>
+        <text x={shooterTeamSpawns.terrorists.x} y={shooterTeamSpawns.terrorists.y + 48}>T</text>
+        <text x={shooterTeamSpawns.counter.x} y={shooterTeamSpawns.counter.y - 48}>CT</text>
       </svg>
     </aside>
   );

@@ -75,8 +75,29 @@ function addLongRamp(scene: THREE.Scene) {
   }
 }
 
+function addShortPortal(scene: THREE.Scene) {
+  const lintel = box(.42, .42, 3.8, dustStoneMaterial);
+  lintel.position.set(28.04, 3, 17.5);
+  scene.add(lintel);
+  [15.65, 19.35].forEach((z) => {
+    const post = box(.42, 3, .22, dustStoneMaterial);
+    post.position.set(28.04, 1.5, z);
+    scene.add(post);
+  });
+}
+
+function addLowerMidLedges(scene: THREE.Scene) {
+  [20.62, 27.88].forEach((x) => {
+    const ledge = box(.24, .9, 7.5, dustStoneMaterial);
+    ledge.position.set(x, .45, 20);
+    scene.add(ledge);
+  });
+}
+
 export function addShooterElevations(scene: THREE.Scene) {
   addASite(scene);
   addShort(scene);
   addLongRamp(scene);
+  addShortPortal(scene);
+  addLowerMidLedges(scene);
 }
