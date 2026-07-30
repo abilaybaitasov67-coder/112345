@@ -3,9 +3,12 @@ interface Props {
   onFire: () => void;
   onAim: (aiming: boolean) => void;
   onPickup: () => void;
+  onActionEnd: () => void;
 }
 
-export function ShooterControls({ onMove, onFire, onAim, onPickup }: Props) {
+export function ShooterControls({
+  onMove, onFire, onAim, onPickup, onActionEnd,
+}: Props) {
   const fireTimer = useRef<number | null>(null);
   const stopFire = () => {
     if (fireTimer.current !== null) window.clearInterval(fireTimer.current);
@@ -37,7 +40,13 @@ export function ShooterControls({ onMove, onFire, onAim, onPickup }: Props) {
         {button('▶', 1, 0)}
       </div>
       <div className="shooter-actions">
-        <button className="shooter-aim" onPointerDown={onPickup}>ДЕЙСТВИЕ</button>
+        <button
+          className="shooter-aim"
+          onPointerDown={onPickup}
+          onPointerUp={onActionEnd}
+          onPointerCancel={onActionEnd}
+          onPointerLeave={onActionEnd}
+        >ДЕЙСТВИЕ</button>
         <button
           className="shooter-aim"
           onPointerDown={() => onAim(true)}

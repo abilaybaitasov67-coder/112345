@@ -72,18 +72,19 @@ export function updateShooter(
     y: world.player.y + Math.sin(world.angle) * 1000,
   };
   world.player.cooldown = Math.max(0, world.player.cooldown - elapsed);
-  updateBomb(world, elapsed);
 
   if (!world.pvpMode) world.enemies.forEach((enemy) => {
     if (world.bomb.planted && !world.bomb.exploded) {
       moveEnemyWithNavigation(enemy, world.bomb, world.covers, elapsed);
     }
     enemy.cooldown -= elapsed;
-    if (enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
+    const isDefusing = world.bomb.planted && distance(enemy, world.bomb) <= 70;
+    if (!isDefusing && enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
       world.bullets.push(createBullet(enemy, world.player, true));
       enemy.cooldown = 900 + Math.random() * 600;
     }
   });
+  updateBomb(world, elapsed);
 
   world.bullets.forEach((bullet) => {
     bullet.x += bullet.dx * elapsed * 0.55;

@@ -14,6 +14,7 @@ interface Props {
   onFire: () => void;
   onAim: (aiming: boolean) => void;
   onPickup: () => void;
+  onActionEnd: () => void;
 }
 
 function movement(keys: Set<string>, mobile: ShooterPoint) {
@@ -37,7 +38,10 @@ export function ShooterCanvas(props: Props) {
       props.keysRef.current.add(event.key.toLowerCase());
       if (event.key.toLowerCase() === 'e' && !event.repeat) props.onPickup();
     };
-    const up = (event: KeyboardEvent) => props.keysRef.current.delete(event.key.toLowerCase());
+    const up = (event: KeyboardEvent) => {
+      props.keysRef.current.delete(event.key.toLowerCase());
+      if (event.key.toLowerCase() === 'e') props.onActionEnd();
+    };
     const stopFiring = () => { firingRef.current = false; };
     const mouseLook = (event: MouseEvent) => {
       if (document.pointerLockElement === canvasRef.current) {
@@ -58,7 +62,7 @@ export function ShooterCanvas(props: Props) {
       window.removeEventListener('pointerup', stopFiring);
       document.removeEventListener('mousemove', mouseLook);
     };
-  }, [props.keysRef, props.onPickup, props.worldRef]);
+  }, [props.keysRef, props.onActionEnd, props.onPickup, props.worldRef]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

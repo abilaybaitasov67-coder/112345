@@ -3,7 +3,12 @@ import { firePlayer } from '../lib/shooterPhysics';
 import { ShooterPoint, ShooterStatus, ShooterWorld, WeaponId } from '../lib/shooterTypes';
 import { createShooterWorld } from '../lib/shooterWorld';
 import { weaponInfo, weaponSlot } from '../lib/shooterWeapons';
-import { bombSites, tryPlantBomb } from '../lib/shooterBomb';
+import {
+  bombSites,
+  stopPlayerBombDefuse,
+  tryPlantBomb,
+  tryStartBombDefuse,
+} from '../lib/shooterBomb';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -40,8 +45,10 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     weapon: world.weapon,
     inventory: [...world.inventory],
     aiming: world.aiming,
-    bomb: world.bomb.planted
-      ? `БОМБА ${world.bomb.site} · ${Math.ceil(world.bomb.timer / 1000)}`
+    bomb: world.bomb.defuser
+      ? `ДЕФЬЮЗ ${Math.ceil(world.bomb.defuseTimer / 1000)}`
+      : world.bomb.planted
+        ? `БОМБА ${world.bomb.site} · ${Math.ceil(world.bomb.timer / 1000)}`
       : nearbySite ? `ТОЧКА ${nearbySite} · НАЖМИ E` : 'БОМБА · НАЙДИ A ИЛИ B',
   };
 }
@@ -81,6 +88,10 @@ export function useShooterGame() {
   }, [sync]);
   const pickUpWeapon = useCallback(() => {
     const world = worldRef.current;
+    if (tryStartBombDefuse(world)) {
+      sync();
+      return;
+    }
     if (tryPlantBomb(world)) {
       sync();
       return;
@@ -99,6 +110,10 @@ export function useShooterGame() {
     world.message = `Подобрано оружие: ${weaponInfo[drop.weapon].name}.`;
     sync();
   }, [sync]);
+  const stopAction = useCallback(() => {
+    stopPlayerBombDefuse(worldRef.current);
+    sync();
+  }, [sync]);
   const selectWeapon = useCallback((weapon: WeaponId) => {
     const world = worldRef.current;
     if (!world.inventory.includes(weapon)) return;
@@ -111,6 +126,6 @@ export function useShooterGame() {
   return {
     worldRef, keysRef, mobileRef, game, restartKey,
     sync, restart, fire, setMobile, buyWeapon, setAiming,
-    pickUpWeapon, selectWeapon,
+    pickUpWeapon, stopAction, selectWeapon,
   };
 }

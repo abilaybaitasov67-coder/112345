@@ -34,8 +34,11 @@ export interface DroppedWeapon extends ShooterPoint {
 export interface ShooterBomb extends ShooterPoint {
   site: 'A' | 'B' | null;
   timer: number;
+  defuseTimer: number;
+  defuser: 'player' | 'bot' | null;
   planted: boolean;
   exploded: boolean;
+  defused: boolean;
 }
 
 export type ShooterStatus = 'playing' | 'won' | 'lost';

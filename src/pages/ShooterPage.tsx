@@ -32,7 +32,7 @@ export function ShooterPage() {
         <span className="shooter-hud__mission">РАУНД 1 · ЦЕЛЕЙ <b>{game.enemies}</b></span>
         <span className="shooter-hud__bomb">{game.bomb}</span>
         <span>⌁ <b>{game.weapon ? weaponInfo[game.weapon].name : 'арсенал'}</b></span>
-        <span className="shooter-hud__help">WASD · клик — огонь · E — подобрать</span>
+        <span className="shooter-hud__help">WASD · огонь — клик · удерживай E — действие/дефьюз</span>
       </section>
       <div className="shooter-stage">
         <ShooterCanvas
@@ -47,6 +47,7 @@ export function ShooterPage() {
           }}
           onAim={shooter.setAiming}
           onPickup={shooter.pickUpWeapon}
+          onActionEnd={shooter.stopAction}
         />
         <ShooterMinimap worldRef={shooter.worldRef} />
         <ShooterMultiplayer
@@ -97,6 +98,7 @@ export function ShooterPage() {
         }}
         onAim={shooter.setAiming}
         onPickup={shooter.pickUpWeapon}
+        onActionEnd={shooter.stopAction}
       />
     </main>
   );

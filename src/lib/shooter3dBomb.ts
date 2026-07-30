@@ -43,5 +43,9 @@ export function syncBombModel(
   const pulse = .9 + Math.sin(time * 12) * .1;
   bombModel.scale.setScalar(pulse);
   const indicator = bombModel.userData.indicator as THREE.MeshBasicMaterial;
-  indicator.color.setHex(Math.sin(time * 12) > 0 ? 0xff311f : 0x5b0905);
+  indicator.color.setHex(
+    bomb.defuser
+      ? 0x4bbcff
+      : Math.sin(time * 12) > 0 ? 0xff311f : 0x5b0905,
+  );
 }
