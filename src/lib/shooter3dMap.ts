@@ -55,14 +55,20 @@ function addArch(scene: THREE.Scene, x: number, z: number, rotation = 0) {
   left.position.set(-1.02, 1.22, 0);
   right.position.set(1.02, 1.22, 0);
   top.position.set(0, 2.22, 0);
-  arch.add(left, right, top);
+  const doorLeft = box(.82, 1.85, .12, darkWood);
+  const doorRight = box(.82, 1.85, .12, darkWood);
+  doorLeft.position.set(-.45, .93, 0);
+  doorRight.position.set(.45, .93, 0);
+  doorLeft.rotation.y = -.16;
+  doorRight.rotation.y = .16;
+  arch.add(left, right, top, doorLeft, doorRight);
   arch.position.set(x, 0, z);
   arch.rotation.y = rotation;
   scene.add(arch);
 }
 
 function addBarrels(scene: THREE.Scene) {
-  const positions = [[4.7, 1.2], [5.15, 1.25], [20.4, 10.8], [20.8, 10.75]];
+  const positions = [[3.2, 2.1], [3.65, 2.15], [20.2, 2.2], [20.65, 2.15]];
   positions.forEach(([x, z]) => {
     const barrel = new THREE.Mesh(
       new THREE.CylinderGeometry(.24, .24, .72, 12),
@@ -77,8 +83,8 @@ function addBarrels(scene: THREE.Scene) {
 
 function addCrates(scene: THREE.Scene) {
   const spots = [
-    [5.9, 1.35, 0], [6.65, 1.35, 0], [6.3, 2.05, 0],
-    [17.8, 7.7, .3], [18.5, 7.7, -.15], [18.15, 8.4, 0],
+    [3.6, 2.8, 0], [4.35, 2.8, 0], [3.95, 3.5, 0],
+    [20.1, 2.8, .3], [20.85, 2.8, -.15], [20.45, 3.5, 0],
   ] as const;
   new GLTFLoader().load('/models/tactical-crate.glb', ({ scene: crate }) => {
     spots.forEach(([x, z, rotation]) => {
@@ -112,10 +118,10 @@ export function buildTacticalMap(scene: THREE.Scene, world: ShooterWorld) {
     ]),
   ];
   walls.forEach(([x, y, width, depth]) => addWall(scene, x, y, width, depth));
-  addSiteMarker(scene, 6.2, 1.7, 'A');
-  addSiteMarker(scene, 18.2, 8, 'B');
-  addArch(scene, 11.8, 6.9);
-  addArch(scene, 17.3, 3.15, Math.PI / 2);
+  addSiteMarker(scene, 20.4, 2.5, 'A');
+  addSiteMarker(scene, 3.7, 2.5, 'B');
+  addArch(scene, 12, 7.9);
+  addArch(scene, 7.6, 5.5, Math.PI / 2);
   addBarrels(scene);
   addCrates(scene);
 }
