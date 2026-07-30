@@ -3,6 +3,7 @@ import { updateShooter } from '../lib/shooterPhysics';
 import { ShooterPoint, ShooterWorld } from '../lib/shooterTypes';
 import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from '../lib/shooterWorld';
 import { Shooter3dRenderer } from '../lib/shooter3dRenderer';
+import { drawShooter } from '../lib/shooterDraw';
 
 interface Props {
   worldRef: MutableRefObject<ShooterWorld>;
@@ -62,7 +63,9 @@ export function ShooterCanvas(props: Props) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const view = new Shooter3dRenderer(canvas, props.worldRef.current);
+    const supportsWebGl = Boolean(document.createElement('canvas').getContext('webgl2'));
+    const view = supportsWebGl ? new Shooter3dRenderer(canvas, props.worldRef.current) : null;
+    const fallback = view ? null : canvas.getContext('2d');
     let frame = 0;
     let previous = performance.now();
     let syncTimer = 0;
@@ -73,7 +76,8 @@ export function ShooterCanvas(props: Props) {
       if (firingRef.current) onFireRef.current();
       previous = now;
       updateShooter(props.worldRef.current, elapsed, movement(props.keysRef.current, props.mobileRef.current));
-      view.render(props.worldRef.current);
+      if (view) view.render(props.worldRef.current);
+      else if (fallback) drawShooter(fallback, props.worldRef.current);
       syncTimer += elapsed;
       if (syncTimer > 100) { props.onUpdate(); syncTimer = 0; }
       frame = requestAnimationFrame(loop);
@@ -81,7 +85,7 @@ export function ShooterCanvas(props: Props) {
     frame = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(frame);
-      view.dispose();
+      view?.dispose();
     };
   }, [
     props.keysRef, props.mobileRef, props.onUpdate,
