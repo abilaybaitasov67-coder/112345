@@ -1,0 +1,32 @@
+.auth-page { max-width: 480px; }
+.auth-back { color: var(--soft); text-decoration: none; }
+.google-auth {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+.google-auth span {
+  color: #4285f4;
+  font-size: 20px;
+  font-weight: 800;
+}
+.auth-divider {
+  position: relative;
+  margin: 4px 0 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.auth-divider span {
+  position: relative;
+  top: -11px;
+  padding: 0 10px;
+  background: var(--card);
+  color: var(--soft);
+  font-size: 13px;
+}

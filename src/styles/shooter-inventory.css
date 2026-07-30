@@ -1,0 +1,41 @@
+.shooter-inventory {
+  position: absolute;
+  z-index: 3;
+  bottom: 14px;
+  left: 14px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 10px;
+  background: rgba(16, 23, 19, .82);
+  pointer-events: auto;
+}
+.shooter-inventory p {
+  margin-bottom: 6px;
+  color: #cbd5cf;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.shooter-inventory__slots { display: flex; gap: 5px; }
+.shooter-inventory__slots button {
+  position: relative;
+  width: 43px;
+  height: 43px;
+  padding: 0;
+  border: 1px solid #53645a;
+  border-radius: 7px;
+  background: #29352f;
+}
+.shooter-inventory__slots button.is-active {
+  border-color: #f4cf65;
+  box-shadow: 0 0 0 2px rgba(244, 207, 101, .25);
+}
+.shooter-inventory__slots small {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  color: #aebbb4;
+  font-size: 9px;
+}
+.shooter-inventory__slots span { font-size: 19px; }
+.shooter-inventory__empty { padding: 8px; color: #aebbb4; font-size: 12px; }

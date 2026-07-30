@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 
-// Вход и регистрация по email + паролю. Это пример — Codex поможет улучшить (Google-вход и т.д.).
 export function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,9 +34,37 @@ export function Auth() {
     }
   }
 
+  async function handleGoogle() {
+    setBusy(true);
+    setMessage('');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/` },
+      });
+      if (error) {
+        setMessage(error.message);
+        setBusy(false);
+      }
+    } catch {
+      setMessage('Не удалось открыть вход через Google. Попробуй ещё раз.');
+      setBusy(false);
+    }
+  }
+
   return (
     <section className="card">
       <h2>{mode === 'signin' ? 'Вход' : 'Регистрация'}</h2>
+      <button
+        type="button"
+        className="google-auth"
+        onClick={handleGoogle}
+        disabled={busy}
+      >
+        <span>G</span>
+        Продолжить через Google
+      </button>
+      <div className="auth-divider"><span>или</span></div>
       <form onSubmit={handleSubmit} className="form">
         <input
           type="email"

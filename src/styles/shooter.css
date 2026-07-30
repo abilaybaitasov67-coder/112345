@@ -1,0 +1,133 @@
+.shooter-page {
+  min-height: 100vh;
+  padding: 18px;
+  color: #eef2f0;
+  background:
+    radial-gradient(circle at 50% -20%, #3e4d52 0, transparent 45%),
+    #151b1d;
+}
+
+.shooter-header, .shooter-hud {
+  max-width: 960px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shooter-header a { color: #d8e0dc; text-decoration: none; }
+.shooter-header strong { letter-spacing: .16em; }
+.shooter-header button { background: #53645a; }
+
+.shooter-hud {
+  padding: 10px 16px;
+  border: 1px solid #485256;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(34, 43, 46, .96), rgba(20, 26, 28, .96));
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .28);
+  font: 700 13px/1.2 Inter, sans-serif;
+  letter-spacing: .04em;
+}
+
+.shooter-hud b { color: #f1c75b; font-size: 18px; }
+.shooter-hud__team { color: #6eb4d9; letter-spacing: .12em; }
+.shooter-hud__mission { padding: 6px 16px; background: #101517; }
+.shooter-hud__help { color: #8f9a9e; font-size: 11px; }
+.shooter-stage { position: relative; max-width: 960px; margin: auto; }
+.shooter-stage canvas {
+  width: 100%;
+  display: block;
+  border: 2px solid #485256;
+  border-radius: 3px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .4);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.shooter-result {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(13, 18, 15, .86);
+}
+
+.weapon-shop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+  background: rgba(13, 18, 15, .92);
+}
+
+.weapon-shop__panel { width: min(760px, 100%); text-align: center; }
+.weapon-shop__eyebrow {
+  color: #e2bd55;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+.weapon-shop h1 { margin: 8px 0; font-size: clamp(28px, 5vw, 48px); }
+.weapon-shop__money { margin-bottom: 20px; color: #cbd5cf; }
+.weapon-shop__money b { color: #f4cf65; }
+.weapon-shop__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.weapon-shop__grid button {
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #66776d;
+  background: #2d3b34;
+}
+.weapon-shop__grid button:hover:not(:disabled) { background: #405348; }
+.weapon-shop__grid span {
+  min-width: 52px;
+  padding: 5px 8px;
+  border: 1px solid #68746f;
+  color: #d9e0dc;
+  background: #171d1b;
+  font: 800 15px/1 Inter, sans-serif;
+  letter-spacing: .08em;
+}
+.weapon-shop__grid small { color: #c5cec9; }
+
+.shooter-result button, .shooter-fire { background: #a53b34; }
+.shooter-message { max-width: 960px; margin: 12px auto; text-align: center; }
+.shooter-controls {
+  max-width: 960px;
+  margin: 16px auto 0;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shooter-dpad {
+  width: 174px;
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  gap: 6px;
+}
+
+.shooter-controls button { padding: 14px 8px; touch-action: none; }
+.shooter-actions { display: flex; align-items: center; gap: 10px; }
+.shooter-aim { background: #53645a; font-size: 12px; }
+.shooter-fire { width: 90px; height: 90px; border-radius: 50%; }
+
+@media (max-width: 720px), (pointer: coarse) {
+  .shooter-page { padding: 10px; }
+  .shooter-header strong { font-size: 13px; }
+  .shooter-hud { flex-wrap: wrap; }
+  .shooter-controls { display: flex; }
+  .home-play--shooter { margin-left: 0; }
+  .weapon-shop__grid { grid-template-columns: 1fr; }
+  .weapon-shop__grid button { min-height: 90px; }
+}

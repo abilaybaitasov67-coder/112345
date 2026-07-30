@@ -1,0 +1,5 @@
+Ultimate Gun Pack by Quaternius
+Source: https://opengameart.org/content/low-poly-guns-pack
+License: CC0 1.0 (public domain)
+
+The GLB files in this folder were converted and positioned in Blender for this project.

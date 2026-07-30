@@ -1,0 +1,39 @@
+.shooter-crosshair {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.shooter-crosshair span, .shooter-crosshair i {
+  position: absolute;
+  display: block;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 0 2px #000;
+}
+.shooter-crosshair span:nth-child(1) { top: 0; left: 14px; width: 2px; height: 9px; }
+.shooter-crosshair span:nth-child(2) { bottom: 0; left: 14px; width: 2px; height: 9px; }
+.shooter-crosshair span:nth-child(3) { top: 14px; left: 0; width: 9px; height: 2px; }
+.shooter-crosshair span:nth-child(4) { top: 14px; right: 0; width: 9px; height: 2px; }
+.shooter-crosshair i { top: 14px; left: 14px; width: 2px; height: 2px; }
+
+.shooter-scope {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: min(80%, 500px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  border: 8px solid rgba(0, 0, 0, .92);
+  border-radius: 50%;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .92);
+  pointer-events: none;
+}
+.shooter-scope span { position: absolute; display: block; background: #151918; }
+.shooter-scope__horizontal { top: 50%; left: 0; width: 100%; height: 2px; }
+.shooter-scope__vertical { top: 0; left: 50%; width: 2px; height: 100%; }

@@ -91,6 +91,30 @@ button.small { padding: 6px 10px; font-size: 14px; }
 }
 .hello h1 { font-size: 44px; font-weight: 800; margin-bottom: 16px; }
 .hello p { font-size: 18px; color: var(--soft); line-height: 1.5; }
+.hello__eyebrow {
+  color: var(--clay) !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.home-play {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  background: var(--clay);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.home-play--shooter { margin-left: 10px; background: #34443b; }
+.home-auth {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
+  color: var(--soft);
+}
 .hello__hint {
   margin-top: 20px;
   display: inline-block;

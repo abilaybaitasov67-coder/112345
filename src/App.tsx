@@ -1,13 +1,24 @@
+import { lazy, Suspense } from 'react';
 import { Route, Switch } from 'wouter';
+import { GamePage } from './pages/GamePage';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { AuthPage } from './pages/AuthPage';
+
+const ShooterPage = lazy(() => import('./pages/ShooterPage')
+  .then((module) => ({ default: module.ShooterPage })));
 
 // Здесь живут только маршруты. Сами экраны складывай в src/pages/.
 export default function App() {
   return (
-    <Switch>
-      <Route path="/" component={HomePage} />
-      <Route component={NotFoundPage} />
-    </Switch>
+    <Suspense fallback={<main className="container">Загрузка игры…</main>}>
+      <Switch>
+        <Route path="/" component={HomePage} />
+        <Route path="/game" component={GamePage} />
+        <Route path="/shooter" component={ShooterPage} />
+        <Route path="/auth" component={AuthPage} />
+        <Route component={NotFoundPage} />
+      </Switch>
+    </Suspense>
   );
 }
