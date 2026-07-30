@@ -3,7 +3,7 @@ import { firePlayer } from '../lib/shooterPhysics';
 import { ShooterPoint, ShooterStatus, ShooterWorld, WeaponId } from '../lib/shooterTypes';
 import { createShooterWorld } from '../lib/shooterWorld';
 import { weaponInfo, weaponSlot } from '../lib/shooterWeapons';
-import { tryPlantBomb } from '../lib/shooterBomb';
+import { bombSites, tryPlantBomb } from '../lib/shooterBomb';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -26,6 +26,11 @@ export interface ShooterSnapshot {
 }
 
 function snapshot(world: ShooterWorld): ShooterSnapshot {
+  const nearbySite = (Object.entries(bombSites) as ['A' | 'B', ShooterPoint][])
+    .find(([, site]) => Math.hypot(
+      site.x - world.player.x,
+      site.y - world.player.y,
+    ) < 72)?.[0];
   return {
     health: Math.max(0, world.player.health),
     enemies: world.enemies.length,
@@ -37,7 +42,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     aiming: world.aiming,
     bomb: world.bomb.planted
       ? `БОМБА ${world.bomb.site} · ${Math.ceil(world.bomb.timer / 1000)}`
-      : 'БОМБА · E НА ТОЧКЕ',
+      : nearbySite ? `ТОЧКА ${nearbySite} · НАЖМИ E` : 'БОМБА · НАЙДИ A ИЛИ B',
   };
 }
 

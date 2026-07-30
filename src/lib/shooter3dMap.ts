@@ -86,7 +86,8 @@ function addCrates(scene: THREE.Scene) {
     [3.6, 2.8, 0], [4.35, 2.8, 0], [3.95, 3.5, 0],
     [20.1, 2.8, .3], [20.85, 2.8, -.15], [20.45, 3.5, 0],
   ] as const;
-  new GLTFLoader().load('/models/tactical-crate.glb', ({ scene: crate }) => {
+  const cratePath = `${import.meta.env.BASE_URL}models/tactical-crate.glb`;
+  new GLTFLoader().load(cratePath, ({ scene: crate }) => {
     spots.forEach(([x, z, rotation]) => {
       const model = crate.clone(true);
       model.scale.setScalar(.48);

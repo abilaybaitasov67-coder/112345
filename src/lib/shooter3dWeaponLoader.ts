@@ -19,7 +19,8 @@ function loadScene(path: string) {
 }
 
 export async function loadBlenderWeapon(id: WeaponId) {
-  const weapon = cache.get(id) ?? await loadScene(`/models/weapons/${id}.glb`);
+  const path = `${import.meta.env.BASE_URL}models/weapons/${id}.glb`;
+  const weapon = cache.get(id) ?? await loadScene(path);
   cache.set(id, weapon);
   const viewModel = new THREE.Group();
   const isSidearm = id === 'pistol' || id === 'revolver' || id === 'knife';
