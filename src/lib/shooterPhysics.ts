@@ -51,6 +51,12 @@ function distanceToSegment(point: ShooterPoint, start: ShooterPoint, end: Shoote
   return distance(point, { x: start.x + dx * amount, y: start.y + dy * amount });
 }
 
+function shotOffset(shot: number, pellets: number, spread: number) {
+  if (pellets <= 1) return 0;
+  const middle = (pellets - 1) / 2;
+  return ((shot - middle) / Math.max(1, middle)) * spread / 2;
+}
+
 export function firePlayer(world: ShooterWorld) {
   if (world.status !== 'playing' || world.player.cooldown > 0 || !world.weapon) return;
   const weapon = weaponInfo[world.weapon];
@@ -65,11 +71,10 @@ export function firePlayer(world: ShooterWorld) {
     world.player.cooldown = weapon.cooldown;
     return;
   }
-  const movementSpread = world.moving ? .045 : 0;
   const aimScale = world.aiming ? .18 : 1;
-  const totalSpread = (weapon.spread + world.recoil + movementSpread) * aimScale;
+  const totalSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {
-    const spread = (Math.random() - .5) * totalSpread;
+    const spread = shotOffset(shot, weapon.pellets, totalSpread);
     world.bullets.push(createBullet(world.player, {
       x: world.player.x + Math.cos(world.angle + spread) * 1000,
       y: world.player.y + Math.sin(world.angle + spread) * 1000,
@@ -77,7 +82,6 @@ export function firePlayer(world: ShooterWorld) {
   }
   world.recoil = Math.min(.14, world.recoil + weapon.recoil);
   world.pitch = Math.min(150, world.pitch + weapon.recoil * 520);
-  world.angle += (Math.random() - .5) * weapon.recoil * .65;
   world.player.cooldown = weapon.cooldown;
 }
 
