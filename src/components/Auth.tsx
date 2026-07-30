@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 
-export function Auth() {
+interface Props {
+  onSuccess?: () => void;
+}
+
+export function Auth({ onSuccess }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -27,6 +31,7 @@ export function Auth() {
       const { error } = await fn;
       if (error) setMessage(error.message);
       else if (mode === 'signup') setMessage('Готово! Проверь почту, если нужна подтверждалка.');
+      else onSuccess?.();
     } catch {
       setMessage('Что-то пошло не так. Попробуй ещё раз.');
     } finally {
@@ -40,7 +45,12 @@ export function Auth() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/` },
+        options: {
+          redirectTo: new URL(
+            `${import.meta.env.BASE_URL}shooter`,
+            window.location.origin,
+          ).href,
+        },
       });
       if (error) {
         setMessage(error.message);
