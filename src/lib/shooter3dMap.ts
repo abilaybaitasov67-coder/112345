@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bombSites } from './shooterBomb';
 import { ShooterWorld } from './shooterTypes';
 import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
-import { addHelenaProps } from './shooter3dHelenaProps';
+import { addRouteProps } from './shooter3dRouteProps';
 import { addMapSigns } from './shooter3dSigns';
 import { addBoundaryWalls, addMapBlocks } from './shooter3dBlocks';
 
@@ -34,7 +34,7 @@ function addSiteMarker(scene: THREE.Scene, x: number, z: number, label: string) 
 }
 
 function addBarrels(scene: THREE.Scene) {
-  const positions = [[1.8, 14.4], [2.5, 14.4], [40.8, 7.15], [41.5, 7.15]];
+  const positions = [[9.2, 6.4], [9.9, 6.4], [36.5, 6.4], [37.2, 6.4]];
   positions.forEach(([x, z]) => {
     const barrel = new THREE.Mesh(
       new THREE.CylinderGeometry(.24, .24, .72, 12),
@@ -49,8 +49,8 @@ function addBarrels(scene: THREE.Scene) {
 
 function addCrates(scene: THREE.Scene) {
   const spots = [
-    [1.7, 14.5, 0], [2.82, 14.5, 0], [2.25, 15.55, 0],
-    [40.7, 7.2, .3], [41.82, 7.2, -.15], [41.25, 8.25, 0],
+    [9.2, 6.2, 0], [10.32, 6.2, 0], [9.75, 7.25, 0],
+    [36.2, 6.2, .3], [37.32, 6.2, -.15], [36.75, 7.25, 0],
   ] as const;
   const cratePath = `${import.meta.env.BASE_URL}models/tactical-crate.glb`;
   new GLTFLoader().load(cratePath, ({ scene: crate }) => {
@@ -84,6 +84,6 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   addSiteMarker(scene, bombSites.B.x * SCALE, bombSites.B.y * SCALE, 'B');
   addBarrels(scene);
   addCrates(scene);
-  addHelenaProps(scene);
+  addRouteProps(scene);
   addMapSigns(scene);
 }

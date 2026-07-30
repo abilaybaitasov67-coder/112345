@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 function createSky() {
-  const geometry = new THREE.SphereGeometry(65, 24, 16);
+  const geometry = new THREE.SphereGeometry(90, 24, 16);
   const material = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
@@ -40,7 +40,7 @@ function createDust() {
     points.push(
       Math.random() * 48,
       .25 + Math.random() * 3.2,
-      Math.random() * 28,
+      Math.random() * 40,
     );
   }
   const geometry = new THREE.BufferGeometry();
@@ -63,13 +63,13 @@ export function addShooterAtmosphere(scene: THREE.Scene) {
 
   const sun = new THREE.DirectionalLight(0xffdc9c, 3.2);
   sun.position.set(7, 14, -5);
-  sun.target.position.set(24, 0, 14);
+  sun.target.position.set(24, 0, 20);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
   sun.shadow.camera.left = -25;
   sun.shadow.camera.right = 25;
-  sun.shadow.camera.top = 20;
-  sun.shadow.camera.bottom = -20;
+  sun.shadow.camera.top = 30;
+  sun.shadow.camera.bottom = -30;
   sun.shadow.camera.near = 1;
   sun.shadow.camera.far = 35;
   sun.shadow.bias = -.0003;

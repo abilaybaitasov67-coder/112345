@@ -21,7 +21,7 @@ export function ShooterPage() {
     <main className="shooter-page">
       <header className="shooter-header">
         <Link href="/">← Все игры</Link>
-        <strong>ОПЕРАЦИЯ «РУБЕЖ»</strong>
+        <strong>КАРТА «ПЫЛЬНЫЙ РУБЕЖ»</strong>
         <button onClick={shooter.restart}>↻ Заново</button>
       </header>
       <section className="shooter-hud">
@@ -84,7 +84,7 @@ export function ShooterPage() {
       </div>
       <p className="shooter-message">{game.message}</p>
       <p className="shooter-credit">
-        Планировка вдохновлена Helena из BloxStrike и Thera/Santorini · автор исходной карты — FMPONE
+        Планировка вдохновлена Dust II · автор оригинальной карты — Dave Johnston
       </p>
       <ShooterControls
         onMove={shooter.setMobile}

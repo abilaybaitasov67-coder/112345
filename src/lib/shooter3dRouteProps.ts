@@ -20,7 +20,7 @@ function addMonument(scene: THREE.Scene) {
   plate.position.y = .35;
   column.position.y = .9;
   monument.add(base, plate, column);
-  monument.position.set(21.5, 1.3, 11.75);
+  monument.position.set(23.75, 1.3, 21.5);
   scene.add(monument);
 }
 
@@ -43,14 +43,17 @@ function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 function addUpperTunnel(scene: THREE.Scene) {
-  const roof = box(6.5, .3, 11.2, darkWood);
-  roof.position.set(40.625, 3.45, 15.625);
+  const roof = box(10, .3, 12.2, darkWood);
+  roof.position.set(8.75, 3.45, 21.25);
   scene.add(roof);
-  for (let z = 10.5; z <= 20.7; z += 2.05) {
-    const beam = box(6.65, .28, .22, stone);
-    beam.position.set(40.625, 3.25, z);
+  for (let z = 15.3; z <= 27.2; z += 2.35) {
+    const beam = box(10.15, .28, .22, stone);
+    beam.position.set(8.75, 3.25, z);
     scene.add(beam);
   }
+  const upperRoof = box(3.7, .28, 3.5, darkWood);
+  upperRoof.position.set(8.9, 3.4, 13.2);
+  scene.add(upperRoof);
 }
 
 function addSpawnGate(scene: THREE.Scene, x: number, z: number, width: number) {
@@ -66,20 +69,29 @@ function addSpawnGate(scene: THREE.Scene, x: number, z: number, width: number) {
   scene.add(gate);
 }
 
+function addShortSteps(scene: THREE.Scene) {
+  for (let index = 0; index < 6; index += 1) {
+    const step = box(.72, .04, 2.8, stone);
+    step.position.set(28.7 + index * .9, .02, 9.4);
+    scene.add(step);
+  }
+}
+
 function addLongButtresses(scene: THREE.Scene) {
-  [9.5, 11.6, 13.7, 15.3].forEach((z) => {
+  [13, 17, 21, 25, 29].forEach((z) => {
     const pillar = box(.4, 3.5, .75, stone);
-    pillar.position.set(8, 1.75, z);
+    pillar.position.set(34.45, 1.75, z);
     scene.add(pillar);
   });
 }
 
-export function addHelenaProps(scene: THREE.Scene) {
+export function addRouteProps(scene: THREE.Scene) {
   addMonument(scene);
-  addBalcony(scene, 12.2, 8.7);
-  addBalcony(scene, 31.9, 8.7);
+  addBalcony(scene, 17.1, 8.7);
+  addBalcony(scene, 31.25, 11.2);
   addUpperTunnel(scene);
-  addSpawnGate(scene, 24.5, 5, 8);
-  addSpawnGate(scene, 25.25, 23.75, 6.6);
+  addSpawnGate(scene, 24.25, 7.5, 8);
+  addSpawnGate(scene, 24.25, 27.5, 8);
+  addShortSteps(scene);
   addLongButtresses(scene);
 }

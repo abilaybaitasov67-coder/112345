@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { helenaBlocks, ShooterMapBlock } from './shooterMapLayout';
+import { shooterMapBlocks, ShooterMapBlock } from './shooterMapLayout';
 
 const SCALE = .025;
 const materials = {
@@ -45,7 +45,7 @@ function addBlock(scene: THREE.Scene, block: ShooterMapBlock) {
 }
 
 export function addMapBlocks(scene: THREE.Scene) {
-  helenaBlocks.forEach((block) => addBlock(scene, block));
+  shooterMapBlocks.forEach((block) => addBlock(scene, block));
 }
 
 export function addBoundaryWalls(scene: THREE.Scene, width: number, depth: number) {

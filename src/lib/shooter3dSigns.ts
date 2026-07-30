@@ -8,11 +8,15 @@ interface MapSign {
 }
 
 const signs: MapSign[] = [
-  { label: 'MID', x: 24, z: 13, color: '#426b7a' },
-  { label: 'LONG', x: 4.2, z: 18, color: '#596b48' },
-  { label: 'UPPER', x: 40.6, z: 15.6, color: '#735c7d' },
-  { label: 'T SPAWN', x: 24, z: 26, color: '#8b4e45' },
-  { label: 'CT SPAWN', x: 24, z: 2.25, color: '#426a88' },
+  { label: 'MID', x: 24, z: 16.8, color: '#426b7a' },
+  { label: 'LOWER MID', x: 24, z: 23.8, color: '#426b7a' },
+  { label: 'SHORT A', x: 31.1, z: 9.5, color: '#a66b43' },
+  { label: 'B DOORS', x: 8.9, z: 14, color: '#39797a' },
+  { label: 'LONG A', x: 39.2, z: 23, color: '#596b48' },
+  { label: 'B TUNNELS', x: 8.7, z: 21.2, color: '#735c7d' },
+  { label: 'LONG DOORS', x: 38.4, z: 31, color: '#8d4f3d' },
+  { label: 'T SPAWN', x: 24, z: 37.5, color: '#8b4e45' },
+  { label: 'CT SPAWN', x: 24, z: 9, color: '#426a88' },
 ];
 
 function createSign({ label, x, z, color }: MapSign) {
