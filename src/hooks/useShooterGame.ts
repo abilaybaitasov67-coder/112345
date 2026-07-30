@@ -9,6 +9,7 @@ import {
   tryPlantBomb,
   tryStartBombDefuse,
 } from '../lib/shooterBomb';
+import { tryShooterJump } from '../lib/shooterJump';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -80,6 +81,9 @@ export function useShooterGame() {
   const setMobile = useCallback((x: number, y: number) => {
     mobileRef.current = { x, y };
   }, []);
+  const jump = useCallback(() => {
+    tryShooterJump(worldRef.current);
+  }, []);
   const buyWeapon = useCallback((weapon: WeaponId, price: number) => {
     const world = worldRef.current;
     if (price > world.money) return;
@@ -132,7 +136,7 @@ export function useShooterGame() {
 
   return {
     worldRef, keysRef, mobileRef, game, restartKey,
-    sync, restart, fire, setMobile, buyWeapon, setAiming,
+    sync, restart, fire, setMobile, jump, buyWeapon, setAiming,
     pickUpWeapon, stopAction, selectWeapon,
   };
 }

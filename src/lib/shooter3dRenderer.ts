@@ -78,13 +78,13 @@ export class Shooter3dRenderer {
     const floorHeight = getShooterFloorHeight(world.player.x, world.player.y);
     this.camera.position.set(
       world.player.x * SCALE,
-      1.7 + floorHeight,
+      1.7 + floorHeight + world.jumpHeight,
       world.player.y * SCALE,
     );
     const pitch = world.pitch / 430;
     this.camera.lookAt(
       this.camera.position.x + Math.cos(world.angle),
-      1.7 + floorHeight + pitch,
+      1.7 + floorHeight + world.jumpHeight + pitch,
       this.camera.position.z + Math.sin(world.angle),
     );
     this.camera.fov = world.aiming ? 24 : 68;

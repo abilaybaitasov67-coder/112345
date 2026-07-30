@@ -22,6 +22,7 @@ import {
   getTargetSlope,
   moveShooterBullet,
 } from './shooterBullets';
+import { updateShooterJump } from './shooterJump';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -55,7 +56,7 @@ export function firePlayer(world: ShooterWorld) {
     world.bullets.push(createShooterBullet(world.player, {
       x: world.player.x + Math.cos(world.angle + spread) * 1000,
       y: world.player.y + Math.sin(world.angle + spread) * 1000,
-    }, false, weapon.bulletSpeed, world.pitch / 430));
+    }, false, weapon.bulletSpeed, world.pitch / 430, world.jumpHeight));
   }
   world.recoil = Math.min(.14, world.recoil + weapon.recoil);
   world.player.cooldown = weapon.cooldown;
@@ -67,6 +68,7 @@ export function updateShooter(
   movement: ShooterPoint,
 ) {
   if (world.status !== 'playing' || !world.weapon) return;
+  updateShooterJump(world, elapsed);
   const selectedWeapon = weaponInfo[world.weapon];
   world.moving = Math.hypot(movement.x, movement.y) > .12;
   const recovery = world.moving ? .000045 : .000085;
@@ -96,7 +98,7 @@ export function updateShooter(
         world.player,
         true,
         enemyWeapon.bulletSpeed,
-        getTargetSlope(enemy, world.player),
+        getTargetSlope(enemy, world.player, world.jumpHeight),
       ));
       enemy.cooldown = 900 + Math.random() * 600;
     }

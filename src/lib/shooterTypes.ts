@@ -12,6 +12,7 @@ export interface ShooterUnit extends ShooterPoint {
 export interface RemoteShooter extends ShooterUnit {
   id: string;
   angle: number;
+  jumpHeight: number;
   name: string;
   lastSeen: number;
 }
@@ -53,6 +54,8 @@ export interface ShooterWorld {
   player: ShooterUnit;
   angle: number;
   pitch: number;
+  jumpHeight: number;
+  jumpVelocity: number;
   recoil: number;
   moving: boolean;
   money: number;

@@ -37,7 +37,7 @@ export function syncEnemyModels(
     );
     model.lookAt(
       world.player.x * scale,
-      1.2 + getShooterFloorHeight(world.player.x, world.player.y),
+      1.2 + world.jumpHeight + getShooterFloorHeight(world.player.x, world.player.y),
       world.player.y * scale,
     );
     model.rotateY(Math.PI);
@@ -69,7 +69,7 @@ export function syncRemotePlayerModels(
     }
     model.position.set(
       player.x * scale,
-      getShooterFloorHeight(player.x, player.y),
+      (player.jumpHeight ?? 0) + getShooterFloorHeight(player.x, player.y),
       player.y * scale,
     );
     model.rotation.y = -player.angle + Math.PI / 2;

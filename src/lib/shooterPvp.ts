@@ -19,6 +19,7 @@ export interface PvpPlayerState {
   x: number;
   y: number;
   angle: number;
+  jumpHeight: number;
   health: number;
   weapon?: RemoteShooter['weapon'];
   bomb?: ShooterBomb;
@@ -42,6 +43,8 @@ export function placePvpPlayer(world: ShooterWorld, spawnIndex: number) {
   world.player.y = spawn.y;
   world.player.health = 100;
   world.angle = spawn.angle;
+  world.jumpHeight = 0;
+  world.jumpVelocity = 0;
   world.status = 'playing';
   world.message = 'Защита спавна действует 8 секунд.';
 }
@@ -81,8 +84,8 @@ export function findVisiblePvpTarget(world: ShooterWorld) {
         world.player,
         player,
         world.covers,
-        1.7 + getShooterFloorHeight(world.player.x, world.player.y),
-        1.7 + getShooterFloorHeight(player.x, player.y),
+        1.7 + world.jumpHeight + getShooterFloorHeight(world.player.x, world.player.y),
+        1.7 + (player.jumpHeight ?? 0) + getShooterFloorHeight(player.x, player.y),
       ))
     .sort((a, b) => a.difference - b.difference)[0]?.player;
 }

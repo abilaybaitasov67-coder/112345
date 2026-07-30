@@ -13,6 +13,7 @@ export function createShooterBullet(
   enemy: boolean,
   speed: number,
   verticalSlope = 0,
+  heightOffset = 0,
 ): ShooterBullet {
   const length = Math.max(1, distance(from, to));
   return {
@@ -20,16 +21,20 @@ export function createShooterBullet(
     y: from.y,
     dx: (to.x - from.x) / length,
     dy: (to.y - from.y) / length,
-    height: 1.7 + getShooterFloorHeight(from.x, from.y),
+    height: 1.7 + heightOffset + getShooterFloorHeight(from.x, from.y),
     verticalSlope,
     speed,
     enemy,
   };
 }
 
-export function getTargetSlope(from: ShooterPoint, to: ShooterPoint) {
+export function getTargetSlope(
+  from: ShooterPoint,
+  to: ShooterPoint,
+  targetHeightOffset = 0,
+) {
   const heightDifference = getShooterFloorHeight(to.x, to.y)
-    - getShooterFloorHeight(from.x, from.y);
+    + targetHeightOffset - getShooterFloorHeight(from.x, from.y);
   return heightDifference / (Math.max(1, distance(from, to)) * WORLD_TO_SCENE);
 }
 

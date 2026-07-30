@@ -55,6 +55,8 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     worldRef.current.player.y = spawn.y;
     worldRef.current.player.health = 100;
     worldRef.current.angle = spawn.angle;
+    worldRef.current.jumpHeight = 0;
+    worldRef.current.jumpVelocity = 0;
     worldRef.current.message = 'Защита спавна действует 8 секунд.';
     protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
     setError('');
@@ -76,7 +78,12 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         const { bomb, ...player } = payload as PvpPlayerState;
         if (player.id === pvpPlayerId) return;
         syncPvpBomb(worldRef.current, bomb);
-        const remote: RemoteShooter = { ...player, cooldown: 0, lastSeen: Date.now() };
+        const remote: RemoteShooter = {
+          ...player,
+          jumpHeight: player.jumpHeight ?? 0,
+          cooldown: 0,
+          lastSeen: Date.now(),
+        };
         const others = worldRef.current.remotePlayers;
         const index = others.findIndex((item) => item.id === player.id);
         if (index >= 0) others[index] = remote;
@@ -140,6 +147,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         x: world.player.x,
         y: world.player.y,
         angle: world.angle,
+        jumpHeight: world.jumpHeight,
         health: world.player.health,
         weapon: world.weapon ?? undefined,
         bomb: { ...world.bomb },

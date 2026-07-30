@@ -30,6 +30,8 @@ export function createShooterWorld(): ShooterWorld {
     },
     angle: -Math.PI / 2,
     pitch: 0,
+    jumpHeight: 0,
+    jumpVelocity: 0,
     recoil: 0,
     moving: false,
     money: 1500,

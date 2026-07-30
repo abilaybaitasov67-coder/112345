@@ -13,6 +13,7 @@ interface Props {
   onUpdate: () => void;
   onFire: () => void;
   onAim: (aiming: boolean) => void;
+  onJump: () => void;
   onPickup: () => void;
   onActionEnd: () => void;
 }
@@ -37,6 +38,10 @@ export function ShooterCanvas(props: Props) {
     const down = (event: KeyboardEvent) => {
       props.keysRef.current.add(event.key.toLowerCase());
       if (event.key.toLowerCase() === 'e' && !event.repeat) props.onPickup();
+      if (event.code === 'Space' && !event.repeat) {
+        event.preventDefault();
+        props.onJump();
+      }
     };
     const up = (event: KeyboardEvent) => {
       props.keysRef.current.delete(event.key.toLowerCase());
@@ -62,7 +67,10 @@ export function ShooterCanvas(props: Props) {
       window.removeEventListener('pointerup', stopFiring);
       document.removeEventListener('mousemove', mouseLook);
     };
-  }, [props.keysRef, props.onActionEnd, props.onPickup, props.worldRef]);
+  }, [
+    props.keysRef, props.onActionEnd, props.onJump,
+    props.onPickup, props.worldRef,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
