@@ -27,6 +27,7 @@ export function ShooterPage() {
         <span className="shooter-hud__team">СПЕЦНАЗ</span>
         <span>♥ <b>{game.health}</b></span>
         <span className="shooter-hud__mission">РАУНД 1 · ЦЕЛЕЙ <b>{game.enemies}</b></span>
+        <span className="shooter-hud__bomb">{game.bomb}</span>
         <span>⌁ <b>{game.weapon ? weaponInfo[game.weapon].name : 'арсенал'}</b></span>
         <span className="shooter-hud__help">WASD · клик — огонь · E — подобрать</span>
       </section>

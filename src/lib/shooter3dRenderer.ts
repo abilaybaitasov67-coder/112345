@@ -7,6 +7,7 @@ import { syncBulletMeshes, syncDroppedWeapons } from './shooter3dEffects';
 import { buildTacticalMap } from './shooter3dMap';
 import { loadBlenderWeapon } from './shooter3dWeaponLoader';
 import { addShooterAtmosphere } from './shooter3dAtmosphere';
+import { createBombModel, syncBombModel } from './shooter3dBomb';
 
 const SCALE = .025;
 
@@ -21,6 +22,7 @@ export class Shooter3dRenderer {
   private weaponRequest = 0;
   private bulletMeshes: THREE.Mesh[] = [];
   private droppedWeapons: THREE.Group[] = [];
+  private bombModel = createBombModel();
   private muzzleFlash = new THREE.Mesh(
     new THREE.SphereGeometry(.11, 10, 8),
     new THREE.MeshBasicMaterial({ color: 0xffd45c }),
@@ -39,6 +41,7 @@ export class Shooter3dRenderer {
     this.scene.fog = new THREE.FogExp2(0xb6ad95, .018);
     addShooterAtmosphere(this.scene);
     buildTacticalMap(this.scene, world);
+    this.scene.add(this.bombModel);
     this.muzzleFlash.position.set(.05, -.2, -1.8);
     this.muzzleFlash.visible = false;
     this.camera.add(this.muzzleFlash);
@@ -137,6 +140,7 @@ export class Shooter3dRenderer {
     this.syncWeapon(world);
     syncBulletMeshes(this.scene, this.bulletMeshes, world, SCALE);
     syncDroppedWeapons(this.scene, this.droppedWeapons, world, SCALE);
+    syncBombModel(this.bombModel, world, SCALE, this.clock.getElapsedTime());
     if (this.weapon) this.weapon.visible = !world.aiming;
     if (this.weapon && !world.aiming) {
       const time = this.clock.getElapsedTime();

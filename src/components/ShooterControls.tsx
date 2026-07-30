@@ -37,7 +37,7 @@ export function ShooterControls({ onMove, onFire, onAim, onPickup }: Props) {
         {button('▶', 1, 0)}
       </div>
       <div className="shooter-actions">
-        <button className="shooter-aim" onPointerDown={onPickup}>ПОДНЯТЬ</button>
+        <button className="shooter-aim" onPointerDown={onPickup}>ДЕЙСТВИЕ</button>
         <button
           className="shooter-aim"
           onPointerDown={() => onAim(true)}

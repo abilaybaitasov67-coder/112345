@@ -1,6 +1,7 @@
 import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
 import { ShooterBullet, ShooterCover, ShooterPoint, ShooterWorld } from './shooterTypes';
 import { weaponInfo } from './shooterWeapons';
+import { updateBomb } from './shooterBomb';
 
 const UNIT_RADIUS = 15;
 
@@ -71,6 +72,7 @@ export function updateShooter(
     y: world.player.y + Math.sin(world.angle) * 1000,
   };
   world.player.cooldown = Math.max(0, world.player.cooldown - elapsed);
+  updateBomb(world, elapsed);
 
   if (!world.pvpMode) world.enemies.forEach((enemy) => {
     enemy.cooldown -= elapsed;

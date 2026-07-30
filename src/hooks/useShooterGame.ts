@@ -3,6 +3,7 @@ import { firePlayer } from '../lib/shooterPhysics';
 import { ShooterPoint, ShooterStatus, ShooterWorld, WeaponId } from '../lib/shooterTypes';
 import { createShooterWorld } from '../lib/shooterWorld';
 import { weaponInfo, weaponSlot } from '../lib/shooterWeapons';
+import { tryPlantBomb } from '../lib/shooterBomb';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -21,6 +22,7 @@ export interface ShooterSnapshot {
   weapon: WeaponId | null;
   inventory: WeaponId[];
   aiming: boolean;
+  bomb: string;
 }
 
 function snapshot(world: ShooterWorld): ShooterSnapshot {
@@ -33,6 +35,9 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     weapon: world.weapon,
     inventory: [...world.inventory],
     aiming: world.aiming,
+    bomb: world.bomb.planted
+      ? `БОМБА ${world.bomb.site} · ${Math.ceil(world.bomb.timer / 1000)}`
+      : 'БОМБА · E НА ТОЧКЕ',
   };
 }
 
@@ -71,6 +76,10 @@ export function useShooterGame() {
   }, [sync]);
   const pickUpWeapon = useCallback(() => {
     const world = worldRef.current;
+    if (tryPlantBomb(world)) {
+      sync();
+      return;
+    }
     const index = world.droppedWeapons.findIndex((drop) =>
       Math.hypot(drop.x - world.player.x, drop.y - world.player.y) < 55);
     if (index < 0) {

@@ -22,6 +22,7 @@ export function createShooterWorld(): ShooterWorld {
     remotePlayers: [],
     bullets: [],
     droppedWeapons: [],
+    bomb: { x: 0, y: 0, site: null, timer: 0, planted: false, exploded: false },
     covers: [
       { x: 275, y: 0, width: 55, height: 185 },
       { x: 275, y: 255, width: 55, height: 185 },

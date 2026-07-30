@@ -31,6 +31,13 @@ export interface DroppedWeapon extends ShooterPoint {
   weapon: WeaponId;
 }
 
+export interface ShooterBomb extends ShooterPoint {
+  site: 'A' | 'B' | null;
+  timer: number;
+  planted: boolean;
+  exploded: boolean;
+}
+
 export type ShooterStatus = 'playing' | 'won' | 'lost';
 export type WeaponId = 'knife' | 'pistol' | 'revolver' | 'smg' | 'rifle' | 'shotgun' | 'sniper';
 
@@ -47,6 +54,7 @@ export interface ShooterWorld {
   remotePlayers: RemoteShooter[];
   bullets: ShooterBullet[];
   droppedWeapons: DroppedWeapon[];
+  bomb: ShooterBomb;
   covers: ShooterCover[];
   aim: ShooterPoint;
   status: ShooterStatus;

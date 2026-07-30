@@ -32,6 +32,7 @@
 
 .shooter-hud b { color: #f1c75b; font-size: 18px; }
 .shooter-hud__team { color: #6eb4d9; letter-spacing: .12em; }
+.shooter-hud__bomb { color: #ef8d65; font-size: 11px; }
 .shooter-hud__mission { padding: 6px 16px; background: #101517; }
 .shooter-hud__help { color: #8f9a9e; font-size: 11px; }
 .shooter-stage { position: relative; max-width: 960px; margin: auto; }
