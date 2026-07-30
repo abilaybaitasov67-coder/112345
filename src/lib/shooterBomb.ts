@@ -1,9 +1,7 @@
 import { ShooterPoint, ShooterWorld } from './shooterTypes';
+import { shooterBombSites } from './shooterMapLayout';
 
-export const bombSites = {
-  A: { x: 1547, y: 307 },
-  B: { x: 253, y: 507 },
-} satisfies Record<'A' | 'B', ShooterPoint>;
+export const bombSites = shooterBombSites;
 
 const PLANT_DISTANCE = 100;
 const BOMB_TIME = 30_000;

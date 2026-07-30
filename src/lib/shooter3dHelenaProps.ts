@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 
-const stone = new THREE.MeshStandardMaterial({ color: 0x46545b, roughness: .92 });
-const metal = new THREE.MeshStandardMaterial({ color: 0x87989f, roughness: .38 });
-const green = new THREE.MeshStandardMaterial({ color: 0x294b42, roughness: 1 });
-const planterMaterial = new THREE.MeshStandardMaterial({ color: 0x3d484d, roughness: .9 });
+const stone = new THREE.MeshStandardMaterial({ color: 0x80654d, roughness: .92 });
+const metal = new THREE.MeshStandardMaterial({ color: 0xb58a4b, roughness: .38 });
+const darkWood = new THREE.MeshStandardMaterial({ color: 0x473328, roughness: .86 });
 
 function box(width: number, height: number, depth: number, material: THREE.Material) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
@@ -21,20 +20,8 @@ function addMonument(scene: THREE.Scene) {
   plate.position.y = .35;
   column.position.y = .9;
   monument.add(base, plate, column);
-  monument.position.set(24, 0, 18.4);
+  monument.position.set(21.5, 1.3, 11.75);
   scene.add(monument);
-}
-
-function addPlanter(scene: THREE.Scene, x: number, z: number) {
-  const planter = box(.74, .5, .74, planterMaterial);
-  const leaves = new THREE.Mesh(
-    new THREE.SphereGeometry(.54, 8, 6),
-    green,
-  );
-  planter.position.set(x, .25, z);
-  leaves.position.set(x, .88, z);
-  leaves.castShadow = true;
-  scene.add(planter, leaves);
 }
 
 function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
@@ -56,18 +43,43 @@ function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 function addUpperTunnel(scene: THREE.Scene) {
-  const roof = box(2.35, .28, 5.4, stone);
-  roof.position.set(36.15, 3.25, 20.7);
+  const roof = box(6.5, .3, 11.2, darkWood);
+  roof.position.set(40.625, 3.45, 15.625);
   scene.add(roof);
+  for (let z = 10.5; z <= 20.7; z += 2.05) {
+    const beam = box(6.65, .28, .22, stone);
+    beam.position.set(40.625, 3.25, z);
+    scene.add(beam);
+  }
+}
+
+function addSpawnGate(scene: THREE.Scene, x: number, z: number, width: number) {
+  const gate = new THREE.Group();
+  const beam = box(width, .42, .5, darkWood);
+  const left = box(.42, 4.2, .5, stone);
+  const right = box(.42, 4.2, .5, stone);
+  beam.position.y = 4;
+  left.position.set(-width / 2 + .2, 2.1, 0);
+  right.position.set(width / 2 - .2, 2.1, 0);
+  gate.add(beam, left, right);
+  gate.position.set(x, 0, z);
+  scene.add(gate);
+}
+
+function addLongButtresses(scene: THREE.Scene) {
+  [9.5, 11.6, 13.7, 15.3].forEach((z) => {
+    const pillar = box(.4, 3.5, .75, stone);
+    pillar.position.set(8, 1.75, z);
+    scene.add(pillar);
+  });
 }
 
 export function addHelenaProps(scene: THREE.Scene) {
   addMonument(scene);
-  addPlanter(scene, 17.6, 14.1);
-  addPlanter(scene, 30.4, 14.1);
-  addPlanter(scene, 6.9, 23.5);
-  addPlanter(scene, 41.1, 23.5);
-  addBalcony(scene, 11.9, 10.3);
-  addBalcony(scene, 36.1, 10.3);
+  addBalcony(scene, 12.2, 8.7);
+  addBalcony(scene, 31.9, 8.7);
   addUpperTunnel(scene);
+  addSpawnGate(scene, 24.5, 5, 8);
+  addSpawnGate(scene, 25.25, 23.75, 6.6);
+  addLongButtresses(scene);
 }

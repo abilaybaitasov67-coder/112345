@@ -7,8 +7,8 @@ function createSky() {
     depthWrite: false,
     uniforms: {
       topColor: { value: new THREE.Color(0x54788b) },
-      horizonColor: { value: new THREE.Color(0x9eafb3) },
-      bottomColor: { value: new THREE.Color(0x59666b) },
+      horizonColor: { value: new THREE.Color(0xe0bf83) },
+      bottomColor: { value: new THREE.Color(0x9b7655) },
     },
     vertexShader: `
       varying vec3 worldPosition;
@@ -48,7 +48,7 @@ function createDust() {
   return new THREE.Points(
     geometry,
     new THREE.PointsMaterial({
-      color: 0xd5e2e4,
+      color: 0xf0dab0,
       size: .025,
       transparent: true,
       opacity: .32,
@@ -59,9 +59,9 @@ function createDust() {
 
 export function addShooterAtmosphere(scene: THREE.Scene) {
   scene.add(createSky(), createDust());
-  scene.add(new THREE.HemisphereLight(0xcbe3ee, 0x455056, 1.8));
+  scene.add(new THREE.HemisphereLight(0xd9ebf0, 0x70533c, 1.8));
 
-  const sun = new THREE.DirectionalLight(0xe5f0f2, 3.2);
+  const sun = new THREE.DirectionalLight(0xffdc9c, 3.2);
   sun.position.set(7, 14, -5);
   sun.target.position.set(24, 0, 14);
   sun.castShadow = true;
