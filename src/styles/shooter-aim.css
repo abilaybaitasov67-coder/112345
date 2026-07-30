@@ -1,4 +1,5 @@
 .shooter-crosshair {
+  --spread: 0px;
   position: absolute;
   z-index: 2;
   top: 50%;
@@ -8,6 +9,11 @@
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+.shooter-crosshair span { transition: transform 45ms linear; }
+.shooter-crosshair span:nth-child(1) { transform: translateY(calc(-1 * var(--spread))); }
+.shooter-crosshair span:nth-child(2) { transform: translateY(var(--spread)); }
+.shooter-crosshair span:nth-child(3) { transform: translateX(calc(-1 * var(--spread))); }
+.shooter-crosshair span:nth-child(4) { transform: translateX(var(--spread)); }
 .shooter-crosshair span, .shooter-crosshair i {
   position: absolute;
   display: block;

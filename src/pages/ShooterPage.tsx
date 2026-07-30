@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react';
 import { Link } from 'wouter';
 import { ShooterCanvas } from '../components/ShooterCanvas';
 import { ShooterControls } from '../components/ShooterControls';
@@ -64,7 +65,11 @@ export function ShooterPage() {
             <span className="shooter-scope__vertical" />
           </div>
         ) : (
-          <div className="shooter-crosshair" aria-hidden="true">
+          <div
+            className="shooter-crosshair"
+            style={{ '--spread': `${game.spread}px` } as CSSProperties}
+            aria-hidden="true"
+          >
             <span /><span /><span /><span /><i />
           </div>
         )}

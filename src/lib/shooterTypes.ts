@@ -49,6 +49,8 @@ export interface ShooterWorld {
   player: ShooterUnit;
   angle: number;
   pitch: number;
+  recoil: number;
+  moving: boolean;
   money: number;
   weapon: WeaponId | null;
   inventory: WeaponId[];

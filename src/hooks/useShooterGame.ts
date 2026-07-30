@@ -27,6 +27,7 @@ export interface ShooterSnapshot {
   weapon: WeaponId | null;
   inventory: WeaponId[];
   aiming: boolean;
+  spread: number;
   bomb: string;
 }
 
@@ -45,6 +46,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     weapon: world.weapon,
     inventory: [...world.inventory],
     aiming: world.aiming,
+    spread: Math.min(16, world.recoil * 90 + (world.moving ? 5 : 0)),
     bomb: world.bomb.defuser
       ? `ДЕФЬЮЗ ${Math.ceil(world.bomb.defuseTimer / 1000)}`
       : world.bomb.planted
