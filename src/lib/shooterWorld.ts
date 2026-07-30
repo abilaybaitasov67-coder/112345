@@ -5,6 +5,15 @@ export const SHOOTER_HEIGHT = 560;
 export const SHOOTER_WORLD_WIDTH = 1440;
 export const SHOOTER_WORLD_HEIGHT = 840;
 
+export const pvpSpawnPoints = [
+  { x: 720, y: 765, angle: -Math.PI / 2 },
+  { x: 150, y: 720, angle: -.45 },
+  { x: 1290, y: 720, angle: -Math.PI + .45 },
+  { x: 180, y: 150, angle: .45 },
+  { x: 1260, y: 150, angle: Math.PI - .45 },
+  { x: 720, y: 80, angle: Math.PI / 2 },
+];
+
 export function createShooterWorld(): ShooterWorld {
   return {
     player: { x: 720, y: 765, health: 100, cooldown: 0 },

@@ -3,6 +3,7 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { RemoteShooter, ShooterWorld } from '../lib/shooterTypes';
 import { weaponInfo } from '../lib/shooterWeapons';
+import { pvpSpawnPoints } from '../lib/shooterWorld';
 
 interface PlayerState {
   id: string;
@@ -28,6 +29,12 @@ function createPlayerId() {
 
 const playerId = createPlayerId();
 const playerName = `Игрок ${playerId.slice(0, 4).toUpperCase()}`;
+
+function playerSpawn() {
+  const hash = [...playerId].reduce((total, character) =>
+    total + character.charCodeAt(0), 0);
+  return pvpSpawnPoints[hash % pvpSpawnPoints.length];
+}
 
 export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) {
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -62,6 +69,10 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     botsRef.current = worldRef.current.enemies;
     worldRef.current.enemies = [];
     worldRef.current.pvpMode = true;
+    const spawn = playerSpawn();
+    worldRef.current.player.x = spawn.x;
+    worldRef.current.player.y = spawn.y;
+    worldRef.current.angle = spawn.angle;
     setError('');
     setRoom(code);
     setStatus('connecting');
