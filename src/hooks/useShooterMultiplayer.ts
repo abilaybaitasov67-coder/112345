@@ -3,42 +3,20 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { RemoteShooter, ShooterWorld } from '../lib/shooterTypes';
 import { weaponInfo } from '../lib/shooterWeapons';
-import { pvpSpawnPoints } from '../lib/shooterWorld';
-
-interface PlayerState {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-  angle: number;
-  health: number;
-  weapon?: RemoteShooter['weapon'];
-}
-
-interface DamageEvent {
-  targetId: string;
-  damage: number;
-  attacker: string;
-}
-
-function createPlayerId() {
-  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  const random = Math.random().toString(36).slice(2);
-  return `${Date.now().toString(36)}-${random}`;
-}
-
-const playerId = createPlayerId();
-const playerName = `Игрок ${playerId.slice(0, 4).toUpperCase()}`;
-
-function playerSpawn() {
-  const hash = [...playerId].reduce((total, character) =>
-    total + character.charCodeAt(0), 0);
-  return pvpSpawnPoints[hash % pvpSpawnPoints.length];
-}
+import {
+  findVisiblePvpTarget,
+  getPvpSpawn,
+  placePvpPlayer,
+  pvpPlayerId,
+  pvpPlayerName,
+  PvpDamageEvent,
+  PvpPlayerState,
+} from '../lib/shooterPvp';
 
 export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) {
   const channelRef = useRef<RealtimeChannel | null>(null);
   const botsRef = useRef(worldRef.current.enemies);
+  const protectedUntilRef = useRef(0);
   const [room, setRoom] = useState('');
   const [status, setStatus] = useState<'offline' | 'connecting' | 'online'>('offline');
   const [playerCount, setPlayerCount] = useState(0);
@@ -47,6 +25,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
   const leave = useCallback(() => {
     if (channelRef.current) void supabase.removeChannel(channelRef.current);
     channelRef.current = null;
+    protectedUntilRef.current = 0;
     worldRef.current.remotePlayers = [];
     worldRef.current.pvpMode = false;
     worldRef.current.enemies = botsRef.current;
@@ -69,18 +48,31 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     botsRef.current = worldRef.current.enemies;
     worldRef.current.enemies = [];
     worldRef.current.pvpMode = true;
-    const spawn = playerSpawn();
+    const spawn = getPvpSpawn(pvpPlayerId);
     worldRef.current.player.x = spawn.x;
     worldRef.current.player.y = spawn.y;
+    worldRef.current.player.health = 100;
     worldRef.current.angle = spawn.angle;
+    worldRef.current.message = 'Защита спавна действует 4 секунды.';
+    protectedUntilRef.current = Date.now() + 4000;
     setError('');
     setRoom(code);
     setStatus('connecting');
-    const channel = supabase.channel(`shooter-pvp:${code}`);
+    const channel = supabase.channel(`shooter-pvp:${code}`, {
+      config: { presence: { key: pvpPlayerId } },
+    });
+    const syncSpawn = () => {
+      const players = Object.keys(channel.presenceState()).sort();
+      const spawnIndex = players.indexOf(pvpPlayerId);
+      if (spawnIndex < 0) return;
+      placePvpPlayer(worldRef.current, spawnIndex);
+      protectedUntilRef.current = Date.now() + 4000;
+    };
     channel
+      .on('presence', { event: 'sync' }, syncSpawn)
       .on('broadcast', { event: 'state' }, ({ payload }) => {
-        const player = payload as PlayerState;
-        if (player.id === playerId) return;
+        const player = payload as PvpPlayerState;
+        if (player.id === pvpPlayerId) return;
         const remote: RemoteShooter = { ...player, cooldown: 0, lastSeen: Date.now() };
         const others = worldRef.current.remotePlayers;
         const index = others.findIndex((item) => item.id === player.id);
@@ -89,14 +81,21 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         setPlayerCount(others.length);
       })
       .on('broadcast', { event: 'damage' }, ({ payload }) => {
-        const hit = payload as DamageEvent;
-        if (hit.targetId !== playerId) return;
+        const hit = payload as PvpDamageEvent;
+        if (hit.targetId !== pvpPlayerId) return;
         const world = worldRef.current;
+        if (Date.now() < protectedUntilRef.current) {
+          world.message = 'Выстрел заблокирован защитой спавна.';
+          return;
+        }
         world.player.health = Math.max(0, world.player.health - hit.damage);
         world.message = `${hit.attacker} попал в тебя: −${hit.damage} HP`;
       })
       .subscribe((nextStatus) => {
-        if (nextStatus === 'SUBSCRIBED') setStatus('online');
+        if (nextStatus === 'SUBSCRIBED') {
+          setStatus('online');
+          void channel.track({ id: pvpPlayerId, name: pvpPlayerName });
+        }
         if (nextStatus === 'CHANNEL_ERROR' || nextStatus === 'TIMED_OUT') {
           setError('Не удалось подключиться к комнате.');
           setStatus('offline');
@@ -109,28 +108,16 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     const channel = channelRef.current;
     const world = worldRef.current;
     if (!channel || status !== 'online' || !world.weapon) return;
-    const maxDistance = world.weapon === 'knife' ? 65 : 900;
-    const target = world.remotePlayers
-      .map((player) => {
-        const dx = player.x - world.player.x;
-        const dy = player.y - world.player.y;
-        const distance = Math.hypot(dx, dy);
-        const angle = Math.atan2(dy, dx) - world.angle;
-        const difference = Math.abs(Math.atan2(Math.sin(angle), Math.cos(angle)));
-        return { player, distance, difference };
-      })
-      .filter(({ distance, difference }) =>
-        distance <= maxDistance && difference < Math.max(.04, 18 / distance))
-      .sort((a, b) => a.difference - b.difference)[0];
+    const target = findVisiblePvpTarget(world);
     if (!target) return;
     void channel.send({
       type: 'broadcast',
       event: 'damage',
       payload: {
-        targetId: target.player.id,
+        targetId: target.id,
         damage: weaponInfo[world.weapon].damage,
-        attacker: playerName,
-      } satisfies DamageEvent,
+        attacker: pvpPlayerName,
+      } satisfies PvpDamageEvent,
     });
   }, [status, worldRef]);
 
@@ -140,9 +127,9 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
       const channel = channelRef.current;
       const world = worldRef.current;
       if (!channel) return;
-      const payload: PlayerState = {
-        id: playerId,
-        name: playerName,
+      const payload: PvpPlayerState = {
+        id: pvpPlayerId,
+        name: pvpPlayerName,
         x: world.player.x,
         y: world.player.y,
         angle: world.angle,

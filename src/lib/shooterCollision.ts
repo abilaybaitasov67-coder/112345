@@ -37,3 +37,37 @@ export function moveShooterPoint(
   if (!isShooterPointBlocked(nextY, covers)) point.y = nextY.y;
   return Math.hypot(point.x - startX, point.y - startY);
 }
+
+function segmentHitsCover(
+  from: ShooterPoint,
+  to: ShooterPoint,
+  cover: ShooterCover,
+) {
+  const padding = SHOOTER_UNIT_RADIUS;
+  const axes = [
+    [from.x, to.x - from.x, cover.x - padding, cover.x + cover.width + padding],
+    [from.y, to.y - from.y, cover.y - padding, cover.y + cover.height + padding],
+  ];
+  let near = 0;
+  let far = 1;
+  for (const [origin, delta, minimum, maximum] of axes) {
+    if (Math.abs(delta) < .001) {
+      if (origin < minimum || origin > maximum) return false;
+      continue;
+    }
+    const first = (minimum - origin) / delta;
+    const second = (maximum - origin) / delta;
+    near = Math.max(near, Math.min(first, second));
+    far = Math.min(far, Math.max(first, second));
+    if (near > far) return false;
+  }
+  return far > .001 && near < .999;
+}
+
+export function hasShooterLineOfSight(
+  from: ShooterPoint,
+  to: ShooterPoint,
+  covers: ShooterCover[],
+) {
+  return !covers.some((cover) => segmentHitsCover(from, to, cover));
+}

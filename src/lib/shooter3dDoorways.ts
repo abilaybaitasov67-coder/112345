@@ -17,36 +17,59 @@ function box(width: number, height: number, depth: number, material: THREE.Mater
   return mesh;
 }
 
-function createLeaf(horizontal: boolean, side: number) {
-  const leaf = new THREE.Group();
-  const offset = side * .45;
-  const panel = box(
-    horizontal ? .9 : .12,
-    2.35,
-    horizontal ? .12 : .9,
-    dustWoodMaterial,
-  );
-  if (horizontal) panel.position.x = offset;
-  else panel.position.z = offset;
-  leaf.add(panel);
-  [.68, 1.62].forEach((y) => {
-    const strap = box(
-      horizontal ? .82 : .035,
-      .09,
-      horizontal ? .035 : .82,
-      iron,
-    );
-    strap.position.set(
-      horizontal ? offset : .078,
-      y - 1.175,
-      horizontal ? .078 : offset,
-    );
-    leaf.add(strap);
+function createGateLeaf(width: number, side: number) {
+  const gate = new THREE.Group();
+  const offset = side * width / 2;
+  const plankWidth = width / 5;
+  for (let index = 0; index < 5; index += 1) {
+    const plank = box(plankWidth - .025, 2.5, .14, dustWoodMaterial);
+    plank.position.x = offset - width / 2 + plankWidth * (index + .5);
+    gate.add(plank);
+  }
+  [-.68, .58].forEach((y) => {
+    const strap = box(width * .88, .09, .18, iron);
+    strap.position.set(offset, y, .025);
+    gate.add(strap);
   });
-  return leaf;
+  const brace = box(width * .72, .08, .18, iron);
+  brace.position.set(offset, -.05, .03);
+  brace.rotation.z = side * .62;
+  gate.add(brace);
+  const handle = new THREE.Mesh(
+    new THREE.TorusGeometry(.1, .024, 6, 14),
+    iron,
+  );
+  handle.position.set(offset - side * width * .28, .04, .105);
+  gate.add(handle);
+  return gate;
 }
 
-function addHorizontalDoorway(
+function addArch(
+  scene: THREE.Scene,
+  x: number,
+  z: number,
+  radius: number,
+  vertical = false,
+) {
+  const arch = new THREE.Mesh(
+    new THREE.TorusGeometry(radius, .18, 7, 30, Math.PI),
+    dustStoneMaterial,
+  );
+  arch.position.set(x, 2.48, z);
+  if (vertical) arch.rotation.y = -Math.PI / 2;
+  arch.castShadow = true;
+  arch.receiveShadow = true;
+  const keystone = box(
+    vertical ? .62 : .3,
+    .36,
+    vertical ? .3 : .62,
+    dustStoneMaterial,
+  );
+  keystone.position.set(x, 2.55 + radius, z);
+  scene.add(arch, keystone);
+}
+
+function addHorizontalGate(
   scene: THREE.Scene,
   x: number,
   z: number,
@@ -54,9 +77,7 @@ function addHorizontalDoorway(
   clearWidth: number,
 ) {
   const jambWidth = (outerWidth - clearWidth) / 2;
-  const lintel = box(outerWidth, .5, .56, dustStoneMaterial);
-  lintel.position.set(x, 2.78, z);
-  scene.add(lintel);
+  addArch(scene, x, z, clearWidth / 2);
   [-1, 1].forEach((side) => {
     const jamb = box(jambWidth, 2.7, .56, dustStoneMaterial);
     jamb.position.set(
@@ -64,36 +85,33 @@ function addHorizontalDoorway(
       1.35,
       z,
     );
-    scene.add(jamb);
-    const leaf = createLeaf(true, side);
-    leaf.position.set(x + side * clearWidth / 2, 1.175, z);
-    leaf.rotation.y = side * .42;
-    scene.add(leaf);
+    const leaf = createGateLeaf(clearWidth / 2 - .04, side);
+    leaf.position.set(x + side * clearWidth / 2, 1.25, z);
+    leaf.rotation.y = side * .3;
+    scene.add(jamb, leaf);
   });
 }
 
-function addVerticalDoorway(scene: THREE.Scene) {
+function addVerticalGate(scene: THREE.Scene) {
   const x = 17.45;
   const z = 8.875;
   const clearDepth = 1.75;
   const outerDepth = 2.55;
   const jambDepth = (outerDepth - clearDepth) / 2;
-  const lintel = box(.56, .5, outerDepth, dustStoneMaterial);
-  lintel.position.set(x, 2.78, z);
-  scene.add(lintel);
+  addArch(scene, x, z, clearDepth / 2, true);
   [-1, 1].forEach((side) => {
     const jamb = box(.56, 2.7, jambDepth, dustStoneMaterial);
     jamb.position.set(x, 1.35, z + side * (clearDepth / 2 + jambDepth / 2));
-    scene.add(jamb);
-    const leaf = createLeaf(false, side);
-    leaf.position.set(x, 1.175, z + side * clearDepth / 2);
-    scene.add(leaf);
+    const leaf = createGateLeaf(clearDepth / 2 - .04, side);
+    leaf.position.set(x, 1.25, z + side * clearDepth / 2);
+    leaf.rotation.y = -Math.PI / 2;
+    scene.add(jamb, leaf);
   });
 }
 
 export function addMapDoorways(scene: THREE.Scene) {
-  addHorizontalDoorway(scene, 9.125, 10.45, 3.05, 2.25);
-  addVerticalDoorway(scene);
-  addHorizontalDoorway(scene, 24.25, 12.7, 2.8, 2);
-  addHorizontalDoorway(scene, 40, 32.2, 2.8, 2);
+  addHorizontalGate(scene, 9.125, 10.45, 3.05, 2.25);
+  addVerticalGate(scene);
+  addHorizontalGate(scene, 24.25, 12.7, 2.8, 2);
+  addHorizontalGate(scene, 40, 32.2, 2.8, 2);
 }

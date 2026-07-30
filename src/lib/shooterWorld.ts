@@ -13,10 +13,10 @@ export const shooterExitPoint = { x: 1660, y: 160 };
 
 export const pvpSpawnPoints = [
   shooterTeamSpawns.terrorists,
-  { x: 880, y: 1500, angle: -Math.PI / 2 },
-  { x: 1040, y: 1500, angle: -Math.PI / 2 },
   shooterTeamSpawns.counter,
+  { x: 880, y: 1500, angle: -Math.PI / 2 },
   { x: 880, y: 360, angle: Math.PI / 2 },
+  { x: 1040, y: 1500, angle: -Math.PI / 2 },
   { x: 1040, y: 360, angle: Math.PI / 2 },
 ];
 
