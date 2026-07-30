@@ -4,7 +4,9 @@ import {
   dustTrimMaterial,
   dustWoodMaterial,
 } from './shooter3dMaterials';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
+const SCALE = .025;
 const carBody = new THREE.MeshStandardMaterial({
   color: 0x64766e,
   roughness: .88,
@@ -56,7 +58,7 @@ function addACrates(scene: THREE.Scene) {
   ] as const;
   spots.forEach(([x, z, y, rotation]) => {
     const crate = createCrate();
-    crate.position.set(x, y, z);
+    crate.position.set(x, y + getShooterFloorHeight(x / SCALE, z / SCALE), z);
     crate.rotation.y = rotation;
     scene.add(crate);
   });
@@ -107,7 +109,7 @@ function addBarrel(scene: THREE.Scene, x: number, z: number) {
     ring.position.y = .36 + y;
     barrel.add(ring);
   });
-  barrel.position.set(x, 0, z);
+  barrel.position.set(x, getShooterFloorHeight(x / SCALE, z / SCALE), z);
   scene.add(barrel);
 }
 

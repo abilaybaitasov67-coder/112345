@@ -6,7 +6,6 @@ import {
   dustWoodMaterial,
 } from './shooter3dMaterials';
 
-const metal = new THREE.MeshStandardMaterial({ color: 0xb58a4b, roughness: .38 });
 const lampMaterial = new THREE.MeshStandardMaterial({
   color: 0xffd69a,
   emissive: 0xff9d45,
@@ -35,80 +34,75 @@ function addMidBoxes(scene: THREE.Scene) {
   scene.add(stack);
 }
 
-function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
-  const balcony = new THREE.Group();
-  const platform = box(2.4, .18, .9, dustStoneMaterial);
-  platform.position.y = 2.1;
-  balcony.add(platform);
-  for (let offset = -1; offset <= 1; offset += .4) {
-    const rail = box(.06, .72, .06, metal);
-    rail.position.set(offset, 2.48, -.36);
-    balcony.add(rail);
-  }
-  const topRail = box(2.2, .07, .07, metal);
-  topRail.position.set(0, 2.82, -.36);
-  balcony.add(topRail);
-  balcony.position.set(x, 0, z);
-  balcony.rotation.y = rotation;
-  scene.add(balcony);
+function addTunnelLamp(scene: THREE.Scene, x: number, z: number) {
+  const lamp = box(.42, .09, .22, lampMaterial);
+  lamp.position.set(x, 3.18, z);
+  scene.add(lamp);
+  const light = new THREE.PointLight(0xffb65f, .5, 3.8, 2);
+  light.position.set(x, 2.95, z);
+  scene.add(light);
 }
 
-function addUpperTunnel(scene: THREE.Scene) {
-  const roof = box(13.5, .3, 11.8, dustRoofMaterial);
-  roof.position.set(6.875, 3.45, 21.35);
+function addTunnelSection(
+  scene: THREE.Scene,
+  x: number,
+  z: number,
+  width: number,
+  depth: number,
+  beamPositions: readonly number[],
+  lampPositions: readonly number[],
+) {
+  const roof = box(width, .3, depth, dustRoofMaterial);
+  roof.position.set(x, 3.45, z);
   scene.add(roof);
-  for (let z = 15.8; z <= 26.9; z += 2.25) {
-    const beam = box(13.6, .28, .22, dustStoneMaterial);
-    beam.position.set(6.875, 3.25, z);
+  beamPositions.forEach((beamZ) => {
+    const beam = box(width + .08, .28, .22, dustStoneMaterial);
+    beam.position.set(x, 3.25, beamZ);
     scene.add(beam);
-    [.18, 13.57].forEach((x) => {
+    [x - width / 2 + .08, x + width / 2 - .08].forEach((supportX) => {
       const support = box(.28, 3.25, .28, dustStoneMaterial);
-      support.position.set(x, 1.625, z);
+      support.position.set(supportX, 1.625, beamZ);
       scene.add(support);
     });
-  }
-  [18, 22.5, 26].forEach((z) => {
-    const lamp = box(.42, .09, .22, lampMaterial);
-    lamp.position.set(6.8, 3.18, z);
-    scene.add(lamp);
-    const light = new THREE.PointLight(0xffb65f, .55, 4.2, 2);
-    light.position.set(6.8, 2.95, z);
-    scene.add(light);
   });
-  const upperRoof = box(3.7, .28, 3.5, dustRoofMaterial);
-  upperRoof.position.set(8.9, 3.4, 13.2);
-  scene.add(upperRoof);
+  lampPositions.forEach((lampZ) => addTunnelLamp(scene, x, lampZ));
 }
 
-function addSpawnGate(scene: THREE.Scene, z: number) {
-  const gate = new THREE.Group();
-  const beam = box(8.18, .42, .5, dustRoofMaterial);
-  const left = box(.28, 4.2, .35, dustStoneMaterial);
-  const right = box(.28, 4.2, .35, dustStoneMaterial);
-  beam.position.y = 4;
-  left.position.set(20.3, 2.1, 0);
-  right.position.set(28.2, 2.1, 0);
-  gate.add(beam, left, right);
-  beam.position.x = 24.25;
-  gate.position.z = z;
-  scene.add(gate);
+function addTunnelNetwork(scene: THREE.Scene) {
+  addTunnelSection(
+    scene,
+    9.125,
+    15.575,
+    9.1,
+    9.6,
+    [11.4, 14.1, 16.8, 19.4],
+    [13, 17.8],
+  );
+  addTunnelSection(
+    scene,
+    12,
+    26.75,
+    14.7,
+    5.2,
+    [24.5, 26.75, 29],
+    [25.5, 28],
+  );
+  const connector = box(5.5, .28, 1.5, dustRoofMaterial);
+  connector.position.set(13.375, 3.42, 22.25);
+  scene.add(connector);
+  addTunnelLamp(scene, 13.375, 22.25);
 }
 
 function addLongButtresses(scene: THREE.Scene) {
   [13, 17, 21, 25, 29].forEach((z) => {
-    const pillar = box(.4, 3.5, .75, dustStoneMaterial);
-    pillar.scale.x = .8;
-    pillar.position.set(34.28, 1.75, z);
+    const pillar = box(.32, 3.5, .75, dustStoneMaterial);
+    pillar.position.set(44.82, 1.75, z);
     scene.add(pillar);
   });
 }
 
 export function addRouteProps(scene: THREE.Scene) {
   addMidBoxes(scene);
-  addBalcony(scene, 17.1, 8.7);
-  addBalcony(scene, 31.25, 11.2);
-  addUpperTunnel(scene);
-  addSpawnGate(scene, 7.3);
-  addSpawnGate(scene, 27.5);
+  addTunnelNetwork(scene);
   addLongButtresses(scene);
 }

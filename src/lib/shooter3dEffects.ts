@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { ShooterWorld } from './shooterTypes';
 import { createWeaponModel } from './shooter3dModels';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
 export function syncBulletMeshes(
   scene: THREE.Scene,
@@ -20,7 +21,11 @@ export function syncBulletMeshes(
     const bullet = world.bullets[index];
     trail.visible = Boolean(bullet);
     if (!bullet) return;
-    trail.position.set(bullet.x * scale, 1.45, bullet.y * scale);
+    trail.position.set(
+      bullet.x * scale,
+      1.45 + getShooterFloorHeight(bullet.x, bullet.y),
+      bullet.y * scale,
+    );
     trail.rotation.y = Math.atan2(bullet.dx, bullet.dy);
     const color = bullet.enemy ? 0xff4055 : 0xffdf68;
     (trail.material as THREE.MeshBasicMaterial).color.setHex(color);
@@ -41,7 +46,11 @@ export function syncDroppedWeapons(
     const drop = world.droppedWeapons[models.length];
     const model = createWeaponModel(drop.weapon, false);
     model.scale.setScalar(.45);
-    model.position.set(drop.x * scale, .12, drop.y * scale);
+    model.position.set(
+      drop.x * scale,
+      .12 + getShooterFloorHeight(drop.x, drop.y),
+      drop.y * scale,
+    );
     model.rotation.z = Math.PI / 2;
     model.rotation.y = models.length * .7;
     models.push(model);

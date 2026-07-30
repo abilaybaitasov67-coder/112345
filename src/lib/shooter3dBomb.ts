@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { ShooterWorld } from './shooterTypes';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
 export function createBombModel() {
   const bomb = new THREE.Group();
@@ -33,7 +34,11 @@ export function syncBombModel(
   const { bomb } = world;
   bombModel.visible = bomb.planted && !bomb.exploded;
   if (!bombModel.visible) return;
-  bombModel.position.set(bomb.x * scale, .15, bomb.y * scale);
+  bombModel.position.set(
+    bomb.x * scale,
+    .15 + getShooterFloorHeight(bomb.x, bomb.y),
+    bomb.y * scale,
+  );
   bombModel.rotation.y = Math.PI / 5;
   const pulse = .9 + Math.sin(time * 12) * .1;
   bombModel.scale.setScalar(pulse);

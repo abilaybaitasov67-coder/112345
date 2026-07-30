@@ -1,12 +1,13 @@
 import * as THREE from 'three';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 import {
   dustGroundMaterial,
   dustRoofMaterial,
   dustStoneMaterial,
 } from './shooter3dMaterials';
 
+const SCALE = .025;
 const dark = new THREE.MeshStandardMaterial({ color: 0x302b27, roughness: 1 });
-const siteA = new THREE.MeshStandardMaterial({ color: 0xb9573e, roughness: .86 });
 const ctFloor = new THREE.MeshStandardMaterial({ color: 0x547a82, roughness: 1 });
 const iron = new THREE.MeshStandardMaterial({
   color: 0x3b3731,
@@ -21,7 +22,7 @@ function box(width: number, height: number, depth: number, material: THREE.Mater
   return mesh;
 }
 
-function addDoorFrame(
+function addHorizontalDoor(
   scene: THREE.Scene,
   x: number,
   z: number,
@@ -51,24 +52,29 @@ function addDoorFrame(
   });
 }
 
-function addLongPit(scene: THREE.Scene) {
-  const floor = box(7.6, .04, 1.9, dark);
-  floor.position.set(38.5, .02, 32.72);
-  scene.add(floor);
-}
-
-function addTRoof(scene: THREE.Scene) {
-  const roof = box(3, .18, 2.1, dustRoofMaterial);
-  roof.position.set(24, 3.15, 35.5);
-  scene.add(roof);
-}
-
-function addShortRamp(scene: THREE.Scene) {
-  for (let index = 0; index < 6; index += 1) {
-    const strip = box(.9, .05, 3.35, dustStoneMaterial);
-    strip.position.set(28.5 + index * 1.05, .025, 9.375);
-    scene.add(strip);
-  }
+function addVerticalDoor(scene: THREE.Scene) {
+  const x = 17.45;
+  const z = 8.875;
+  const lintel = box(.48, .46, 2.75, dustStoneMaterial);
+  lintel.position.set(x, 2.92, z);
+  scene.add(lintel);
+  [-1, 1].forEach((side) => {
+    const jamb = box(.48, 2.7, .24, dustStoneMaterial);
+    jamb.position.set(x, 1.35, z + side * 1.255);
+    scene.add(jamb);
+  });
+  [7.75, 10].forEach((leafZ) => {
+    [-1, 1].forEach((face) => {
+      [.72, 1.72].forEach((y) => {
+        const strap = box(.035, .1, .41, iron);
+        strap.position.set(x + face * .22, y, leafZ);
+        scene.add(strap);
+      });
+      const spine = box(.035, 2.2, .1, iron);
+      spine.position.set(x + face * .22, 1.35, leafZ);
+      scene.add(spine);
+    });
+  });
 }
 
 function addGroundPatch(
@@ -80,19 +86,28 @@ function addGroundPatch(
   material: THREE.Material,
 ) {
   const patch = box(width, .025, depth, material);
-  patch.position.set(x, .012, z);
+  patch.position.set(
+    x,
+    getShooterFloorHeight(x / SCALE, z / SCALE) + .012,
+    z,
+  );
   scene.add(patch);
 }
 
+function addTRoof(scene: THREE.Scene) {
+  const roof = box(3, .18, 2.1, dustRoofMaterial);
+  roof.position.set(24, 3.15, 35.5);
+  scene.add(roof);
+}
+
 export function addDustLandmarks(scene: THREE.Scene) {
-  addDoorFrame(scene, 24.25, 12, 8, [21.625, 26.875], 2.75);
-  addDoorFrame(scene, 8.9, 15, 4, [7.575, 10.225], 1.35);
-  addDoorFrame(scene, 38.5, 31.5, 8.2, [35.7875, 41.2125], 2.775);
-  addLongPit(scene);
+  addHorizontalDoor(scene, 9.125, 10.45, 9.25, [6.25, 12], 3.5);
+  addVerticalDoor(scene);
+  addHorizontalDoor(scene, 24.25, 12.7, 7.5, [21.875, 26.625], 2.75);
+  addHorizontalDoor(scene, 40, 32.2, 10, [37, 43], 4);
   addTRoof(scene);
-  addShortRamp(scene);
-  addGroundPatch(scene, 24.75, 38.2, 19, 3.3, dustGroundMaterial);
-  addGroundPatch(scene, 24.25, 8.9, 7, 2.5, ctFloor);
-  addGroundPatch(scene, 38.5, 22.25, 7.6, 17.5, dustGroundMaterial);
-  addGroundPatch(scene, 35.75, 11.625, 2.35, 3.05, siteA);
+  addGroundPatch(scene, 25, 38.19, 19, 3.125, dustGroundMaterial);
+  addGroundPatch(scene, 24.25, 9.25, 6.75, 5.75, ctFloor);
+  addGroundPatch(scene, 37.5, 30, 4.25, 3.25, dark);
+  addGroundPatch(scene, 42.5, 21, 4.25, 21.25, dustGroundMaterial);
 }

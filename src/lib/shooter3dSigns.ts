@@ -9,9 +9,9 @@ interface MapSign {
 }
 
 const signs: MapSign[] = [
-  { label: '← B', x: 18.2, y: 2, z: 27.55, color: '#4f8584' },
-  { label: 'A →', x: 31.5, y: 2, z: 30.05, color: '#a8513d' },
-  { label: '← B', x: 18, y: 2, z: 7.55, color: '#4f8584' },
+  { label: '← B', x: 19.9, y: 2, z: 34.05, color: '#4f8584' },
+  { label: 'A →', x: 31.5, y: 2, z: 32.05, color: '#a8513d' },
+  { label: '← B', x: 17.5, y: 2, z: 7.55, color: '#4f8584' },
   { label: 'A →', x: 30.5, y: 2, z: 7.55, color: '#a8513d' },
 ];
 

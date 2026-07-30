@@ -6,6 +6,7 @@ import {
   dustTrimMaterial,
   dustWoodMaterial,
 } from './shooter3dMaterials';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
 const SCALE = .025;
 const windowMaterial = new THREE.MeshStandardMaterial({ color: 0x25343a, roughness: .48 });
@@ -75,7 +76,10 @@ function addBlock(scene: THREE.Scene, block: ShooterMapBlock) {
   addFacadeWindows(group, block);
   group.position.set(
     (block.x + block.width / 2) * SCALE,
-    0,
+    getShooterFloorHeight(
+      block.x + block.width / 2,
+      block.y + block.height / 2,
+    ),
     (block.y + block.height / 2) * SCALE,
   );
   scene.add(group);

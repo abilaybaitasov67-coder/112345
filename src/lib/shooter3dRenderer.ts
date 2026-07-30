@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import { ShooterWorld, WeaponId } from './shooterTypes';
 import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
-import { createHumanModel } from './shooter3dHuman';
 import { weaponInfo } from './shooterWeapons';
 import { syncBulletMeshes, syncDroppedWeapons } from './shooter3dEffects';
 import { buildTacticalMap } from './shooter3dMap';
 import { loadBlenderWeapon } from './shooter3dWeaponLoader';
 import { addShooterAtmosphere } from './shooter3dAtmosphere';
 import { createBombModel, syncBombModel } from './shooter3dBomb';
+import { getShooterFloorHeight } from './shooterFloorHeight';
+import { syncEnemyModels, syncRemotePlayerModels } from './shooter3dPlayers';
 
 const SCALE = .025;
 
@@ -48,58 +49,6 @@ export class Shooter3dRenderer {
     this.scene.add(this.camera);
   }
 
-  private syncEnemies(world: ShooterWorld) {
-    while (this.enemies.length > world.enemies.length) {
-      this.scene.remove(this.enemies.pop()!);
-    }
-    while (this.enemies.length < world.enemies.length) {
-      const weapon = world.enemies[this.enemies.length].weapon ?? 'rifle';
-      const model = createHumanModel(false, weapon);
-      model.userData.weapon = weapon;
-      this.enemies.push(model);
-      this.scene.add(model);
-    }
-    this.enemies.forEach((currentModel, index) => {
-      const enemy = world.enemies[index];
-      let model = currentModel;
-      const weapon = enemy.weapon ?? 'rifle';
-      if (model.userData.weapon !== weapon) {
-        this.scene.remove(model);
-        model = createHumanModel(false, weapon);
-        model.userData.weapon = weapon;
-        this.enemies[index] = model;
-        this.scene.add(model);
-      }
-      model.position.set(enemy.x * SCALE, 0, enemy.y * SCALE);
-      model.lookAt(world.player.x * SCALE, 1.2, world.player.y * SCALE);
-      model.rotateY(Math.PI);
-    });
-  }
-
-  private syncRemotePlayers(world: ShooterWorld) {
-    const activeIds = new Set(world.remotePlayers.map((player) => player.id));
-    this.remotePlayers.forEach((model, id) => {
-      if (!activeIds.has(id)) {
-        this.scene.remove(model);
-        this.remotePlayers.delete(id);
-      }
-    });
-    world.remotePlayers.forEach((player) => {
-      const weapon = player.weapon ?? 'rifle';
-      let model = this.remotePlayers.get(player.id);
-      if (!model || model.userData.weapon !== weapon) {
-        if (model) this.scene.remove(model);
-        model = createHumanModel(true, weapon);
-        model.userData.weapon = weapon;
-        this.remotePlayers.set(player.id, model);
-        this.scene.add(model);
-      }
-      model.position.set(player.x * SCALE, 0, player.y * SCALE);
-      model.rotation.y = -player.angle + Math.PI / 2;
-      model.visible = player.health > 0;
-    });
-  }
-
   private syncWeapon(world: ShooterWorld) {
     if (this.weaponId === world.weapon) return;
     if (this.weapon) this.camera.remove(this.weapon);
@@ -126,17 +75,22 @@ export class Shooter3dRenderer {
   }
 
   render(world: ShooterWorld) {
-    this.camera.position.set(world.player.x * SCALE, 1.7, world.player.y * SCALE);
+    const floorHeight = getShooterFloorHeight(world.player.x, world.player.y);
+    this.camera.position.set(
+      world.player.x * SCALE,
+      1.7 + floorHeight,
+      world.player.y * SCALE,
+    );
     const pitch = world.pitch / 430;
     this.camera.lookAt(
       this.camera.position.x + Math.cos(world.angle),
-      1.7 + pitch,
+      1.7 + floorHeight + pitch,
       this.camera.position.z + Math.sin(world.angle),
     );
     this.camera.fov = world.aiming ? 24 : 68;
     this.camera.updateProjectionMatrix();
-    this.syncEnemies(world);
-    this.syncRemotePlayers(world);
+    syncEnemyModels(this.scene, this.enemies, world, SCALE);
+    syncRemotePlayerModels(this.scene, this.remotePlayers, world, SCALE);
     this.syncWeapon(world);
     syncBulletMeshes(this.scene, this.bulletMeshes, world, SCALE);
     syncDroppedWeapons(this.scene, this.droppedWeapons, world, SCALE);

@@ -8,6 +8,8 @@ import { addBoundaryWalls, addMapBlocks } from './shooter3dBlocks';
 import { addDustLandmarks } from './shooter3dDustLandmarks';
 import { dustGroundMaterial } from './shooter3dMaterials';
 import { addSiteProps } from './shooter3dSiteProps';
+import { addShooterElevations } from './shooter3dElevations';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
 const SCALE = .025;
 
@@ -29,7 +31,11 @@ function addSiteMarker(scene: THREE.Scene, x: number, z: number, label: string) 
     new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas) }),
   );
   marker.rotation.x = -Math.PI / 2;
-  marker.position.set(x, .012, z);
+  marker.position.set(
+    x,
+    getShooterFloorHeight(x / SCALE, z / SCALE) + .012,
+    z,
+  );
   scene.add(marker);
 }
 
@@ -42,6 +48,7 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   floor.position.set(SHOOTER_WORLD_WIDTH * SCALE / 2, 0, SHOOTER_WORLD_HEIGHT * SCALE / 2);
   floor.receiveShadow = true;
   scene.add(floor);
+  addShooterElevations(scene);
   addBoundaryWalls(
     scene,
     SHOOTER_WORLD_WIDTH * SCALE,
