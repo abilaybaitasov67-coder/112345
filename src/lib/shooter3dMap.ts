@@ -6,6 +6,7 @@ import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
 import { addRouteProps } from './shooter3dRouteProps';
 import { addMapSigns } from './shooter3dSigns';
 import { addBoundaryWalls, addMapBlocks } from './shooter3dBlocks';
+import { addDustLandmarks } from './shooter3dDustLandmarks';
 
 const SCALE = .025;
 const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x9b876a, roughness: 1 });
@@ -85,5 +86,6 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   addBarrels(scene);
   addCrates(scene);
   addRouteProps(scene);
+  addDustLandmarks(scene);
   addMapSigns(scene);
 }

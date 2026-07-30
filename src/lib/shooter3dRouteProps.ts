@@ -43,12 +43,12 @@ function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 function addUpperTunnel(scene: THREE.Scene) {
-  const roof = box(10, .3, 12.2, darkWood);
-  roof.position.set(8.75, 3.45, 21.25);
+  const roof = box(13.5, .3, 11.8, darkWood);
+  roof.position.set(6.875, 3.45, 21.35);
   scene.add(roof);
-  for (let z = 15.3; z <= 27.2; z += 2.35) {
-    const beam = box(10.15, .28, .22, stone);
-    beam.position.set(8.75, 3.25, z);
+  for (let z = 15.8; z <= 26.9; z += 2.25) {
+    const beam = box(13.6, .28, .22, stone);
+    beam.position.set(6.875, 3.25, z);
     scene.add(beam);
   }
   const upperRoof = box(3.7, .28, 3.5, darkWood);
@@ -56,31 +56,25 @@ function addUpperTunnel(scene: THREE.Scene) {
   scene.add(upperRoof);
 }
 
-function addSpawnGate(scene: THREE.Scene, x: number, z: number, width: number) {
+function addSpawnGate(scene: THREE.Scene, z: number) {
   const gate = new THREE.Group();
-  const beam = box(width, .42, .5, darkWood);
-  const left = box(.42, 4.2, .5, stone);
-  const right = box(.42, 4.2, .5, stone);
+  const beam = box(8.18, .42, .5, darkWood);
+  const left = box(.28, 4.2, .35, stone);
+  const right = box(.28, 4.2, .35, stone);
   beam.position.y = 4;
-  left.position.set(-width / 2 + .2, 2.1, 0);
-  right.position.set(width / 2 - .2, 2.1, 0);
+  left.position.set(20.3, 2.1, 0);
+  right.position.set(28.2, 2.1, 0);
   gate.add(beam, left, right);
-  gate.position.set(x, 0, z);
+  beam.position.x = 24.25;
+  gate.position.z = z;
   scene.add(gate);
-}
-
-function addShortSteps(scene: THREE.Scene) {
-  for (let index = 0; index < 6; index += 1) {
-    const step = box(.72, .04, 2.8, stone);
-    step.position.set(28.7 + index * .9, .02, 9.4);
-    scene.add(step);
-  }
 }
 
 function addLongButtresses(scene: THREE.Scene) {
   [13, 17, 21, 25, 29].forEach((z) => {
     const pillar = box(.4, 3.5, .75, stone);
-    pillar.position.set(34.45, 1.75, z);
+    pillar.scale.x = .8;
+    pillar.position.set(34.28, 1.75, z);
     scene.add(pillar);
   });
 }
@@ -90,8 +84,7 @@ export function addRouteProps(scene: THREE.Scene) {
   addBalcony(scene, 17.1, 8.7);
   addBalcony(scene, 31.25, 11.2);
   addUpperTunnel(scene);
-  addSpawnGate(scene, 24.25, 7.5, 8);
-  addSpawnGate(scene, 24.25, 27.5, 8);
-  addShortSteps(scene);
+  addSpawnGate(scene, 7.3);
+  addSpawnGate(scene, 27.5);
   addLongButtresses(scene);
 }

@@ -4,6 +4,7 @@ import { ShooterControls } from '../components/ShooterControls';
 import { WeaponShop } from '../components/WeaponShop';
 import { ShooterInventory } from '../components/ShooterInventory';
 import { ShooterMultiplayer } from '../components/ShooterMultiplayer';
+import { ShooterMinimap } from '../components/ShooterMinimap';
 import { useShooterGame } from '../hooks/useShooterGame';
 import { useShooterMultiplayer } from '../hooks/useShooterMultiplayer';
 import { weaponInfo } from '../lib/shooterWeapons';
@@ -12,6 +13,7 @@ import '../styles/shooter-aim.css';
 import '../styles/shooter-inventory.css';
 import '../styles/shooter-multiplayer.css';
 import '../styles/shooter-mobile.css';
+import '../styles/shooter-minimap.css';
 
 export function ShooterPage() {
   const shooter = useShooterGame();
@@ -46,6 +48,7 @@ export function ShooterPage() {
           onAim={shooter.setAiming}
           onPickup={shooter.pickUpWeapon}
         />
+        <ShooterMinimap worldRef={shooter.worldRef} />
         <ShooterMultiplayer
           room={multiplayer.room}
           status={multiplayer.status}
