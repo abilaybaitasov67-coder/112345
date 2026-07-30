@@ -1,5 +1,5 @@
 import { hasShooterLineOfSight } from './shooterCollision';
-import { RemoteShooter, ShooterWorld } from './shooterTypes';
+import { RemoteShooter, ShooterBomb, ShooterWorld } from './shooterTypes';
 import { pvpSpawnPoints } from './shooterWorld';
 
 function createPlayerId() {
@@ -20,6 +20,7 @@ export interface PvpPlayerState {
   angle: number;
   health: number;
   weapon?: RemoteShooter['weapon'];
+  bomb?: ShooterBomb;
 }
 
 export interface PvpDamageEvent {
@@ -42,6 +43,21 @@ export function placePvpPlayer(world: ShooterWorld, spawnIndex: number) {
   world.angle = spawn.angle;
   world.status = 'playing';
   world.message = 'Защита спавна действует 8 секунд.';
+}
+
+export function syncPvpBomb(world: ShooterWorld, incoming?: ShooterBomb) {
+  if (!incoming || incoming.updatedAt <= world.bomb.updatedAt) return;
+  world.bomb = {
+    ...incoming,
+    defuser: incoming.defuser === 'player' ? 'remote' : incoming.defuser,
+  };
+  if (incoming.defused) {
+    world.status = 'lost';
+    world.message = 'Другой игрок обезвредил бомбу.';
+  } else if (incoming.planted) {
+    world.status = 'playing';
+    world.message = `Другой игрок установил бомбу на точке ${incoming.site}.`;
+  }
 }
 
 export function findVisiblePvpTarget(world: ShooterWorld) {

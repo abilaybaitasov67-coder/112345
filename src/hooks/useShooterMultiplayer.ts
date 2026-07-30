@@ -12,6 +12,7 @@ import {
   PVP_SPAWN_PROTECTION_MS,
   PvpDamageEvent,
   PvpPlayerState,
+  syncPvpBomb,
 } from '../lib/shooterPvp';
 
 export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) {
@@ -72,8 +73,9 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     channel
       .on('presence', { event: 'sync' }, syncSpawn)
       .on('broadcast', { event: 'state' }, ({ payload }) => {
-        const player = payload as PvpPlayerState;
+        const { bomb, ...player } = payload as PvpPlayerState;
         if (player.id === pvpPlayerId) return;
+        syncPvpBomb(worldRef.current, bomb);
         const remote: RemoteShooter = { ...player, cooldown: 0, lastSeen: Date.now() };
         const others = worldRef.current.remotePlayers;
         const index = others.findIndex((item) => item.id === player.id);
@@ -140,6 +142,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         angle: world.angle,
         health: world.player.health,
         weapon: world.weapon ?? undefined,
+        bomb: { ...world.bomb },
       };
       void channel.send({ type: 'broadcast', event: 'state', payload });
       const limit = Date.now() - 2500;

@@ -51,6 +51,7 @@ export function createShooterWorld(): ShooterWorld {
       timer: 0,
       defuseTimer: 0,
       defuser: null,
+      updatedAt: 0,
       planted: false,
       exploded: false,
       defused: false,

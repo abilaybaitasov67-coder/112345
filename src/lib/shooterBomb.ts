@@ -24,6 +24,7 @@ export function tryPlantBomb(world: ShooterWorld) {
     timer: BOMB_TIME,
     defuseTimer: DEFUSE_TIME,
     defuser: null,
+    updatedAt: Date.now(),
     planted: true,
     exploded: false,
     defused: false,
@@ -41,6 +42,7 @@ export function tryStartBombDefuse(world: ShooterWorld) {
   ) return false;
   if (world.bomb.defuser !== 'player') world.bomb.defuseTimer = DEFUSE_TIME;
   world.bomb.defuser = 'player';
+  world.bomb.updatedAt = Date.now();
   world.message = 'Разминирование началось — удерживай E!';
   return true;
 }
@@ -49,17 +51,24 @@ export function stopPlayerBombDefuse(world: ShooterWorld) {
   if (world.bomb.defuser !== 'player' || !world.bomb.planted) return;
   world.bomb.defuser = null;
   world.bomb.defuseTimer = DEFUSE_TIME;
+  world.bomb.updatedAt = Date.now();
   world.message = 'Разминирование отменено.';
 }
 
-function finishDefuse(world: ShooterWorld, defuser: 'player' | 'bot') {
+function finishDefuse(
+  world: ShooterWorld,
+  defuser: 'player' | 'bot' | 'remote',
+) {
   world.bomb.planted = false;
   world.bomb.defused = true;
   world.bomb.defuser = null;
+  if (defuser !== 'remote') world.bomb.updatedAt = Date.now();
   world.status = defuser === 'player' ? 'won' : 'lost';
   world.message = defuser === 'player'
     ? 'Бомба обезврежена. Раунд выигран!'
-    : 'Боты обезвредили бомбу. Раунд проигран.';
+    : defuser === 'bot'
+      ? 'Боты обезвредили бомбу. Раунд проигран.'
+      : 'Другой игрок обезвредил бомбу. Раунд проигран.';
 }
 
 export function updateBomb(world: ShooterWorld, elapsed: number) {
@@ -69,7 +78,7 @@ export function updateBomb(world: ShooterWorld, elapsed: number) {
     enemy.health > 0 && distance(enemy, world.bomb) <= DEFUSE_DISTANCE);
   if (world.bomb.defuser === 'player' && !playerInRange) {
     stopPlayerBombDefuse(world);
-  } else if (world.bomb.defuser !== 'player') {
+  } else if (world.bomb.defuser !== 'player' && world.bomb.defuser !== 'remote') {
     world.bomb.defuser = botInRange ? 'bot' : null;
     if (!botInRange) world.bomb.defuseTimer = DEFUSE_TIME;
   }
@@ -83,6 +92,7 @@ export function updateBomb(world: ShooterWorld, elapsed: number) {
   }
   if (world.bomb.timer > 0) return;
   world.bomb.exploded = true;
+  world.bomb.updatedAt = Date.now();
   world.status = 'won';
   world.message = `Точка ${world.bomb.site} взорвана. Раунд выигран!`;
 }

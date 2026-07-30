@@ -35,7 +35,8 @@ export interface ShooterBomb extends ShooterPoint {
   site: 'A' | 'B' | null;
   timer: number;
   defuseTimer: number;
-  defuser: 'player' | 'bot' | null;
+  defuser: 'player' | 'bot' | 'remote' | null;
+  updatedAt: number;
   planted: boolean;
   exploded: boolean;
   defused: boolean;
