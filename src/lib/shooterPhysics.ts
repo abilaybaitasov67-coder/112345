@@ -4,7 +4,6 @@ import {
   SHOOTER_WORLD_WIDTH,
 } from './shooterWorld';
 import {
-  ShooterBullet,
   ShooterPoint,
   ShooterWorld,
 } from './shooterTypes';
@@ -16,6 +15,13 @@ import {
   moveShooterPoint,
 } from './shooterCollision';
 import { moveEnemyWithNavigation } from './shooterNavigation';
+import {
+  createShooterBullet,
+  distanceToBulletPath,
+  getShotOffset,
+  getTargetSlope,
+  moveShooterBullet,
+} from './shooterBullets';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -23,38 +29,6 @@ function distance(a: ShooterPoint, b: ShooterPoint) {
 
 function movePlayer(world: ShooterWorld, x: number, y: number) {
   moveShooterPoint(world.player, x, y, world.covers);
-}
-
-function createBullet(
-  from: ShooterPoint,
-  to: ShooterPoint,
-  enemy: boolean,
-  speed: number,
-): ShooterBullet {
-  const length = Math.max(1, distance(from, to));
-  return {
-    x: from.x,
-    y: from.y,
-    dx: (to.x - from.x) / length,
-    dy: (to.y - from.y) / length,
-    speed,
-    enemy,
-  };
-}
-
-function distanceToSegment(point: ShooterPoint, start: ShooterPoint, end: ShooterPoint) {
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-  const lengthSquared = dx * dx + dy * dy;
-  const amount = lengthSquared === 0 ? 0 : Math.max(0, Math.min(1,
-    ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared));
-  return distance(point, { x: start.x + dx * amount, y: start.y + dy * amount });
-}
-
-function shotOffset(shot: number, pellets: number, spread: number) {
-  if (pellets <= 1) return 0;
-  const middle = (pellets - 1) / 2;
-  return ((shot - middle) / Math.max(1, middle)) * spread / 2;
 }
 
 export function firePlayer(world: ShooterWorld) {
@@ -74,14 +48,13 @@ export function firePlayer(world: ShooterWorld) {
   const aimScale = world.aiming ? .18 : 1;
   const totalSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {
-    const spread = shotOffset(shot, weapon.pellets, totalSpread);
-    world.bullets.push(createBullet(world.player, {
+    const spread = getShotOffset(shot, weapon.pellets, totalSpread);
+    world.bullets.push(createShooterBullet(world.player, {
       x: world.player.x + Math.cos(world.angle + spread) * 1000,
       y: world.player.y + Math.sin(world.angle + spread) * 1000,
-    }, false, weapon.bulletSpeed));
+    }, false, weapon.bulletSpeed, world.pitch / 430));
   }
   world.recoil = Math.min(.14, world.recoil + weapon.recoil);
-  world.pitch = Math.min(150, world.pitch + weapon.recoil * 520);
   world.player.cooldown = weapon.cooldown;
 }
 
@@ -115,22 +88,26 @@ export function updateShooter(
     const isDefusing = world.bomb.planted && distance(enemy, world.bomb) <= 70;
     if (!isDefusing && enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
       const enemyWeapon = weaponInfo[enemy.weapon ?? 'rifle'];
-      world.bullets.push(createBullet(enemy, world.player, true, enemyWeapon.bulletSpeed));
+      world.bullets.push(createShooterBullet(
+        enemy,
+        world.player,
+        true,
+        enemyWeapon.bulletSpeed,
+        getTargetSlope(enemy, world.player),
+      ));
       enemy.cooldown = 900 + Math.random() * 600;
     }
   });
   updateBomb(world, elapsed);
 
   world.bullets = world.bullets.filter((bullet) => {
-    const start = { x: bullet.x, y: bullet.y };
-    bullet.x += bullet.dx * elapsed * bullet.speed;
-    bullet.y += bullet.dy * elapsed * bullet.speed;
+    const start = moveShooterBullet(bullet, elapsed);
     if (bullet.x < 0 || bullet.x > SHOOTER_WORLD_WIDTH
       || bullet.y < 0 || bullet.y > SHOOTER_WORLD_HEIGHT) return false;
     if (!hasShooterLineOfSight(start, bullet, world.covers)) return false;
     const targets = bullet.enemy ? [world.player] : world.enemies;
     const hit = targets.find((target) =>
-      distanceToSegment(target, start, bullet) < SHOOTER_UNIT_RADIUS);
+      distanceToBulletPath(target, start, bullet) < SHOOTER_UNIT_RADIUS);
     if (!hit) return true;
     const playerDamage = selectedWeapon.damage;
     hit.health -= bullet.enemy ? 12 : playerDamage;

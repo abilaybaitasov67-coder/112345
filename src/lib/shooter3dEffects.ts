@@ -3,6 +3,9 @@ import { ShooterWorld } from './shooterTypes';
 import { createWeaponModel } from './shooter3dModels';
 import { getShooterFloorHeight } from './shooterFloorHeight';
 
+const TRAIL_FORWARD = new THREE.Vector3(0, 0, 1);
+const trailDirection = new THREE.Vector3();
+
 export function syncBulletMeshes(
   scene: THREE.Scene,
   meshes: THREE.Mesh[],
@@ -23,10 +26,11 @@ export function syncBulletMeshes(
     if (!bullet) return;
     trail.position.set(
       bullet.x * scale,
-      1.45 + getShooterFloorHeight(bullet.x, bullet.y),
+      bullet.height,
       bullet.y * scale,
     );
-    trail.rotation.y = Math.atan2(bullet.dx, bullet.dy);
+    trailDirection.set(bullet.dx, bullet.verticalSlope, bullet.dy).normalize();
+    trail.quaternion.setFromUnitVectors(TRAIL_FORWARD, trailDirection);
     const color = bullet.enemy ? 0xff4055 : 0xffdf68;
     (trail.material as THREE.MeshBasicMaterial).color.setHex(color);
   });
