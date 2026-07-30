@@ -10,6 +10,7 @@ function createPlayerId() {
 
 export const pvpPlayerId = createPlayerId();
 export const pvpPlayerName = `Игрок ${pvpPlayerId.slice(0, 4).toUpperCase()}`;
+export const PVP_SPAWN_PROTECTION_MS = 8000;
 
 export interface PvpPlayerState {
   id: string;
@@ -40,7 +41,7 @@ export function placePvpPlayer(world: ShooterWorld, spawnIndex: number) {
   world.player.health = 100;
   world.angle = spawn.angle;
   world.status = 'playing';
-  world.message = 'Защита спавна действует 4 секунды.';
+  world.message = 'Защита спавна действует 8 секунд.';
 }
 
 export function findVisiblePvpTarget(world: ShooterWorld) {

@@ -9,6 +9,7 @@ import {
   placePvpPlayer,
   pvpPlayerId,
   pvpPlayerName,
+  PVP_SPAWN_PROTECTION_MS,
   PvpDamageEvent,
   PvpPlayerState,
 } from '../lib/shooterPvp';
@@ -53,8 +54,8 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     worldRef.current.player.y = spawn.y;
     worldRef.current.player.health = 100;
     worldRef.current.angle = spawn.angle;
-    worldRef.current.message = 'Защита спавна действует 4 секунды.';
-    protectedUntilRef.current = Date.now() + 4000;
+    worldRef.current.message = 'Защита спавна действует 8 секунд.';
+    protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
     setError('');
     setRoom(code);
     setStatus('connecting');
@@ -66,7 +67,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
       const spawnIndex = players.indexOf(pvpPlayerId);
       if (spawnIndex < 0) return;
       placePvpPlayer(worldRef.current, spawnIndex);
-      protectedUntilRef.current = Date.now() + 4000;
+      protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
     };
     channel
       .on('presence', { event: 'sync' }, syncSpawn)
@@ -108,6 +109,10 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     const channel = channelRef.current;
     const world = worldRef.current;
     if (!channel || status !== 'online' || !world.weapon) return;
+    if (Date.now() < protectedUntilRef.current) {
+      world.message = 'Подожди окончания защиты спавна, затем стреляй.';
+      return;
+    }
     const target = findVisiblePvpTarget(world);
     if (!target) return;
     void channel.send({
