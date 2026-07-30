@@ -38,7 +38,7 @@ export class Shooter3dRenderer {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.scene.fog = new THREE.FogExp2(0xb6ad95, .018);
+    this.scene.fog = new THREE.FogExp2(0x738187, .014);
     addShooterAtmosphere(this.scene);
     buildTacticalMap(this.scene, world);
     this.scene.add(this.bombModel);

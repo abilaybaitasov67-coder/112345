@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
 function createSky() {
-  const geometry = new THREE.SphereGeometry(45, 24, 16);
+  const geometry = new THREE.SphereGeometry(65, 24, 16);
   const material = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
       topColor: { value: new THREE.Color(0x54788b) },
-      horizonColor: { value: new THREE.Color(0xc6b994) },
-      bottomColor: { value: new THREE.Color(0x8e8069) },
+      horizonColor: { value: new THREE.Color(0x9eafb3) },
+      bottomColor: { value: new THREE.Color(0x59666b) },
     },
     vertexShader: `
       varying vec3 worldPosition;
@@ -38,9 +38,9 @@ function createDust() {
   const points: number[] = [];
   for (let index = 0; index < 240; index += 1) {
     points.push(
-      Math.random() * 25,
+      Math.random() * 48,
       .25 + Math.random() * 3.2,
-      Math.random() * 15,
+      Math.random() * 28,
     );
   }
   const geometry = new THREE.BufferGeometry();
@@ -48,7 +48,7 @@ function createDust() {
   return new THREE.Points(
     geometry,
     new THREE.PointsMaterial({
-      color: 0xe7d7ae,
+      color: 0xd5e2e4,
       size: .025,
       transparent: true,
       opacity: .32,
@@ -59,17 +59,17 @@ function createDust() {
 
 export function addShooterAtmosphere(scene: THREE.Scene) {
   scene.add(createSky(), createDust());
-  scene.add(new THREE.HemisphereLight(0xcbe3ee, 0x5a4c36, 1.8));
+  scene.add(new THREE.HemisphereLight(0xcbe3ee, 0x455056, 1.8));
 
-  const sun = new THREE.DirectionalLight(0xffe2ae, 3.2);
+  const sun = new THREE.DirectionalLight(0xe5f0f2, 3.2);
   sun.position.set(7, 14, -5);
-  sun.target.position.set(12, 0, 7);
+  sun.target.position.set(24, 0, 14);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
-  sun.shadow.camera.left = -16;
-  sun.shadow.camera.right = 16;
-  sun.shadow.camera.top = 14;
-  sun.shadow.camera.bottom = -14;
+  sun.shadow.camera.left = -25;
+  sun.shadow.camera.right = 25;
+  sun.shadow.camera.top = 20;
+  sun.shadow.camera.bottom = -20;
   sun.shadow.camera.near = 1;
   sun.shadow.camera.far = 35;
   sun.shadow.bias = -.0003;

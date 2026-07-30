@@ -4,6 +4,7 @@ import { bombSites } from './shooterBomb';
 import { ShooterWorld } from './shooterTypes';
 import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
 import { addHelenaProps } from './shooter3dHelenaProps';
+import { addMapSigns } from './shooter3dSigns';
 
 const SCALE = .025;
 const stone = new THREE.MeshStandardMaterial({ color: 0x59636a, roughness: .94 });
@@ -19,11 +20,11 @@ function box(width: number, height: number, depth: number, material: THREE.Mater
 }
 
 function addWall(scene: THREE.Scene, x: number, y: number, width: number, depth: number) {
-  const wall = box(width * SCALE, 2.8, depth * SCALE, plaster);
-  wall.position.set(x * SCALE, 1.4, y * SCALE);
+  const wall = box(width * SCALE, 4.4, depth * SCALE, plaster);
+  wall.position.set(x * SCALE, 2.2, y * SCALE);
   scene.add(wall);
   const trim = box(width * SCALE + .04, .16, depth * SCALE + .04, stone);
-  trim.position.set(x * SCALE, 2.72, y * SCALE);
+  trim.position.set(x * SCALE, 4.32, y * SCALE);
   scene.add(trim);
 }
 
@@ -70,7 +71,7 @@ function addArch(scene: THREE.Scene, x: number, z: number, rotation = 0) {
 }
 
 function addBarrels(scene: THREE.Scene) {
-  const positions = [[4.8, 3.15], [5.48, 3.22], [30.3, 3.3], [30.98, 3.22]];
+  const positions = [[5, 11.8], [5.7, 11.8], [39.7, 8.3], [40.4, 8.3]];
   positions.forEach(([x, z]) => {
     const barrel = new THREE.Mesh(
       new THREE.CylinderGeometry(.24, .24, .72, 12),
@@ -85,8 +86,8 @@ function addBarrels(scene: THREE.Scene) {
 
 function addCrates(scene: THREE.Scene) {
   const spots = [
-    [5.4, 4.2, 0], [6.52, 4.2, 0], [5.92, 5.25, 0],
-    [30.15, 4.2, .3], [31.27, 4.2, -.15], [30.67, 5.25, 0],
+    [5.7, 12.8, 0], [6.82, 12.8, 0], [6.25, 13.85, 0],
+    [38.2, 7.2, .3], [39.32, 7.2, -.15], [38.75, 8.25, 0],
   ] as const;
   const cratePath = `${import.meta.env.BASE_URL}models/tactical-crate.glb`;
   new GLTFLoader().load(cratePath, ({ scene: crate }) => {
@@ -123,10 +124,11 @@ export function buildTacticalMap(scene: THREE.Scene, world: ShooterWorld) {
   walls.forEach(([x, y, width, depth]) => addWall(scene, x, y, width, depth));
   addSiteMarker(scene, bombSites.A.x * SCALE, bombSites.A.y * SCALE, 'A');
   addSiteMarker(scene, bombSites.B.x * SCALE, bombSites.B.y * SCALE, 'B');
-  addArch(scene, 18, 15.8);
-  addArch(scene, 14.5, 11.1, Math.PI / 2);
-  addArch(scene, 26.8, 10.6, Math.PI / 2);
+  addArch(scene, 24, 21.1);
+  addArch(scene, 19.3, 14.8, Math.PI / 2);
+  addArch(scene, 35.7, 14.1, Math.PI / 2);
   addBarrels(scene);
   addCrates(scene);
   addHelenaProps(scene);
+  addMapSigns(scene);
 }

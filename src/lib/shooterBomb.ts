@@ -1,8 +1,8 @@
 import { ShooterPoint, ShooterWorld } from './shooterTypes';
 
 export const bombSites = {
-  A: { x: 1160, y: 230 },
-  B: { x: 190, y: 380 },
+  A: { x: 1547, y: 307 },
+  B: { x: 253, y: 507 },
 } satisfies Record<'A' | 'B', ShooterPoint>;
 
 const PLANT_DISTANCE = 100;

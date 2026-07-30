@@ -21,7 +21,7 @@ function addMonument(scene: THREE.Scene) {
   plate.position.y = .35;
   column.position.y = .9;
   monument.add(base, plate, column);
-  monument.position.set(18, 0, 13.8);
+  monument.position.set(24, 0, 18.4);
   scene.add(monument);
 }
 
@@ -55,12 +55,19 @@ function addBalcony(scene: THREE.Scene, x: number, z: number, rotation = 0) {
   scene.add(balcony);
 }
 
+function addUpperTunnel(scene: THREE.Scene) {
+  const roof = box(2.35, .28, 5.4, stone);
+  roof.position.set(36.15, 3.25, 20.7);
+  scene.add(roof);
+}
+
 export function addHelenaProps(scene: THREE.Scene) {
   addMonument(scene);
-  addPlanter(scene, 13.2, 10.55);
-  addPlanter(scene, 22.8, 10.55);
-  addPlanter(scene, 5.2, 17.6);
-  addPlanter(scene, 30.8, 17.6);
-  addBalcony(scene, 8.9, 7.7);
-  addBalcony(scene, 27.1, 7.7);
+  addPlanter(scene, 17.6, 14.1);
+  addPlanter(scene, 30.4, 14.1);
+  addPlanter(scene, 6.9, 23.5);
+  addPlanter(scene, 41.1, 23.5);
+  addBalcony(scene, 11.9, 10.3);
+  addBalcony(scene, 36.1, 10.3);
+  addUpperTunnel(scene);
 }

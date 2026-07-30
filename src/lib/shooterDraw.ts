@@ -1,5 +1,6 @@
 import {
   SHOOTER_HEIGHT,
+  shooterExitPoint,
   SHOOTER_WIDTH,
   SHOOTER_WORLD_HEIGHT,
   SHOOTER_WORLD_WIDTH,
@@ -10,7 +11,7 @@ import { weaponInfo } from './shooterWeapons';
 
 const DEFAULT_FOV = Math.PI / 3;
 const RAYS = 240;
-const MAX_DEPTH = 1400;
+const MAX_DEPTH = 2100;
 
 function insideCover(x: number, y: number, covers: ShooterCover[]) {
   return covers.some((cover) => x > cover.x && x < cover.x + cover.width
@@ -120,7 +121,10 @@ export function drawShooter(context: CanvasRenderingContext2D, world: ShooterWor
   });
   if (world.enemies.length === 0) {
     const exitAngle = normalizeAngle(
-      Math.atan2(68 - world.player.y, 1372 - world.player.x) - world.angle,
+      Math.atan2(
+        shooterExitPoint.y - world.player.y,
+        shooterExitPoint.x - world.player.x,
+      ) - world.angle,
     );
     const markerX = Math.max(55, Math.min(905, SHOOTER_WIDTH / 2 + exitAngle / fov * SHOOTER_WIDTH));
     context.fillStyle = '#facc15';

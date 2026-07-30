@@ -1,4 +1,8 @@
-import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
+import {
+  shooterExitPoint,
+  SHOOTER_WORLD_HEIGHT,
+  SHOOTER_WORLD_WIDTH,
+} from './shooterWorld';
 import {
   ShooterBullet,
   ShooterCover,
@@ -136,7 +140,7 @@ export function updateShooter(
     world.status = 'lost';
     world.message = 'Миссия провалена. Отряд потерял бойца.';
   } else if (!world.pvpMode && world.enemies.length === 0) {
-    if (distance(world.player, { x: 1372, y: 68 }) < 70) {
+    if (distance(world.player, shooterExitPoint) < 70) {
       world.status = 'won';
       world.message = 'Миссия выполнена! Отряд добрался до точки эвакуации.';
     } else {
