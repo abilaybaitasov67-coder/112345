@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bombSites } from './shooterBomb';
 import { ShooterWorld } from './shooterTypes';
 import { SHOOTER_WORLD_HEIGHT, SHOOTER_WORLD_WIDTH } from './shooterWorld';
@@ -7,10 +6,10 @@ import { addRouteProps } from './shooter3dRouteProps';
 import { addMapSigns } from './shooter3dSigns';
 import { addBoundaryWalls, addMapBlocks } from './shooter3dBlocks';
 import { addDustLandmarks } from './shooter3dDustLandmarks';
+import { dustGroundMaterial } from './shooter3dMaterials';
+import { addSiteProps } from './shooter3dSiteProps';
 
 const SCALE = .025;
-const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x9b876a, roughness: 1 });
-const darkWood = new THREE.MeshStandardMaterial({ color: 0x493629, roughness: .82 });
 
 function addSiteMarker(scene: THREE.Scene, x: number, z: number, label: string) {
   const canvas = document.createElement('canvas');
@@ -34,42 +33,10 @@ function addSiteMarker(scene: THREE.Scene, x: number, z: number, label: string) 
   scene.add(marker);
 }
 
-function addBarrels(scene: THREE.Scene) {
-  const positions = [[9.2, 6.4], [9.9, 6.4], [36.5, 6.4], [37.2, 6.4]];
-  positions.forEach(([x, z]) => {
-    const barrel = new THREE.Mesh(
-      new THREE.CylinderGeometry(.24, .24, .72, 12),
-      darkWood,
-    );
-    barrel.position.set(x, .36, z);
-    barrel.castShadow = true;
-    barrel.receiveShadow = true;
-    scene.add(barrel);
-  });
-}
-
-function addCrates(scene: THREE.Scene) {
-  const spots = [
-    [9.2, 6.2, 0], [10.32, 6.2, 0], [9.75, 7.25, 0],
-    [36.2, 6.2, .3], [37.32, 6.2, -.15], [36.75, 7.25, 0],
-  ] as const;
-  const cratePath = `${import.meta.env.BASE_URL}models/tactical-crate.glb`;
-  new GLTFLoader().load(cratePath, ({ scene: crate }) => {
-    spots.forEach(([x, z, rotation]) => {
-      const model = crate.clone(true);
-      model.scale.setScalar(.48);
-      model.position.set(x, 0, z);
-      model.rotation.y = rotation;
-      model.traverse((child) => { child.castShadow = true; child.receiveShadow = true; });
-      scene.add(model);
-    });
-  });
-}
-
 export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(SHOOTER_WORLD_WIDTH * SCALE, SHOOTER_WORLD_HEIGHT * SCALE),
-    floorMaterial,
+    dustGroundMaterial,
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.set(SHOOTER_WORLD_WIDTH * SCALE / 2, 0, SHOOTER_WORLD_HEIGHT * SCALE / 2);
@@ -83,8 +50,7 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   addMapBlocks(scene);
   addSiteMarker(scene, bombSites.A.x * SCALE, bombSites.A.y * SCALE, 'A');
   addSiteMarker(scene, bombSites.B.x * SCALE, bombSites.B.y * SCALE, 'B');
-  addBarrels(scene);
-  addCrates(scene);
+  addSiteProps(scene);
   addRouteProps(scene);
   addDustLandmarks(scene);
   addMapSigns(scene);
