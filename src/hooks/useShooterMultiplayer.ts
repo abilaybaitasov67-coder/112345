@@ -20,7 +20,13 @@ interface DamageEvent {
   attacker: string;
 }
 
-const playerId = crypto.randomUUID();
+function createPlayerId() {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  const random = Math.random().toString(36).slice(2);
+  return `${Date.now().toString(36)}-${random}`;
+}
+
+const playerId = createPlayerId();
 const playerName = `Игрок ${playerId.slice(0, 4).toUpperCase()}`;
 
 export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) {
