@@ -2,18 +2,41 @@ import { WeaponId } from './shooterTypes';
 
 interface ShotProfile {
   duration: number;
-  frequency: number;
-  volume: number;
+  noiseFrequency: number;
+  noiseVolume: number;
+  bodyFrequency: number;
+  bodyVolume: number;
 }
 
 const shotProfiles: Record<WeaponId, ShotProfile> = {
-  knife: { duration: .045, frequency: 900, volume: .035 },
-  pistol: { duration: .075, frequency: 1250, volume: .1 },
-  revolver: { duration: .13, frequency: 720, volume: .15 },
-  smg: { duration: .055, frequency: 1550, volume: .075 },
-  rifle: { duration: .09, frequency: 1050, volume: .12 },
-  shotgun: { duration: .19, frequency: 520, volume: .18 },
-  sniper: { duration: .23, frequency: 430, volume: .2 },
+  knife: {
+    duration: .08, noiseFrequency: 3200, noiseVolume: .12,
+    bodyFrequency: 700, bodyVolume: .025,
+  },
+  pistol: {
+    duration: .11, noiseFrequency: 1800, noiseVolume: .25,
+    bodyFrequency: 140, bodyVolume: .13,
+  },
+  revolver: {
+    duration: .18, noiseFrequency: 1050, noiseVolume: .32,
+    bodyFrequency: 85, bodyVolume: .22,
+  },
+  smg: {
+    duration: .075, noiseFrequency: 2200, noiseVolume: .19,
+    bodyFrequency: 170, bodyVolume: .08,
+  },
+  rifle: {
+    duration: .13, noiseFrequency: 1450, noiseVolume: .28,
+    bodyFrequency: 115, bodyVolume: .15,
+  },
+  shotgun: {
+    duration: .26, noiseFrequency: 800, noiseVolume: .4,
+    bodyFrequency: 65, bodyVolume: .28,
+  },
+  sniper: {
+    duration: .32, noiseFrequency: 650, noiseVolume: .44,
+    bodyFrequency: 52, bodyVolume: .32,
+  },
 };
 
 let audioContext: AudioContext | null = null;
@@ -34,7 +57,7 @@ function getNoiseBuffer(context: AudioContext, weapon: WeaponId) {
   const buffer = context.createBuffer(1, length, context.sampleRate);
   const samples = buffer.getChannelData(0);
   for (let index = 0; index < samples.length; index += 1) {
-    const fade = 1 - index / samples.length;
+    const fade = (1 - index / samples.length) ** 2;
     samples[index] = (Math.random() * 2 - 1) * fade;
   }
   noiseBuffers.set(weapon, buffer);
@@ -48,14 +71,27 @@ export function playWeaponShot(weapon: WeaponId, volumeScale = 1) {
   const now = context.currentTime;
   const source = context.createBufferSource();
   const filter = context.createBiquadFilter();
-  const gain = context.createGain();
+  const noiseGain = context.createGain();
+  const body = context.createOscillator();
+  const bodyGain = context.createGain();
   source.buffer = getNoiseBuffer(context, weapon);
   filter.type = 'bandpass';
-  filter.frequency.value = profile.frequency;
-  filter.Q.value = .65;
-  gain.gain.setValueAtTime(profile.volume * volumeScale, now);
-  gain.gain.exponentialRampToValueAtTime(.0001, now + profile.duration);
-  source.connect(filter).connect(gain).connect(context.destination);
+  filter.frequency.value = profile.noiseFrequency;
+  filter.Q.value = .55;
+  noiseGain.gain.setValueAtTime(profile.noiseVolume * volumeScale, now);
+  noiseGain.gain.exponentialRampToValueAtTime(.0001, now + profile.duration);
+  body.type = weapon === 'knife' ? 'triangle' : 'sawtooth';
+  body.frequency.setValueAtTime(profile.bodyFrequency * 1.35, now);
+  body.frequency.exponentialRampToValueAtTime(
+    profile.bodyFrequency * .65,
+    now + profile.duration,
+  );
+  bodyGain.gain.setValueAtTime(profile.bodyVolume * volumeScale, now);
+  bodyGain.gain.exponentialRampToValueAtTime(.0001, now + profile.duration);
+  source.connect(filter).connect(noiseGain).connect(context.destination);
+  body.connect(bodyGain).connect(context.destination);
   source.start(now);
   source.stop(now + profile.duration);
+  body.start(now);
+  body.stop(now + profile.duration);
 }
