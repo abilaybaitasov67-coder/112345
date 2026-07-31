@@ -1,20 +1,20 @@
-import { WeaponId } from '../lib/shooterTypes';
-import { weaponInfo } from '../lib/shooterWeapons';
+import { ShooterTeam, WeaponId } from '../lib/shooterTypes';
+import { teamShopWeapons, weaponInfo } from '../lib/shooterWeapons';
 
 interface Props {
   money: number;
+  team: ShooterTeam;
   onBuy: (weapon: WeaponId, price: number) => void;
+  onClose?: () => void;
 }
 
-const weaponIds = (Object.keys(weaponInfo) as WeaponId[])
-  .filter((weapon) => weapon !== 'knife');
-
-export function WeaponShop({ money, onBuy }: Props) {
+export function WeaponShop({ money, team, onBuy, onClose }: Props) {
+  const weaponIds = teamShopWeapons[team];
   return (
     <div className="weapon-shop">
       <div className="weapon-shop__panel">
         <p className="weapon-shop__eyebrow">СНАРЯЖЕНИЕ ПЕРЕД МИССИЕЙ</p>
-        <h1>Выбери оружие</h1>
+        <h1>{team === 'counter' ? 'Арсенал спецназа' : 'Арсенал террористов'}</h1>
         <p className="weapon-shop__money">Бюджет: <b>${money}</b></p>
         <div className="weapon-shop__grid">
           {weaponIds.map((id) => {
@@ -33,6 +33,11 @@ export function WeaponShop({ money, onBuy }: Props) {
             );
           })}
         </div>
+        {onClose && (
+          <button className="weapon-shop__close" onClick={onClose}>
+            Закрыть магазин
+          </button>
+        )}
       </div>
     </div>
   );

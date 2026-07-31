@@ -19,6 +19,7 @@
 .shooter-header a { color: #d8e0dc; text-decoration: none; }
 .shooter-header strong { letter-spacing: .16em; }
 .shooter-header button { background: #53645a; }
+.shooter-header__actions { display: flex; gap: 7px; }
 
 .shooter-hud {
   padding: 10px 16px;
@@ -100,6 +101,7 @@
   letter-spacing: .08em;
 }
 .weapon-shop__grid small { color: #c5cec9; }
+.weapon-shop__close { margin-top: 14px; background: #53645a; }
 
 .shooter-result button, .shooter-fire { background: #a53b34; }
 .shooter-message { max-width: 960px; margin: 12px auto; text-align: center; }

@@ -8,7 +8,11 @@ import {
   WeaponId,
 } from '../lib/shooterTypes';
 import { createShooterWorld } from '../lib/shooterWorld';
-import { weaponInfo, weaponSlot } from '../lib/shooterWeapons';
+import {
+  canTeamBuyWeapon,
+  weaponInfo,
+  weaponSlot,
+} from '../lib/shooterWeapons';
 import {
   bombSites,
   stopPlayerBombDefuse,
@@ -97,6 +101,11 @@ export function useShooterGame() {
   const buyWeapon = useCallback((weapon: WeaponId, price: number) => {
     const world = worldRef.current;
     if (price > world.money) return;
+    if (!canTeamBuyWeapon(world.team, weapon)) {
+      world.message = 'Это оружие недоступно выбранной стороне.';
+      sync();
+      return;
+    }
     world.money -= price;
     world.weapon = weapon;
     storeWeapon(world, weapon);

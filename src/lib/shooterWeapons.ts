@@ -1,4 +1,4 @@
-import { WeaponId } from './shooterTypes';
+import { ShooterTeam, WeaponId } from './shooterTypes';
 
 export interface WeaponInfo {
   name: string;
@@ -48,4 +48,13 @@ export function weaponSlot(weapon: WeaponId) {
   if (weapon === 'knife') return 0;
   if (weapon === 'pistol' || weapon === 'revolver') return 1;
   return 2;
+}
+
+export const teamShopWeapons: Record<ShooterTeam, WeaponId[]> = {
+  terrorists: ['revolver', 'smg', 'shotgun', 'sniper'],
+  counter: ['pistol', 'rifle', 'shotgun', 'sniper'],
+};
+
+export function canTeamBuyWeapon(team: ShooterTeam, weapon: WeaponId) {
+  return weapon === 'knife' || teamShopWeapons[team].includes(weapon);
 }

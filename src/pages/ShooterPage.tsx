@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, useState } from 'react';
 import { Link } from 'wouter';
 import { ShooterCanvas } from '../components/ShooterCanvas';
 import { ShooterControls } from '../components/ShooterControls';
@@ -20,7 +20,9 @@ export function ShooterPage() {
   const shooter = useShooterGame();
   const multiplayer = useShooterMultiplayer(shooter.worldRef);
   const { game } = shooter;
+  const [shopOpen, setShopOpen] = useState(false);
   const restart = () => {
+    setShopOpen(false);
     shooter.restart();
     multiplayer.resetRound();
     shooter.sync();
@@ -30,7 +32,10 @@ export function ShooterPage() {
       <header className="shooter-header">
         <Link href="/">← Все игры</Link>
         <strong>КАРТА «ПЫЛЬНЫЙ РУБЕЖ»</strong>
-        <button onClick={restart}>↻ Заново</button>
+        <div className="shooter-header__actions">
+          <button onClick={() => setShopOpen(true)}>Магазин</button>
+          <button onClick={restart}>↻ Заново</button>
+        </div>
       </header>
       <section className="shooter-hud">
         <span className="shooter-hud__team">
@@ -98,8 +103,16 @@ export function ShooterPage() {
             <button onClick={restart}>Играть снова</button>
           </div>
         )}
-        {!game.weapon && (
-          <WeaponShop money={game.money} onBuy={shooter.buyWeapon} />
+        {(!game.weapon || shopOpen) && (
+          <WeaponShop
+            money={game.money}
+            team={game.team}
+            onClose={game.weapon ? () => setShopOpen(false) : undefined}
+            onBuy={(weapon, price) => {
+              shooter.buyWeapon(weapon, price);
+              setShopOpen(false);
+            }}
+          />
         )}
       </div>
       <p className="shooter-message">{game.message}</p>
