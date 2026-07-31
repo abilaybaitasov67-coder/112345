@@ -13,16 +13,15 @@ import {
   hasShooterLineOfSight,
   moveShooterPoint,
 } from './shooterCollision';
-import { moveEnemyWithNavigation } from './shooterNavigation';
 import {
   createShooterBullet,
   findBulletTarget,
   getShotOffset,
-  getTargetSlope,
   moveShooterBullet,
 } from './shooterBullets';
 import { updateShooterJump } from './shooterJump';
 import { getShooterFloorHeight } from './shooterFloorHeight';
+import { updateShooterBots } from './shooterBotCombat';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -93,24 +92,7 @@ export function updateShooter(
   };
   world.player.cooldown = Math.max(0, world.player.cooldown - elapsed);
 
-  if (!world.pvpMode) world.enemies.forEach((enemy) => {
-    if (world.bomb.planted && !world.bomb.exploded) {
-      moveEnemyWithNavigation(enemy, world.bomb, world.covers, elapsed);
-    }
-    enemy.cooldown -= elapsed;
-    const isDefusing = world.bomb.planted && distance(enemy, world.bomb) <= 70;
-    if (!isDefusing && enemy.cooldown <= 0 && distance(enemy, world.player) < 650) {
-      const enemyWeapon = weaponInfo[enemy.weapon ?? 'rifle'];
-      world.bullets.push(createShooterBullet(
-        enemy,
-        world.player,
-        true,
-        enemyWeapon.bulletSpeed,
-        getTargetSlope(enemy, world.player, world.jumpHeight),
-      ));
-      enemy.cooldown = 900 + Math.random() * 600;
-    }
-  });
+  updateShooterBots(world, elapsed);
   updateBomb(world, elapsed);
 
   world.bullets = world.bullets.filter((bullet) => {

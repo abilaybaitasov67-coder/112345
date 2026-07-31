@@ -6,6 +6,7 @@ export interface ShooterPoint {
 export interface ShooterUnit extends ShooterPoint {
   health: number;
   cooldown: number;
+  burstShots?: number;
   weapon?: WeaponId;
 }
 
