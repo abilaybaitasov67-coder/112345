@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { WeaponId } from './shooterTypes';
 import { createBlockArms } from './shooter3dBlockArms';
-import { createM4a4Model } from './shooter3dM4a4';
 
 const loader = new GLTFLoader();
 const cache = new Map<WeaponId, THREE.Group>();
@@ -38,13 +37,15 @@ async function getWeapon(id: WeaponId, path: string) {
 export async function loadBlenderWeapon(id: WeaponId) {
   const sourceId = id === 'ak47' ? 'rifle' : id;
   const path = `${import.meta.env.BASE_URL}models/weapons/${sourceId}.glb`;
-  const weapon = id === 'm4a4'
-    ? createM4a4Model()
-    : await getWeapon(id, path);
+  const weapon = await getWeapon(id, path);
   const viewModel = new THREE.Group();
   const isSidearm = id === 'pistol' || id === 'revolver' || id === 'knife';
   const weaponModel = weapon.clone(true);
-  weaponModel.scale.setScalar(isSidearm ? .58 : .76);
+  weaponModel.scale.setScalar(id === 'm4a4' ? .18 : isSidearm ? .58 : .76);
+  if (id === 'm4a4') {
+    weaponModel.rotation.y = Math.PI / 2;
+    weaponModel.position.z = -.9;
+  }
   viewModel.add(weaponModel);
   viewModel.add(createBlockArms(id));
   return viewModel;

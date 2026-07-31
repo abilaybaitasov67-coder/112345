@@ -120,6 +120,10 @@ export function ShooterPage() {
       <p className="shooter-message">{game.message}</p>
       <p className="shooter-credit">
         Планировка вдохновлена Dust II · автор оригинальной карты — Dave Johnston
+        <br />
+        Модель M4 — <a href="https://poly.pizza/m/9c_2lPvKB8u" target="_blank" rel="noreferrer">Kristian M</a>
+        {' · '}
+        <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>
       </p>
       <ShooterControls
         aiming={game.aiming}

@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { WeaponId } from './shooterTypes';
 import { createWeaponReceiver } from './shooter3dWeaponShapes';
-import { createM4a4Model } from './shooter3dM4a4';
 function material(color: number, metalness = 0) {
   return new THREE.MeshStandardMaterial({ color, roughness: .55, metalness });
 }
@@ -57,7 +56,6 @@ function addSight(group: THREE.Group, z: number) {
 }
 
 export function createWeaponModel(id: WeaponId, includeArms = true) {
-  if (id === 'm4a4') return createM4a4Model();
   const group = new THREE.Group();
   const dark = 0x202624;
   if (id === 'knife') {
@@ -83,7 +81,7 @@ export function createWeaponModel(id: WeaponId, includeArms = true) {
       group.add(drum);
     }
   } else {
-    const isRifle = id === 'ak47';
+    const isRifle = id === 'ak47' || id === 'm4a4';
     const length = id === 'sniper' ? 2.25 : id === 'shotgun' ? 1.9 : isRifle ? 1.65 : 1.1;
     group.add(createWeaponReceiver(id, length));
     if (id !== 'shotgun') {

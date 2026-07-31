@@ -3,3 +3,7 @@ Source: https://opengameart.org/content/low-poly-guns-pack
 License: CC0 1.0 (public domain)
 
 The GLB files in this folder were converted and positioned in Blender for this project.
+
+M4 model by Kristian M
+Source: https://poly.pizza/m/9c_2lPvKB8u
+License: CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
