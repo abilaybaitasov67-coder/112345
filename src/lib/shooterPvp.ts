@@ -4,9 +4,10 @@ import {
   RemoteShooter,
   ShooterBomb,
   ShooterBullet,
+  ShooterTeam,
   ShooterWorld,
 } from './shooterTypes';
-import { pvpSpawnPoints } from './shooterWorld';
+import { pvpTeamSpawns } from './shooterWorld';
 
 function createPlayerId() {
   if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
@@ -25,6 +26,7 @@ export interface PvpPlayerState {
   y: number;
   angle: number;
   jumpHeight: number;
+  team?: ShooterTeam;
   health: number;
   weapon?: RemoteShooter['weapon'];
   bomb?: ShooterBomb;
@@ -34,23 +36,30 @@ export interface PvpDamageEvent {
   targetId: string;
   damage: number;
   attacker: string;
+  attackerTeam?: ShooterTeam;
   headshot: boolean;
 }
 
-export function getPvpSpawn(playerId: string) {
+export function getPvpSpawn(playerId: string, team: ShooterTeam) {
   const hash = [...playerId].reduce((total, character) =>
     total + character.charCodeAt(0), 0);
-  return pvpSpawnPoints[hash % pvpSpawnPoints.length];
+  const spawns = pvpTeamSpawns[team];
+  return spawns[hash % spawns.length];
 }
 
-export function placePvpPlayer(world: ShooterWorld, spawnIndex: number) {
-  const spawn = pvpSpawnPoints[spawnIndex % pvpSpawnPoints.length];
+export function placePvpPlayer(
+  world: ShooterWorld,
+  playerId: string,
+  team: ShooterTeam,
+) {
+  const spawn = getPvpSpawn(playerId, team);
   world.player.x = spawn.x;
   world.player.y = spawn.y;
   world.player.health = 100;
   world.angle = spawn.angle;
   world.jumpHeight = 0;
   world.jumpVelocity = 0;
+  world.team = team;
   world.status = 'playing';
   world.message = 'Защита спавна действует 8 секунд.';
 }
@@ -95,6 +104,7 @@ export function findVisiblePvpTarget(world: ShooterWorld, shot?: ShooterBullet) 
         + getShooterFloorHeight(player.x, player.y);
       return (
         player.health > 0
+        && player.team !== world.team
         && distance <= maxDistance
         && difference < Math.max(.04, 18 / distance)
         && hitHeight >= .15

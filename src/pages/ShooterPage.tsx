@@ -28,7 +28,9 @@ export function ShooterPage() {
         <button onClick={shooter.restart}>↻ Заново</button>
       </header>
       <section className="shooter-hud">
-        <span className="shooter-hud__team">СПЕЦНАЗ</span>
+        <span className="shooter-hud__team">
+          {game.team === 'counter' ? 'СПЕЦНАЗ' : 'ТЕРРОРИСТЫ'}
+        </span>
         <span>♥ <b>{game.health}</b></span>
         <span className="shooter-hud__mission">РАУНД 1 · ЦЕЛЕЙ <b>{game.enemies}</b></span>
         <span className="shooter-hud__bomb">{game.bomb}</span>
@@ -59,6 +61,7 @@ export function ShooterPage() {
           status={multiplayer.status}
           error={multiplayer.error}
           players={multiplayer.players}
+          team={game.team}
           onJoin={multiplayer.join}
           onLeave={multiplayer.leave}
         />

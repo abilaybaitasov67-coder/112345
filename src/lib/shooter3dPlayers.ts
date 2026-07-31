@@ -59,11 +59,15 @@ export function syncRemotePlayerModels(
   });
   world.remotePlayers.forEach((player) => {
     const weapon = player.weapon ?? 'rifle';
+    const friendly = player.team === world.team;
     let model = models.get(player.id);
-    if (!model || model.userData.weapon !== weapon) {
+    if (!model
+      || model.userData.weapon !== weapon
+      || model.userData.friendly !== friendly) {
       if (model) scene.remove(model);
-      model = createHumanModel(true, weapon);
+      model = createHumanModel(friendly, weapon);
       model.userData.weapon = weapon;
+      model.userData.friendly = friendly;
       models.set(player.id, model);
       scene.add(model);
     }

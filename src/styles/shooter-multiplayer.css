@@ -41,6 +41,14 @@
 
 .pvp-lobby button { background: #a53b34; }
 .pvp-lobby .pvp-solo { background: #4f5f58; }
+.pvp-team-label { color: #d4ddd8; font-size: 13px; font-weight: 700; }
+.pvp-team-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pvp-team-choice button { border: 1px solid #65756e; background: #303d38; }
+.pvp-team-choice button.is-selected {
+  border-color: #efc963;
+  color: #171b19;
+  background: #efc963;
+}
 
 .pvp-open {
   position: absolute;

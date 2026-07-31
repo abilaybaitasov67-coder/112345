@@ -1,11 +1,10 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
-import { RemoteShooter, ShooterWorld } from '../lib/shooterTypes';
+import { RemoteShooter, ShooterTeam, ShooterWorld } from '../lib/shooterTypes';
 import { weaponInfo } from '../lib/shooterWeapons';
 import {
   findVisiblePvpTarget,
-  getPvpSpawn,
   placePvpPlayer,
   pvpPlayerId,
   pvpPlayerName,
@@ -36,7 +35,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     setPlayerCount(0);
   }, [worldRef]);
 
-  const join = useCallback((rawCode: string) => {
+  const join = useCallback((rawCode: string, team: ShooterTeam) => {
     const code = rawCode.trim().toUpperCase().replace(/[^A-ZА-Я0-9]/g, '').slice(0, 8);
     if (!isSupabaseConfigured) {
       setError('Сначала подключи Supabase в .env.');
@@ -50,13 +49,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     botsRef.current = worldRef.current.enemies;
     worldRef.current.enemies = [];
     worldRef.current.pvpMode = true;
-    const spawn = getPvpSpawn(pvpPlayerId);
-    worldRef.current.player.x = spawn.x;
-    worldRef.current.player.y = spawn.y;
-    worldRef.current.player.health = 100;
-    worldRef.current.angle = spawn.angle;
-    worldRef.current.jumpHeight = 0;
-    worldRef.current.jumpVelocity = 0;
+    placePvpPlayer(worldRef.current, pvpPlayerId, team);
     worldRef.current.message = 'Защита спавна действует 8 секунд.';
     protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
     setError('');
@@ -65,21 +58,16 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     const channel = supabase.channel(`shooter-pvp:${code}`, {
       config: { presence: { key: pvpPlayerId } },
     });
-    const syncSpawn = () => {
-      const players = Object.keys(channel.presenceState()).sort();
-      const spawnIndex = players.indexOf(pvpPlayerId);
-      if (spawnIndex < 0) return;
-      placePvpPlayer(worldRef.current, spawnIndex);
-      protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
-    };
     channel
-      .on('presence', { event: 'sync' }, syncSpawn)
       .on('broadcast', { event: 'state' }, ({ payload }) => {
         const { bomb, ...player } = payload as PvpPlayerState;
         if (player.id === pvpPlayerId) return;
         syncPvpBomb(worldRef.current, bomb);
         const remote: RemoteShooter = {
           ...player,
+          team: player.team ?? (worldRef.current.team === 'counter'
+            ? 'terrorists'
+            : 'counter'),
           jumpHeight: player.jumpHeight ?? 0,
           cooldown: 0,
           lastSeen: Date.now(),
@@ -88,12 +76,14 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         const index = others.findIndex((item) => item.id === player.id);
         if (index >= 0) others[index] = remote;
         else others.push(remote);
-        setPlayerCount(others.length);
+        setPlayerCount(others.filter((item) =>
+          item.team !== worldRef.current.team).length);
       })
       .on('broadcast', { event: 'damage' }, ({ payload }) => {
         const hit = payload as PvpDamageEvent;
         if (hit.targetId !== pvpPlayerId) return;
         const world = worldRef.current;
+        if (hit.attackerTeam === world.team) return;
         if (Date.now() < protectedUntilRef.current) {
           world.message = 'Выстрел заблокирован защитой спавна.';
           return;
@@ -106,7 +96,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
       .subscribe((nextStatus) => {
         if (nextStatus === 'SUBSCRIBED') {
           setStatus('online');
-          void channel.track({ id: pvpPlayerId, name: pvpPlayerName });
+          void channel.track({ id: pvpPlayerId, name: pvpPlayerName, team });
         }
         if (nextStatus === 'CHANNEL_ERROR' || nextStatus === 'TIMED_OUT') {
           setError('Не удалось подключиться к комнате.');
@@ -140,6 +130,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         targetId: hit.player.id,
         damage,
         attacker: pvpPlayerName,
+        attackerTeam: world.team,
         headshot: hit.headshot,
       } satisfies PvpDamageEvent,
     });
@@ -158,6 +149,7 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
         y: world.player.y,
         angle: world.angle,
         jumpHeight: world.jumpHeight,
+        team: world.team,
         health: world.player.health,
         weapon: world.weapon ?? undefined,
         bomb: { ...world.bomb },
@@ -165,7 +157,8 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
       void channel.send({ type: 'broadcast', event: 'state', payload });
       const limit = Date.now() - 2500;
       world.remotePlayers = world.remotePlayers.filter((player) => player.lastSeen > limit);
-      setPlayerCount(world.remotePlayers.length);
+      setPlayerCount(world.remotePlayers.filter((player) =>
+        player.team !== world.team).length);
     }, 100);
     return () => window.clearInterval(timer);
   }, [status, worldRef]);

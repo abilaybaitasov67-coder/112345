@@ -1,6 +1,12 @@
 import { useCallback, useRef, useState } from 'react';
 import { firePlayer } from '../lib/shooterPhysics';
-import { ShooterPoint, ShooterStatus, ShooterWorld, WeaponId } from '../lib/shooterTypes';
+import {
+  ShooterPoint,
+  ShooterStatus,
+  ShooterTeam,
+  ShooterWorld,
+  WeaponId,
+} from '../lib/shooterTypes';
 import { createShooterWorld } from '../lib/shooterWorld';
 import { weaponInfo, weaponSlot } from '../lib/shooterWeapons';
 import {
@@ -29,6 +35,7 @@ export interface ShooterSnapshot {
   inventory: WeaponId[];
   aiming: boolean;
   spread: number;
+  team: ShooterTeam;
   bomb: string;
 }
 
@@ -55,6 +62,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
         + (world.weapon === 'revolver' ? weaponInfo.revolver.spread * 100 : 0)
         + (world.weapon === 'shotgun' ? weaponInfo.shotgun.spread * 35 : 0),
     ),
+    team: world.team,
     bomb: world.bomb.defuser
       ? `ДЕФЬЮЗ ${Math.ceil(world.bomb.defuseTimer / 1000)}`
       : world.bomb.planted

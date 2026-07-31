@@ -1,11 +1,13 @@
 import { FormEvent, useState } from 'react';
+import { ShooterTeam } from '../lib/shooterTypes';
 
 interface Props {
   room: string;
   status: 'offline' | 'connecting' | 'online';
   error: string;
   players: number;
-  onJoin: (code: string) => void;
+  team: ShooterTeam;
+  onJoin: (code: string, team: ShooterTeam) => void;
   onLeave: () => void;
 }
 
@@ -13,11 +15,13 @@ export function ShooterMultiplayer(props: Props) {
   const [code, setCode] = useState('PVP1');
   const [hidden, setHidden] = useState(false);
   const [showRoom, setShowRoom] = useState(false);
+  const [team, setTeam] = useState<ShooterTeam>('counter');
 
   if (props.status === 'online') {
     return (
       <div className="pvp-status">
         <span>● PvP {props.room}</span>
+        <small>{props.team === 'counter' ? 'Спецназ' : 'Террористы'}</small>
         <small>Соперников: {props.players}</small>
         <button onClick={props.onLeave}>Выйти</button>
       </div>
@@ -34,7 +38,7 @@ export function ShooterMultiplayer(props: Props) {
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    props.onJoin(code);
+    props.onJoin(code, team);
   };
 
   return (
@@ -61,6 +65,23 @@ export function ShooterMultiplayer(props: Props) {
           maxLength={8}
           onChange={(event) => setCode(event.target.value)}
         />
+        <span className="pvp-team-label">Выбери сторону</span>
+        <div className="pvp-team-choice">
+          <button
+            className={team === 'terrorists' ? 'is-selected' : ''}
+            type="button"
+            onClick={() => setTeam('terrorists')}
+          >
+            Террористы
+          </button>
+          <button
+            className={team === 'counter' ? 'is-selected' : ''}
+            type="button"
+            onClick={() => setTeam('counter')}
+          >
+            Спецназ
+          </button>
+        </div>
         {props.error && <small>{props.error}</small>}
         <button type="submit" disabled={props.status === 'connecting'}>
           {props.status === 'connecting' ? 'Подключение…' : 'Войти в комнату'}

@@ -13,6 +13,7 @@ export interface RemoteShooter extends ShooterUnit {
   id: string;
   angle: number;
   jumpHeight: number;
+  team: ShooterTeam;
   name: string;
   lastSeen: number;
 }
@@ -48,6 +49,7 @@ export interface ShooterBomb extends ShooterPoint {
 }
 
 export type ShooterStatus = 'playing' | 'won' | 'lost';
+export type ShooterTeam = 'terrorists' | 'counter';
 export type WeaponId = 'knife' | 'pistol' | 'revolver' | 'smg' | 'rifle' | 'shotgun' | 'sniper';
 
 export interface ShooterWorld {
@@ -59,6 +61,7 @@ export interface ShooterWorld {
   recoil: number;
   viewKick: number;
   moving: boolean;
+  team: ShooterTeam;
   money: number;
   weapon: WeaponId | null;
   inventory: WeaponId[];

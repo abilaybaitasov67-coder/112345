@@ -1,4 +1,4 @@
-import { ShooterWorld } from './shooterTypes';
+import { ShooterPoint, ShooterTeam, ShooterWorld } from './shooterTypes';
 import {
   shooterMapBlocks,
   shooterBombSites,
@@ -11,14 +11,18 @@ export const SHOOTER_WORLD_WIDTH = 1920;
 export const SHOOTER_WORLD_HEIGHT = 1600;
 export const shooterExitPoint = { x: 1660, y: 160 };
 
-export const pvpSpawnPoints = [
-  shooterTeamSpawns.terrorists,
-  shooterTeamSpawns.counter,
-  { x: 880, y: 1500, angle: -Math.PI / 2 },
-  { x: 880, y: 360, angle: Math.PI / 2 },
-  { x: 1040, y: 1500, angle: -Math.PI / 2 },
-  { x: 1040, y: 360, angle: Math.PI / 2 },
-];
+export const pvpTeamSpawns: Record<ShooterTeam, Array<ShooterPoint & { angle: number }>> = {
+  terrorists: [
+    shooterTeamSpawns.terrorists,
+    { x: 880, y: 1500, angle: -Math.PI / 2 },
+    { x: 1040, y: 1500, angle: -Math.PI / 2 },
+  ],
+  counter: [
+    shooterTeamSpawns.counter,
+    { x: 880, y: 360, angle: Math.PI / 2 },
+    { x: 1040, y: 360, angle: Math.PI / 2 },
+  ],
+};
 
 export function createShooterWorld(): ShooterWorld {
   return {
@@ -35,6 +39,7 @@ export function createShooterWorld(): ShooterWorld {
     recoil: 0,
     viewKick: 0,
     moving: false,
+    team: 'terrorists',
     money: 1500,
     weapon: null,
     inventory: ['knife', 'pistol'],
