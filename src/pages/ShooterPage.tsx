@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { ShooterCanvas } from '../components/ShooterCanvas';
 import { ShooterControls } from '../components/ShooterControls';
@@ -21,6 +21,20 @@ export function ShooterPage() {
   const multiplayer = useShooterMultiplayer(shooter.worldRef);
   const { game } = shooter;
   const [shopOpen, setShopOpen] = useState(false);
+  useEffect(() => {
+    const toggleShop = (event: KeyboardEvent) => {
+      if (event.code !== 'KeyB'
+        || event.target instanceof HTMLInputElement
+        || event.target instanceof HTMLTextAreaElement) return;
+      event.preventDefault();
+      setShopOpen((open) => {
+        if (!open && document.pointerLockElement) document.exitPointerLock();
+        return !open;
+      });
+    };
+    window.addEventListener('keydown', toggleShop);
+    return () => window.removeEventListener('keydown', toggleShop);
+  }, []);
   const restart = () => {
     setShopOpen(false);
     shooter.restart();
@@ -46,7 +60,7 @@ export function ShooterPage() {
         <span className="shooter-hud__bomb">{game.bomb}</span>
         <span>⌁ <b>{game.weapon ? weaponInfo[game.weapon].name : 'арсенал'}</b></span>
         <span className="shooter-hud__help">
-          WASD · SPACE — прыжок · клик — огонь · удерживай E — действие
+          WASD · SPACE — прыжок · B — магазин · клик — огонь · E — действие
         </span>
       </section>
       <div className="shooter-stage">
