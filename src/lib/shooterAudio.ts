@@ -25,15 +25,11 @@ const shotProfiles: Record<WeaponId, ShotProfile> = {
     duration: .075, noiseFrequency: 2200, noiseVolume: .19,
     bodyFrequency: 170, bodyVolume: .08,
   },
-  rifle: {
-    duration: .13, noiseFrequency: 1450, noiseVolume: .28,
-    bodyFrequency: 115, bodyVolume: .15,
-  },
   ak47: {
     duration: .15, noiseFrequency: 1200, noiseVolume: .34,
     bodyFrequency: 92, bodyVolume: .2,
   },
-  m4a1: {
+  m4a4: {
     duration: .115, noiseFrequency: 1650, noiseVolume: .27,
     bodyFrequency: 125, bodyVolume: .13,
   },

@@ -81,7 +81,7 @@ function drawGun(context: CanvasRenderingContext2D, weapon: WeaponId) {
     bolt(context, 765, 420);
     return { x: 650, y: 421 };
   }
-  if (weapon === 'rifle' || weapon === 'ak47' || weapon === 'm4a1') {
+  if (weapon === 'ak47' || weapon === 'm4a4') {
     const rifleColor = weapon === 'ak47' ? '#4a3323' : '#202825';
     body(context, 610, 402, 250, 36, rifleColor);
     body(context, 725, 438, 28, 96, '#151a18');

@@ -124,7 +124,7 @@ export function updateShooter(
     world.droppedWeapons.push({
       x: enemy.x,
       y: enemy.y,
-      weapon: enemy.weapon ?? 'rifle',
+      weapon: enemy.weapon ?? 'm4a4',
     });
   });
   world.enemies = world.enemies.filter((enemy) => enemy.health > 0);

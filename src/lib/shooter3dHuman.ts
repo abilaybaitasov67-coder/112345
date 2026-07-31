@@ -22,7 +22,7 @@ function limb(radius: number, length: number, color: number, x: number, y: numbe
   return mesh;
 }
 
-export function createHumanModel(friendly: boolean, weapon: WeaponId = 'rifle') {
+export function createHumanModel(friendly: boolean, weapon: WeaponId = 'm4a4') {
   const group = new THREE.Group();
   const uniform = friendly ? 0x315b45 : 0x713d35;
   group.add(box([.52, .82, .3], uniform, [0, 1.34, 0]));

@@ -81,7 +81,7 @@ export function createWeaponModel(id: WeaponId, includeArms = true) {
       group.add(drum);
     }
   } else {
-    const isRifle = id === 'rifle' || id === 'ak47' || id === 'm4a1';
+    const isRifle = id === 'ak47' || id === 'm4a4';
     const length = id === 'sniper' ? 2.25 : id === 'shotgun' ? 1.9 : isRifle ? 1.65 : 1.1;
     group.add(createWeaponReceiver(id, length));
     if (id !== 'shotgun') {

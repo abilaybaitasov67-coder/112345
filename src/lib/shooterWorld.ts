@@ -46,7 +46,7 @@ export function createShooterWorld(): ShooterWorld {
     aiming: false,
     pvpMode: false,
     enemies: [
-      { ...shooterBombSites.B, health: 60, cooldown: 700, weapon: 'rifle' },
+      { ...shooterBombSites.B, health: 60, cooldown: 700, weapon: 'm4a4' },
       { x: 960, y: 700, health: 60, cooldown: 1000, weapon: 'smg' },
       { ...shooterBombSites.A, health: 60, cooldown: 500, weapon: 'shotgun' },
       { x: 960, y: 380, health: 60, cooldown: 1200, weapon: 'sniper' },

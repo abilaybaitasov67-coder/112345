@@ -13,7 +13,7 @@ export function syncEnemyModels(
     scene.remove(models.pop()!);
   }
   while (models.length < world.enemies.length) {
-    const weapon = world.enemies[models.length].weapon ?? 'rifle';
+    const weapon = world.enemies[models.length].weapon ?? 'm4a4';
     const model = createHumanModel(false, weapon);
     model.userData.weapon = weapon;
     models.push(model);
@@ -22,7 +22,7 @@ export function syncEnemyModels(
   models.forEach((currentModel, index) => {
     const enemy = world.enemies[index];
     let model = currentModel;
-    const weapon = enemy.weapon ?? 'rifle';
+    const weapon = enemy.weapon ?? 'm4a4';
     if (model.userData.weapon !== weapon) {
       scene.remove(model);
       model = createHumanModel(false, weapon);
@@ -58,7 +58,7 @@ export function syncRemotePlayerModels(
     }
   });
   world.remotePlayers.forEach((player) => {
-    const weapon = player.weapon ?? 'rifle';
+    const weapon = player.weapon ?? 'm4a4';
     const friendly = player.team === world.team;
     let model = models.get(player.id);
     if (!model

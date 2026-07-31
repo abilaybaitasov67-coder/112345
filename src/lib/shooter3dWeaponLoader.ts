@@ -38,7 +38,7 @@ async function getWeapon(id: WeaponId, path: string) {
 export async function loadBlenderWeapon(id: WeaponId) {
   const sourceId = id === 'ak47' ? 'rifle' : id;
   const path = `${import.meta.env.BASE_URL}models/weapons/${sourceId}.glb`;
-  const weapon = id === 'm4a1'
+  const weapon = id === 'm4a4'
     ? createWeaponModel(id, false)
     : await getWeapon(id, path);
   const viewModel = new THREE.Group();

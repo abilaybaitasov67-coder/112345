@@ -9,7 +9,7 @@ import { createShooterBullet, getTargetSlope } from './shooterBullets';
 import { moveEnemyWithNavigation } from './shooterNavigation';
 import { playWeaponShot } from './shooterAudio';
 
-const automaticWeapons = new Set<WeaponId>(['smg', 'rifle', 'ak47', 'm4a1']);
+const automaticWeapons = new Set<WeaponId>(['smg', 'ak47', 'm4a4']);
 
 export function getBotAimTarget(
   enemy: ShooterPoint,
@@ -56,7 +56,7 @@ export function updateShooterBots(world: ShooterWorld, elapsed: number) {
     );
     const isDefusing = world.bomb.planted && bombDistance <= 70;
     if (isDefusing || enemy.cooldown > 0 || playerDistance >= 650) return;
-    const weaponId = enemy.weapon ?? 'rifle';
+    const weaponId = enemy.weapon ?? 'm4a4';
     const weapon = weaponInfo[weaponId];
     world.bullets.push(createShooterBullet(
       enemy,

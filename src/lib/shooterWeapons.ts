@@ -30,17 +30,13 @@ export const weaponInfo: Record<WeaponId, WeaponInfo> = {
     name: 'Viper-9', price: 650, damage: 18, cooldown: 60,
     pellets: 1, spread: .055, recoil: .017, bulletSpeed: 1.15, detail: '9 мм · высокая скорострельность', icon: 'V9',
   },
-  rifle: {
-    name: 'AR-4', price: 900, damage: 30, cooldown: 95,
-    pellets: 1, spread: .018, recoil: .027, bulletSpeed: 1.45, detail: '5,56 мм · штурмовая винтовка', icon: 'AR',
-  },
   ak47: {
     name: 'АК-47', price: 900, damage: 36, cooldown: 105,
     pellets: 1, spread: .024, recoil: .035, bulletSpeed: 1.5,
     detail: '7,62 мм · мощный автомат террористов', icon: 'AK',
   },
-  m4a1: {
-    name: 'M4A1', price: 900, damage: 30, cooldown: 85,
+  m4a4: {
+    name: 'M4A4', price: 900, damage: 30, cooldown: 85,
     pellets: 1, spread: .015, recoil: .023, bulletSpeed: 1.5,
     detail: '5,56 мм · точная винтовка спецназа', icon: 'M4',
   },
@@ -62,7 +58,7 @@ export function weaponSlot(weapon: WeaponId) {
 
 export const teamShopWeapons: Record<ShooterTeam, WeaponId[]> = {
   terrorists: ['revolver', 'smg', 'ak47', 'shotgun', 'sniper'],
-  counter: ['pistol', 'm4a1', 'shotgun', 'sniper'],
+  counter: ['pistol', 'm4a4', 'shotgun', 'sniper'],
 };
 
 export function canTeamBuyWeapon(team: ShooterTeam, weapon: WeaponId) {

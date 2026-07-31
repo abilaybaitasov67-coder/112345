@@ -56,9 +56,8 @@ export type WeaponId =
   | 'pistol'
   | 'revolver'
   | 'smg'
-  | 'rifle'
   | 'ak47'
-  | 'm4a1'
+  | 'm4a4'
   | 'shotgun'
   | 'sniper';
 
