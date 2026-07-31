@@ -80,7 +80,7 @@ function details(id: WeaponId, length: number) {
   const group = new THREE.Group();
   group.add(part([.06, .08, .32], [.16, .08, -.3], 0x0c0f0e, .9));
   group.add(part([.04, .04, .16], [.16, .22, -.34], 0x9b7b42, .7));
-  if (id === 'rifle') {
+  if (id === 'rifle' || id === 'ak47' || id === 'm4a1') {
     group.add(part([.05, .19, .06], [0, .24, -.35], 0x111513));
     group.add(part([.05, .2, .06], [0, .24, -length + .1], 0x111513));
   }
@@ -93,7 +93,9 @@ function details(id: WeaponId, length: number) {
 
 export function createWeaponReceiver(id: WeaponId, length: number) {
   const group = new THREE.Group();
-  const receiverColor = id === 'rifle' ? 0x3d3326 : 0x242a28;
+  const receiverColor = id === 'ak47'
+    ? 0x4a3323
+    : id === 'rifle' || id === 'm4a1' ? 0x202825 : 0x242a28;
   group.add(part([.28, .27, .7], [0, 0, -.34], receiverColor));
   group.add(stock(id));
   group.add(handguard(id, length));

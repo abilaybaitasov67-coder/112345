@@ -81,13 +81,14 @@ export function createWeaponModel(id: WeaponId, includeArms = true) {
       group.add(drum);
     }
   } else {
-    const length = id === 'sniper' ? 2.25 : id === 'shotgun' ? 1.9 : id === 'rifle' ? 1.65 : 1.1;
+    const isRifle = id === 'rifle' || id === 'ak47' || id === 'm4a1';
+    const length = id === 'sniper' ? 2.25 : id === 'shotgun' ? 1.9 : isRifle ? 1.65 : 1.1;
     group.add(createWeaponReceiver(id, length));
     if (id !== 'shotgun') {
       addBarrel(group, id === 'sniper' ? 1.15 : .65, -length);
     }
     addGrip(group, -.25);
-    if (id === 'rifle' || id === 'smg') {
+    if (isRifle || id === 'smg') {
       group.add(box(.19, .05, length * .62, 0x111513, 0, .16, -length * .4));
       addSight(group, -length + .08);
     }

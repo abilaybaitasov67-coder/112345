@@ -9,7 +9,7 @@ import { createShooterBullet, getTargetSlope } from './shooterBullets';
 import { moveEnemyWithNavigation } from './shooterNavigation';
 import { playWeaponShot } from './shooterAudio';
 
-const automaticWeapons = new Set<WeaponId>(['smg', 'rifle']);
+const automaticWeapons = new Set<WeaponId>(['smg', 'rifle', 'ak47', 'm4a1']);
 
 export function getBotAimTarget(
   enemy: ShooterPoint,

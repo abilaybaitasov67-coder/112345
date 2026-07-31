@@ -51,7 +51,16 @@ export interface ShooterBomb extends ShooterPoint {
 
 export type ShooterStatus = 'playing' | 'won' | 'lost';
 export type ShooterTeam = 'terrorists' | 'counter';
-export type WeaponId = 'knife' | 'pistol' | 'revolver' | 'smg' | 'rifle' | 'shotgun' | 'sniper';
+export type WeaponId =
+  | 'knife'
+  | 'pistol'
+  | 'revolver'
+  | 'smg'
+  | 'rifle'
+  | 'ak47'
+  | 'm4a1'
+  | 'shotgun'
+  | 'sniper';
 
 export interface ShooterWorld {
   player: ShooterUnit;

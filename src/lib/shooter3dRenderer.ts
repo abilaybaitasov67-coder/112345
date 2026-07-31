@@ -66,7 +66,7 @@ export class Shooter3dRenderer {
     void loadBlenderWeapon(requestedWeapon).then((model) => {
       if (request !== this.weaponRequest) return;
       this.weapon = model;
-      const hasHands = requestedWeapon === 'rifle';
+      const hasHands = ['rifle', 'ak47', 'm4a1'].includes(requestedWeapon);
       const weaponY = requestedWeapon === 'sniper' ? -.32 : -.36;
       const weaponScale = requestedWeapon === 'sniper' ? .66 : hasHands ? .52 : .62;
       model.scale.setScalar(weaponScale);
