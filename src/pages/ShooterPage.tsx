@@ -67,7 +67,7 @@ export function ShooterPage() {
             <span className="shooter-scope__horizontal" />
             <span className="shooter-scope__vertical" />
           </div>
-        ) : (
+        ) : game.weapon !== 'sniper' ? (
           <div
             className="shooter-crosshair"
             style={{ '--spread': `${game.spread}px` } as CSSProperties}
@@ -75,7 +75,7 @@ export function ShooterPage() {
           >
             <span /><span /><span /><span /><i />
           </div>
-        )}
+        ) : null}
         {game.weapon && (
           <ShooterInventory
             weapons={game.inventory}

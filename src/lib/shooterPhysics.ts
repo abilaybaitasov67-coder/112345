@@ -49,7 +49,10 @@ export function firePlayer(world: ShooterWorld) {
   const aimScale = world.aiming ? .18 : 1;
   const movementSpread = world.moving ? .065 : 0;
   const jumpSpread = world.jumpHeight > .05 ? .12 : 0;
-  const accuracySpread = (world.recoil + movementSpread + jumpSpread) * aimScale;
+  const sniperHipSpread = world.weapon === 'sniper' && !world.aiming ? .2 : 0;
+  const accuracySpread = (
+    world.recoil + movementSpread + jumpSpread + sniperHipSpread
+  ) * aimScale;
   const pelletSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {
     const accuracyOffset = (Math.random() - .5) * accuracySpread;
