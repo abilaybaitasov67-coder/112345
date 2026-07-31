@@ -52,6 +52,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
       world.recoil * 120
         + (world.moving ? 13 : 0)
         + (world.jumpHeight > .05 ? 13 : 0)
+        + (world.weapon === 'revolver' ? weaponInfo.revolver.spread * 100 : 0)
         + (world.weapon === 'shotgun' ? weaponInfo.shotgun.spread * 35 : 0),
     ),
     bomb: world.bomb.defuser

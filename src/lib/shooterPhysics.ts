@@ -50,8 +50,10 @@ export function firePlayer(world: ShooterWorld) {
   const movementSpread = world.moving ? .12 : 0;
   const jumpSpread = world.jumpHeight > .05 ? .12 : 0;
   const sniperHipSpread = world.weapon === 'sniper' && !world.aiming ? .2 : 0;
+  const revolverSpread = world.weapon === 'revolver' ? weapon.spread : 0;
   const accuracySpread = (
-    world.recoil + movementSpread + jumpSpread + sniperHipSpread
+    world.recoil + movementSpread + jumpSpread
+      + sniperHipSpread + revolverSpread
   ) * aimScale;
   const pelletSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {

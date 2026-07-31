@@ -24,7 +24,7 @@ export const weaponInfo: Record<WeaponId, WeaponInfo> = {
   },
   revolver: {
     name: 'R6 Magnum', price: 450, damage: 45, cooldown: 480,
-    pellets: 1, spread: .015, recoil: .038, bulletSpeed: 1.45, detail: '6 патронов · высокий урон', icon: 'R6',
+    pellets: 1, spread: .12, recoil: .038, bulletSpeed: 1.45, detail: '6 патронов · высокий урон', icon: 'R6',
   },
   smg: {
     name: 'Viper-9', price: 650, damage: 18, cooldown: 60,
