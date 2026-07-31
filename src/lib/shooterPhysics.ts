@@ -10,19 +10,19 @@ import {
 import { weaponInfo } from './shooterWeapons';
 import { updateBomb } from './shooterBomb';
 import {
-  SHOOTER_UNIT_RADIUS,
   hasShooterLineOfSight,
   moveShooterPoint,
 } from './shooterCollision';
 import { moveEnemyWithNavigation } from './shooterNavigation';
 import {
   createShooterBullet,
-  distanceToBulletPath,
+  findBulletTarget,
   getShotOffset,
   getTargetSlope,
   moveShooterBullet,
 } from './shooterBullets';
 import { updateShooterJump } from './shooterJump';
+import { getShooterFloorHeight } from './shooterFloorHeight';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -120,11 +120,14 @@ export function updateShooter(
       bullet.height,
     )) return false;
     const targets = bullet.enemy ? [world.player] : world.enemies;
-    const hit = targets.find((target) =>
-      distanceToBulletPath(target, start, bullet) < SHOOTER_UNIT_RADIUS);
-    if (!hit) return true;
+    const impact = findBulletTarget(targets, (target) =>
+      getShooterFloorHeight(target.x, target.y)
+        + (target === world.player ? world.jumpHeight : 0), start, bullet);
+    if (!impact) return true;
     const playerDamage = selectedWeapon.damage;
-    hit.health -= bullet.enemy ? 12 : playerDamage;
+    const headshot = !bullet.enemy && impact.relativeHeight >= 1.42;
+    impact.target.health -= bullet.enemy ? 12 : playerDamage * (headshot ? 2 : 1);
+    if (headshot) world.message = `ХЕДШОТ! −${playerDamage * 2} HP`;
     return false;
   });
   const defeated = world.enemies.filter((enemy) => enemy.health <= 0);

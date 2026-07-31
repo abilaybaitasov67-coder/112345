@@ -1,6 +1,11 @@
 import { hasShooterLineOfSight } from './shooterCollision';
 import { getShooterFloorHeight } from './shooterFloorHeight';
-import { RemoteShooter, ShooterBomb, ShooterWorld } from './shooterTypes';
+import {
+  RemoteShooter,
+  ShooterBomb,
+  ShooterBullet,
+  ShooterWorld,
+} from './shooterTypes';
 import { pvpSpawnPoints } from './shooterWorld';
 
 function createPlayerId() {
@@ -29,6 +34,7 @@ export interface PvpDamageEvent {
   targetId: string;
   damage: number;
   attacker: string;
+  headshot: boolean;
 }
 
 export function getPvpSpawn(playerId: string) {
@@ -64,28 +70,47 @@ export function syncPvpBomb(world: ShooterWorld, incoming?: ShooterBomb) {
   }
 }
 
-export function findVisiblePvpTarget(world: ShooterWorld) {
+export function findVisiblePvpTarget(world: ShooterWorld, shot?: ShooterBullet) {
   if (!world.weapon) return undefined;
   const maxDistance = world.weapon === 'knife' ? 65 : 900;
+  const shotAngle = shot ? Math.atan2(shot.dy, shot.dx) : world.angle;
+  const verticalSlope = shot?.verticalSlope
+    ?? (world.pitch + world.viewKick) / 430;
+  const eyeHeight = shot?.height ?? 1.7 + world.jumpHeight
+    + getShooterFloorHeight(world.player.x, world.player.y);
   return world.remotePlayers
     .map((player) => {
       const dx = player.x - world.player.x;
       const dy = player.y - world.player.y;
       const distance = Math.hypot(dx, dy);
-      const angle = Math.atan2(dy, dx) - world.angle;
+      const angle = Math.atan2(dy, dx) - shotAngle;
       const difference = Math.abs(Math.atan2(Math.sin(angle), Math.cos(angle)));
-      return { player, distance, difference };
+      const feet = (player.jumpHeight ?? 0)
+        + getShooterFloorHeight(player.x, player.y);
+      const hitHeight = eyeHeight + distance * .025 * verticalSlope - feet;
+      return { player, distance, difference, hitHeight };
     })
-    .filter(({ player, distance, difference }) =>
-      player.health > 0
-      && distance <= maxDistance
-      && difference < Math.max(.04, 18 / distance)
-      && hasShooterLineOfSight(
-        world.player,
-        player,
-        world.covers,
-        1.7 + world.jumpHeight + getShooterFloorHeight(world.player.x, world.player.y),
-        1.7 + (player.jumpHeight ?? 0) + getShooterFloorHeight(player.x, player.y),
-      ))
-    .sort((a, b) => a.difference - b.difference)[0]?.player;
+    .filter(({ player, distance, difference, hitHeight }) => {
+      const feet = (player.jumpHeight ?? 0)
+        + getShooterFloorHeight(player.x, player.y);
+      return (
+        player.health > 0
+        && distance <= maxDistance
+        && difference < Math.max(.04, 18 / distance)
+        && hitHeight >= .15
+        && hitHeight <= 1.95
+        && hasShooterLineOfSight(
+          world.player,
+          player,
+          world.covers,
+          eyeHeight,
+          feet + hitHeight,
+        )
+      );
+    })
+    .sort((a, b) => a.difference - b.difference)
+    .map(({ player, hitHeight }) => ({
+      player,
+      headshot: world.weapon !== 'knife' && hitHeight >= 1.42,
+    }))[0];
 }

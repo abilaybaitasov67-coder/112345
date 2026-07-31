@@ -99,7 +99,9 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
           return;
         }
         world.player.health = Math.max(0, world.player.health - hit.damage);
-        world.message = `${hit.attacker} попал в тебя: −${hit.damage} HP`;
+        world.message = hit.headshot
+          ? `${hit.attacker}: ХЕДШОТ! −${hit.damage} HP`
+          : `${hit.attacker} попал в тебя: −${hit.damage} HP`;
       })
       .subscribe((nextStatus) => {
         if (nextStatus === 'SUBSCRIBED') {
@@ -118,19 +120,27 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     const channel = channelRef.current;
     const world = worldRef.current;
     if (!channel || status !== 'online' || !world.weapon) return;
+    const weapon = weaponInfo[world.weapon];
+    if (Math.abs(world.player.cooldown - weapon.cooldown) > .001) return;
     if (Date.now() < protectedUntilRef.current) {
       world.message = 'Подожди окончания защиты спавна, затем стреляй.';
       return;
     }
-    const target = findVisiblePvpTarget(world);
-    if (!target) return;
+    const shot = world.weapon === 'knife'
+      ? undefined
+      : world.bullets[world.bullets.length - 1];
+    const hit = findVisiblePvpTarget(world, shot);
+    if (!hit) return;
+    const damage = weapon.damage * (hit.headshot ? 2 : 1);
+    if (hit.headshot) world.message = `ХЕДШОТ! −${damage} HP`;
     void channel.send({
       type: 'broadcast',
       event: 'damage',
       payload: {
-        targetId: target.id,
-        damage: weaponInfo[world.weapon].damage,
+        targetId: hit.player.id,
+        damage,
         attacker: pvpPlayerName,
+        headshot: hit.headshot,
       } satisfies PvpDamageEvent,
     });
   }, [status, worldRef]);

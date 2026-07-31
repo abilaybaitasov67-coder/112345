@@ -1,5 +1,6 @@
 import { getShooterFloorHeight } from './shooterFloorHeight';
 import { ShooterBullet, ShooterPoint } from './shooterTypes';
+import { SHOOTER_UNIT_RADIUS } from './shooterCollision';
 
 const WORLD_TO_SCENE = .025;
 
@@ -50,15 +51,40 @@ export function moveShooterBullet(bullet: ShooterBullet, elapsed: number) {
   bullet.height += elapsed * bullet.speed * WORLD_TO_SCENE * bullet.verticalSlope;
 }
 
-export function distanceToBulletPath(
+export function getBulletPathHit(
   point: ShooterPoint,
-  start: ShooterPoint,
-  end: ShooterPoint,
+  start: ShooterBullet,
+  end: ShooterBullet,
 ) {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
   const lengthSquared = dx * dx + dy * dy;
   const amount = lengthSquared === 0 ? 0 : Math.max(0, Math.min(1,
     ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared));
-  return distance(point, { x: start.x + dx * amount, y: start.y + dy * amount });
+  return {
+    distance: distance(point, {
+      x: start.x + dx * amount,
+      y: start.y + dy * amount,
+    }),
+    height: start.height + (end.height - start.height) * amount,
+  };
+}
+
+export function findBulletTarget<Target extends ShooterPoint>(
+  targets: Target[],
+  feetHeight: (target: Target) => number,
+  start: ShooterBullet,
+  end: ShooterBullet,
+) {
+  return targets.map((target) => {
+    const path = getBulletPathHit(target, start, end);
+    return {
+      target,
+      path,
+      relativeHeight: path.height - feetHeight(target),
+    };
+  }).find(({ path, relativeHeight }) =>
+    path.distance < SHOOTER_UNIT_RADIUS
+    && relativeHeight >= .15
+    && relativeHeight <= 1.95);
 }
