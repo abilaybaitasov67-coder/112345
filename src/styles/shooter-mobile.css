@@ -1,4 +1,26 @@
 @media (max-width: 720px), (pointer: coarse) {
+  .game-lobby { padding: 10px; }
+  .game-lobby__topbar { grid-template-columns: 1fr auto; font-size: 11px; }
+  .game-lobby__topbar strong { display: none; }
+  .game-lobby__nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+  .game-lobby__nav button { flex: 0 0 auto; padding: 9px; font-size: 11px; }
+  .game-lobby__content { min-height: 0; }
+  .lobby-hero { min-height: 0; grid-template-columns: 1fr; gap: 24px; padding: 34px 4px; }
+  .lobby-hero__copy h1 { font-size: 48px; }
+  .lobby-weapon-card > span { margin: 22px 0; }
+  .lobby-panel { padding: 22px 0; }
+  .lobby-panel__heading { align-items: flex-start; flex-direction: column; margin-bottom: 18px; }
+  .loadout-grid, .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+  .loadout-grid button { min-height: 190px; padding: 12px; }
+  .loadout-grid__icon { padding: 24px 0; }
+  .loadout-fixed, .case-grid { grid-template-columns: 1fr; }
+  .case-grid article { padding: 16px; }
+  .case-reward { right: 10px; bottom: 10px; left: 10px; font-size: 12px; }
+
   .shooter-page {
     min-height: 100dvh;
     padding: 6px;

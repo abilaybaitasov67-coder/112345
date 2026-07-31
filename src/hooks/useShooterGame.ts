@@ -76,8 +76,8 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
   };
 }
 
-export function useShooterGame() {
-  const worldRef = useRef(createShooterWorld());
+export function useShooterGame(primaryWeapon?: WeaponId) {
+  const worldRef = useRef(createShooterWorld(primaryWeapon));
   const keysRef = useRef(new Set<string>());
   const mobileRef = useRef<ShooterPoint>({ x: 0, y: 0 });
   const [game, setGame] = useState(() => snapshot(worldRef.current));
@@ -85,10 +85,10 @@ export function useShooterGame() {
 
   const sync = useCallback(() => setGame(snapshot(worldRef.current)), []);
   const restart = useCallback(() => {
-    worldRef.current = createShooterWorld();
+    worldRef.current = createShooterWorld(primaryWeapon);
     setRestartKey((key) => key + 1);
     sync();
-  }, [sync]);
+  }, [primaryWeapon, sync]);
   const fire = useCallback(() => {
     const world = worldRef.current;
     const weapon = world.weapon;

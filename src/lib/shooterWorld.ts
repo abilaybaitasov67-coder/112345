@@ -1,4 +1,4 @@
-import { ShooterPoint, ShooterTeam, ShooterWorld } from './shooterTypes';
+import { ShooterPoint, ShooterTeam, ShooterWorld, WeaponId } from './shooterTypes';
 import {
   shooterMapBlocks,
   shooterBombSites,
@@ -24,7 +24,9 @@ export const pvpTeamSpawns: Record<ShooterTeam, Array<ShooterPoint & { angle: nu
   ],
 };
 
-export function createShooterWorld(): ShooterWorld {
+export function createShooterWorld(primaryWeapon?: WeaponId): ShooterWorld {
+  const inventory: WeaponId[] = ['knife', 'pistol'];
+  if (primaryWeapon && !inventory.includes(primaryWeapon)) inventory.push(primaryWeapon);
   return {
     player: {
       x: shooterTeamSpawns.terrorists.x,
@@ -41,8 +43,8 @@ export function createShooterWorld(): ShooterWorld {
     moving: false,
     team: 'terrorists',
     money: 1500,
-    weapon: null,
-    inventory: ['knife', 'pistol'],
+    weapon: primaryWeapon ?? null,
+    inventory,
     aiming: false,
     pvpMode: false,
     enemies: [
