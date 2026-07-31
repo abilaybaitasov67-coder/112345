@@ -64,6 +64,18 @@ export function placePvpPlayer(
   world.message = 'Защита спавна действует 8 секунд.';
 }
 
+export function preparePvpWorld(
+  world: ShooterWorld,
+  playerId: string,
+  team: ShooterTeam,
+) {
+  world.enemies = [];
+  world.bullets = [];
+  world.droppedWeapons = [];
+  world.pvpMode = true;
+  placePvpPlayer(world, playerId, team);
+}
+
 export function syncPvpBomb(world: ShooterWorld, incoming?: ShooterBomb) {
   if (!incoming || incoming.updatedAt <= world.bomb.updatedAt) return;
   world.bomb = {

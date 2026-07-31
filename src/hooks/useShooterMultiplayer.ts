@@ -5,7 +5,7 @@ import { RemoteShooter, ShooterTeam, ShooterWorld } from '../lib/shooterTypes';
 import { weaponInfo } from '../lib/shooterWeapons';
 import {
   findVisiblePvpTarget,
-  placePvpPlayer,
+  preparePvpWorld,
   pvpPlayerId,
   pvpPlayerName,
   PVP_SPAWN_PROTECTION_MS,
@@ -17,6 +17,7 @@ import {
 export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) {
   const channelRef = useRef<RealtimeChannel | null>(null);
   const botsRef = useRef(worldRef.current.enemies);
+  const teamRef = useRef<ShooterTeam>('counter');
   const protectedUntilRef = useRef(0);
   const [room, setRoom] = useState('');
   const [status, setStatus] = useState<'offline' | 'connecting' | 'online'>('offline');
@@ -47,9 +48,8 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
     }
     leave();
     botsRef.current = worldRef.current.enemies;
-    worldRef.current.enemies = [];
-    worldRef.current.pvpMode = true;
-    placePvpPlayer(worldRef.current, pvpPlayerId, team);
+    teamRef.current = team;
+    preparePvpWorld(worldRef.current, pvpPlayerId, team);
     worldRef.current.message = 'Защита спавна действует 8 секунд.';
     protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
     setError('');
@@ -105,6 +105,13 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
       });
     channelRef.current = channel;
   }, [leave, worldRef]);
+
+  const resetRound = useCallback(() => {
+    if (status !== 'online') return;
+    botsRef.current = worldRef.current.enemies;
+    preparePvpWorld(worldRef.current, pvpPlayerId, teamRef.current);
+    protectedUntilRef.current = Date.now() + PVP_SPAWN_PROTECTION_MS;
+  }, [status, worldRef]);
 
   const fire = useCallback(() => {
     const channel = channelRef.current;
@@ -165,5 +172,8 @@ export function useShooterMultiplayer(worldRef: MutableRefObject<ShooterWorld>) 
 
   useEffect(() => leave, [leave]);
 
-  return { room, status, error, players: playerCount, join, leave, fire };
+  return {
+    room, status, error, players: playerCount,
+    join, leave, fire, resetRound,
+  };
 }

@@ -20,12 +20,17 @@ export function ShooterPage() {
   const shooter = useShooterGame();
   const multiplayer = useShooterMultiplayer(shooter.worldRef);
   const { game } = shooter;
+  const restart = () => {
+    shooter.restart();
+    multiplayer.resetRound();
+    shooter.sync();
+  };
   return (
     <main className="shooter-page">
       <header className="shooter-header">
         <Link href="/">← Все игры</Link>
         <strong>КАРТА «ПЫЛЬНЫЙ РУБЕЖ»</strong>
-        <button onClick={shooter.restart}>↻ Заново</button>
+        <button onClick={restart}>↻ Заново</button>
       </header>
       <section className="shooter-hud">
         <span className="shooter-hud__team">
@@ -90,7 +95,7 @@ export function ShooterPage() {
           <div className="shooter-result">
             <h1>{game.status === 'won' ? 'МИССИЯ ВЫПОЛНЕНА' : 'МИССИЯ ПРОВАЛЕНА'}</h1>
             <p>{game.message}</p>
-            <button onClick={shooter.restart}>Играть снова</button>
+            <button onClick={restart}>Играть снова</button>
           </div>
         )}
         {!game.weapon && (
