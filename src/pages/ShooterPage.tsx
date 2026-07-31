@@ -122,6 +122,7 @@ export function ShooterPage() {
         Планировка вдохновлена Dust II · автор оригинальной карты — Dave Johnston
       </p>
       <ShooterControls
+        aiming={game.aiming}
         onMove={shooter.setMobile}
         onFire={() => {
           shooter.fire();

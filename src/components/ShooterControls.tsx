@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 interface Props {
+  aiming: boolean;
   onMove: (x: number, y: number) => void;
   onFire: () => void;
   onAim: (aiming: boolean) => void;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export function ShooterControls({
-  onMove, onFire, onAim, onJump, onPickup, onActionEnd,
+  aiming, onMove, onFire, onAim, onJump, onPickup, onActionEnd,
 }: Props) {
   const fireTimer = useRef<number | null>(null);
   const stopFire = () => {
@@ -55,11 +56,8 @@ export function ShooterControls({
         >ДЕЙСТВИЕ</button>
         <button
           className="shooter-aim"
-          onPointerDown={() => onAim(true)}
-          onPointerUp={() => onAim(false)}
-          onPointerCancel={() => onAim(false)}
-          onPointerLeave={() => onAim(false)}
-        >ПРИЦЕЛ</button>
+          onPointerDown={() => onAim(!aiming)}
+        >{aiming ? 'ВЫЙТИ' : 'ПРИЦЕЛ'}</button>
         <button
           className="shooter-fire"
           onPointerDown={startFire}

@@ -130,7 +130,7 @@ export function ShooterCanvas(props: Props) {
       }}
       onPointerDown={(event) => {
         if (event.button === 2) {
-          props.onAim(true);
+          props.onAim(!props.worldRef.current.aiming);
           return;
         }
         if (event.pointerType === 'mouse') {
@@ -143,9 +143,8 @@ export function ShooterCanvas(props: Props) {
           canvasRef.current?.setPointerCapture(event.pointerId);
         }
       }}
-      onPointerUp={(event) => {
+      onPointerUp={() => {
         firingRef.current = false;
-        if (event.button === 2) props.onAim(false);
         pointerX.current = null;
         pointerY.current = null;
       }}
