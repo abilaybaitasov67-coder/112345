@@ -1,3 +1,5 @@
+import { ShooterCover } from './shooterTypes';
+
 export const SHOOTER_A_HEIGHT = .66;
 
 const SHORT_STEP_COUNT = 5;
@@ -23,4 +25,26 @@ export function getShooterFloorHeight(x: number, y: number) {
   }
 
   return 0;
+}
+
+export function getShooterCoverTop(cover: ShooterCover) {
+  const centerX = cover.x + cover.width / 2;
+  const centerY = cover.y + cover.height / 2;
+  return getShooterFloorHeight(centerX, centerY) + (cover.wallHeight ?? 0);
+}
+
+export function getShooterStandingOffset(
+  x: number,
+  y: number,
+  covers: ShooterCover[],
+) {
+  const baseHeight = getShooterFloorHeight(x, y);
+  return covers.reduce((height, cover) => {
+    if (!cover.climbable
+      || x < cover.x
+      || x > cover.x + cover.width
+      || y < cover.y
+      || y > cover.y + cover.height) return height;
+    return Math.max(height, getShooterCoverTop(cover) - baseHeight);
+  }, 0);
 }

@@ -32,6 +32,7 @@ export interface ShooterCover extends ShooterPoint {
   width: number;
   height: number;
   wallHeight?: number;
+  climbable?: boolean;
 }
 
 export interface DroppedWeapon extends ShooterPoint {

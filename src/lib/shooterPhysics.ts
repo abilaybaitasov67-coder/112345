@@ -28,7 +28,9 @@ function distance(a: ShooterPoint, b: ShooterPoint) {
 }
 
 function movePlayer(world: ShooterWorld, x: number, y: number) {
-  moveShooterPoint(world.player, x, y, world.covers);
+  const feetHeight = getShooterFloorHeight(world.player.x, world.player.y)
+    + world.jumpHeight;
+  moveShooterPoint(world.player, x, y, world.covers, feetHeight);
 }
 
 export function firePlayer(world: ShooterWorld) {
