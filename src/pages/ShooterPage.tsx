@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { Link } from 'wouter';
 import { ShooterCanvas } from '../components/ShooterCanvas';
 import { ShooterControls } from '../components/ShooterControls';
@@ -7,6 +7,7 @@ import { ShooterInventory } from '../components/ShooterInventory';
 import { ShooterMultiplayer } from '../components/ShooterMultiplayer';
 import { ShooterMinimap } from '../components/ShooterMinimap';
 import { useShooterGame } from '../hooks/useShooterGame';
+import { useShooterHotkeys } from '../hooks/useShooterHotkeys';
 import { useShooterMultiplayer } from '../hooks/useShooterMultiplayer';
 import { weaponInfo } from '../lib/shooterWeapons';
 import '../styles/shooter.css';
@@ -21,20 +22,7 @@ export function ShooterPage() {
   const multiplayer = useShooterMultiplayer(shooter.worldRef);
   const { game } = shooter;
   const [shopOpen, setShopOpen] = useState(false);
-  useEffect(() => {
-    const toggleShop = (event: KeyboardEvent) => {
-      if (event.code !== 'KeyB'
-        || event.target instanceof HTMLInputElement
-        || event.target instanceof HTMLTextAreaElement) return;
-      event.preventDefault();
-      setShopOpen((open) => {
-        if (!open && document.pointerLockElement) document.exitPointerLock();
-        return !open;
-      });
-    };
-    window.addEventListener('keydown', toggleShop);
-    return () => window.removeEventListener('keydown', toggleShop);
-  }, []);
+  useShooterHotkeys(shooter.worldRef, shooter.selectWeapon, setShopOpen);
   const restart = () => {
     setShopOpen(false);
     shooter.restart();
@@ -60,7 +48,7 @@ export function ShooterPage() {
         <span className="shooter-hud__bomb">{game.bomb}</span>
         <span>⌁ <b>{game.weapon ? weaponInfo[game.weapon].name : 'арсенал'}</b></span>
         <span className="shooter-hud__help">
-          WASD · SPACE — прыжок · B — магазин · клик — огонь · E — действие
+          WASD · SPACE — прыжок · 1/2/3 — оружие · B — магазин · E — действие
         </span>
       </section>
       <div className="shooter-stage">
