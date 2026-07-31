@@ -57,6 +57,7 @@ export interface ShooterWorld {
   jumpHeight: number;
   jumpVelocity: number;
   recoil: number;
+  viewKick: number;
   moving: boolean;
   money: number;
   weapon: WeaponId | null;

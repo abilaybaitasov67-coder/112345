@@ -88,7 +88,7 @@ function drawEnemy(
 export function drawShooter(context: CanvasRenderingContext2D, world: ShooterWorld) {
   const scoped = world.weapon === 'sniper' && world.aiming;
   const fov = scoped ? Math.PI / 8 : DEFAULT_FOV;
-  const horizon = SHOOTER_HEIGHT / 2 + world.pitch;
+  const horizon = SHOOTER_HEIGHT / 2 + world.pitch + world.viewKick;
   const sky = context.createLinearGradient(0, 0, 0, horizon);
   sky.addColorStop(0, '#81909a'); sky.addColorStop(1, '#c3c8c5');
   context.fillStyle = sky;

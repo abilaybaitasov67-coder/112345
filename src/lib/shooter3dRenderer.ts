@@ -81,7 +81,7 @@ export class Shooter3dRenderer {
       1.7 + floorHeight + world.jumpHeight,
       world.player.y * SCALE,
     );
-    const pitch = world.pitch / 430;
+    const pitch = (world.pitch + world.viewKick) / 430;
     this.camera.lookAt(
       this.camera.position.x + Math.cos(world.angle),
       1.7 + floorHeight + world.jumpHeight + pitch,

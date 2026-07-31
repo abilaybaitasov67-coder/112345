@@ -33,6 +33,7 @@ export function createShooterWorld(): ShooterWorld {
     jumpHeight: 0,
     jumpVelocity: 0,
     recoil: 0,
+    viewKick: 0,
     moving: false,
     money: 1500,
     weapon: null,

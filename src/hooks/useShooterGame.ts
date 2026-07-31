@@ -48,9 +48,9 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     inventory: [...world.inventory],
     aiming: world.aiming,
     spread: Math.min(
-      16,
-      world.recoil * 90
-        + (world.moving ? 5 : 0)
+      28,
+      world.recoil * 120
+        + (world.moving ? 7 : 0)
         + (world.weapon === 'shotgun' ? weaponInfo.shotgun.spread * 35 : 0),
     ),
     bomb: world.bomb.defuser

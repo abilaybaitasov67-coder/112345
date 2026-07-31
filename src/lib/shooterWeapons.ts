@@ -20,27 +20,27 @@ export const weaponInfo: Record<WeaponId, WeaponInfo> = {
   },
   pistol: {
     name: 'P12', price: 0, damage: 24, cooldown: 250,
-    pellets: 1, spread: 0, recoil: .012, bulletSpeed: 1.25, detail: '12 патронов · полуавтомат', icon: 'P12',
+    pellets: 1, spread: 0, recoil: .018, bulletSpeed: 1.25, detail: '12 патронов · полуавтомат', icon: 'P12',
   },
   revolver: {
     name: 'R6 Magnum', price: 450, damage: 45, cooldown: 480,
-    pellets: 1, spread: .015, recoil: .026, bulletSpeed: 1.45, detail: '6 патронов · высокий урон', icon: 'R6',
+    pellets: 1, spread: .015, recoil: .038, bulletSpeed: 1.45, detail: '6 патронов · высокий урон', icon: 'R6',
   },
   smg: {
     name: 'Viper-9', price: 650, damage: 18, cooldown: 60,
-    pellets: 1, spread: .055, recoil: .012, bulletSpeed: 1.15, detail: '9 мм · высокая скорострельность', icon: 'V9',
+    pellets: 1, spread: .055, recoil: .017, bulletSpeed: 1.15, detail: '9 мм · высокая скорострельность', icon: 'V9',
   },
   rifle: {
     name: 'AR-4', price: 900, damage: 30, cooldown: 95,
-    pellets: 1, spread: .018, recoil: .018, bulletSpeed: 1.45, detail: '5,56 мм · штурмовая винтовка', icon: 'AR',
+    pellets: 1, spread: .018, recoil: .027, bulletSpeed: 1.45, detail: '5,56 мм · штурмовая винтовка', icon: 'AR',
   },
   shotgun: {
     name: 'Breach-12', price: 1100, damage: 20, cooldown: 520,
-    pellets: 5, spread: .16, recoil: .035, bulletSpeed: 1.05, detail: '12 калибр · ближняя дистанция', icon: 'B12',
+    pellets: 5, spread: .19, recoil: .05, bulletSpeed: 1.05, detail: '12 калибр · ближняя дистанция', icon: 'B12',
   },
   sniper: {
     name: 'M90', price: 1400, damage: 70, cooldown: 720,
-    pellets: 1, spread: 0, recoil: .04, bulletSpeed: 1.8, detail: 'Оптика · максимальный урон', icon: 'M90',
+    pellets: 1, spread: 0, recoil: .065, bulletSpeed: 1.8, detail: 'Оптика · максимальный урон', icon: 'M90',
   },
 };
 

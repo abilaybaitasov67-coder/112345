@@ -47,7 +47,7 @@ export function firePlayer(world: ShooterWorld) {
     return;
   }
   const aimScale = world.aiming ? .18 : 1;
-  const movementSpread = world.moving ? .045 : 0;
+  const movementSpread = world.moving ? .065 : 0;
   const accuracySpread = (world.recoil + movementSpread) * aimScale;
   const pelletSpread = weapon.spread * aimScale;
   for (let shot = 0; shot < weapon.pellets; shot += 1) {
@@ -56,9 +56,10 @@ export function firePlayer(world: ShooterWorld) {
     world.bullets.push(createShooterBullet(world.player, {
       x: world.player.x + Math.cos(world.angle + spread) * 1000,
       y: world.player.y + Math.sin(world.angle + spread) * 1000,
-    }, false, weapon.bulletSpeed, world.pitch / 430, world.jumpHeight));
+    }, false, weapon.bulletSpeed, (world.pitch + world.viewKick) / 430, world.jumpHeight));
   }
-  world.recoil = Math.min(.14, world.recoil + weapon.recoil);
+  world.recoil = Math.min(.22, world.recoil + weapon.recoil);
+  world.viewKick = Math.min(95, world.viewKick + weapon.recoil * 360);
   world.player.cooldown = weapon.cooldown;
 }
 
@@ -73,6 +74,7 @@ export function updateShooter(
   world.moving = Math.hypot(movement.x, movement.y) > .12;
   const recovery = world.moving ? .000045 : .000085;
   world.recoil = Math.max(0, world.recoil - elapsed * recovery);
+  world.viewKick = Math.max(0, world.viewKick - elapsed * .055);
   const length = Math.max(1, Math.hypot(movement.x, movement.y));
   const strafe = movement.x / length;
   const forward = -movement.y / length;
