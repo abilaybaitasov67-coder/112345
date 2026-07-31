@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { WeaponId } from './shooterTypes';
 import { createBlockArms } from './shooter3dBlockArms';
-import { createWeaponModel } from './shooter3dModels';
+import { createM4a4Model } from './shooter3dM4a4';
 
 const loader = new GLTFLoader();
 const cache = new Map<WeaponId, THREE.Group>();
@@ -39,7 +39,7 @@ export async function loadBlenderWeapon(id: WeaponId) {
   const sourceId = id === 'ak47' ? 'rifle' : id;
   const path = `${import.meta.env.BASE_URL}models/weapons/${sourceId}.glb`;
   const weapon = id === 'm4a4'
-    ? createWeaponModel(id, false)
+    ? createM4a4Model()
     : await getWeapon(id, path);
   const viewModel = new THREE.Group();
   const isSidearm = id === 'pistol' || id === 'revolver' || id === 'knife';
