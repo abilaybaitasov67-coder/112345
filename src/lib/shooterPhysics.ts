@@ -32,7 +32,7 @@ function movePlayer(world: ShooterWorld, x: number, y: number) {
 }
 
 export function firePlayer(world: ShooterWorld) {
-  if (world.status !== 'playing' || world.player.cooldown > 0 || !world.weapon) return;
+  if (world.status !== 'playing' || world.player.cooldown > 0 || !world.weapon) return false;
   const weapon = weaponInfo[world.weapon];
   if (world.weapon === 'knife') {
     const target = world.enemies
@@ -43,7 +43,7 @@ export function firePlayer(world: ShooterWorld) {
       });
     if (target) target.health -= weapon.damage;
     world.player.cooldown = weapon.cooldown;
-    return;
+    return true;
   }
   const aimScale = world.aiming ? .18 : 1;
   const movementSpread = world.moving ? .12 : 0;
@@ -66,6 +66,7 @@ export function firePlayer(world: ShooterWorld) {
   world.recoil = Math.min(.22, world.recoil + weapon.recoil);
   world.viewKick = Math.min(95, world.viewKick + weapon.recoil * 360);
   world.player.cooldown = weapon.cooldown;
+  return true;
 }
 
 export function updateShooter(

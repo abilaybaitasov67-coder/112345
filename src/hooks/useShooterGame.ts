@@ -20,6 +20,7 @@ import {
   tryStartBombDefuse,
 } from '../lib/shooterBomb';
 import { tryShooterJump } from '../lib/shooterJump';
+import { playWeaponShot } from '../lib/shooterAudio';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -89,7 +90,9 @@ export function useShooterGame() {
     sync();
   }, [sync]);
   const fire = useCallback(() => {
-    firePlayer(worldRef.current);
+    const world = worldRef.current;
+    const weapon = world.weapon;
+    if (weapon && firePlayer(world)) playWeaponShot(weapon);
     sync();
   }, [sync]);
   const setMobile = useCallback((x: number, y: number) => {

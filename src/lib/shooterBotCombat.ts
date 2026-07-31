@@ -7,6 +7,7 @@ import {
 import { weaponInfo, WeaponInfo } from './shooterWeapons';
 import { createShooterBullet, getTargetSlope } from './shooterBullets';
 import { moveEnemyWithNavigation } from './shooterNavigation';
+import { playWeaponShot } from './shooterAudio';
 
 const automaticWeapons = new Set<WeaponId>(['smg', 'rifle']);
 
@@ -64,6 +65,7 @@ export function updateShooterBots(world: ShooterWorld, elapsed: number) {
       weapon.bulletSpeed,
       getTargetSlope(enemy, world.player, world.jumpHeight),
     ));
+    playWeaponShot(weaponId, .38);
     enemy.cooldown = getBotShotCooldown(enemy, weaponId, weapon);
   });
 }
