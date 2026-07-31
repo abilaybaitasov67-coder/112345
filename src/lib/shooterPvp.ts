@@ -18,6 +18,10 @@ function createPlayerId() {
 export const pvpPlayerId = createPlayerId();
 export const pvpPlayerName = `Игрок ${pvpPlayerId.slice(0, 4).toUpperCase()}`;
 export const PVP_SPAWN_PROTECTION_MS = 8000;
+const teamLoadouts = {
+  terrorists: ['knife', 'revolver', 'smg'],
+  counter: ['knife', 'pistol', 'rifle'],
+} as const;
 
 export interface PvpPlayerState {
   id: string;
@@ -73,6 +77,9 @@ export function preparePvpWorld(
   world.bullets = [];
   world.droppedWeapons = [];
   world.pvpMode = true;
+  world.inventory = [...teamLoadouts[team]];
+  world.weapon = team === 'counter' ? 'rifle' : 'smg';
+  world.aiming = false;
   placePvpPlayer(world, playerId, team);
 }
 
