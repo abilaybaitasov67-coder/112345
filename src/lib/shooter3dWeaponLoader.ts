@@ -5,6 +5,7 @@ import { createBlockArms } from './shooter3dBlockArms';
 
 const loader = new GLTFLoader();
 const cache = new Map<WeaponId, THREE.Group>();
+const pendingLoads = new Map<WeaponId, Promise<THREE.Group>>();
 
 function loadScene(path: string) {
   return new Promise<THREE.Group>((resolve, reject) => {
@@ -18,10 +19,24 @@ function loadScene(path: string) {
   });
 }
 
+async function getWeapon(id: WeaponId, path: string) {
+  const cached = cache.get(id);
+  if (cached) return cached;
+
+  const pending = pendingLoads.get(id) ?? loadScene(path);
+  pendingLoads.set(id, pending);
+  try {
+    const weapon = await pending;
+    cache.set(id, weapon);
+    return weapon;
+  } finally {
+    pendingLoads.delete(id);
+  }
+}
+
 export async function loadBlenderWeapon(id: WeaponId) {
   const path = `${import.meta.env.BASE_URL}models/weapons/${id}.glb`;
-  const weapon = cache.get(id) ?? await loadScene(path);
-  cache.set(id, weapon);
+  const weapon = await getWeapon(id, path);
   const viewModel = new THREE.Group();
   const isSidearm = id === 'pistol' || id === 'revolver' || id === 'knife';
   const weaponModel = weapon.clone(true);

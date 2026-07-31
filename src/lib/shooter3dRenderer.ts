@@ -9,6 +9,7 @@ import { addShooterAtmosphere } from './shooter3dAtmosphere';
 import { createBombModel, syncBombModel } from './shooter3dBomb';
 import { getShooterFloorHeight } from './shooterFloorHeight';
 import { syncEnemyModels, syncRemotePlayerModels } from './shooter3dPlayers';
+import { disposeShooterScene } from './shooter3dDispose';
 
 const SCALE = .025;
 
@@ -29,13 +30,18 @@ export class Shooter3dRenderer {
     new THREE.MeshBasicMaterial({ color: 0xffd45c }),
   );
   private clock = new THREE.Clock();
+  private lastFov = 68;
 
   constructor(canvas: HTMLCanvasElement, world: ShooterWorld) {
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
+    const lowPower = window.innerWidth <= 720
+      || window.matchMedia('(pointer: coarse)').matches
+      || navigator.hardwareConcurrency <= 4;
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !lowPower });
+    const maxPixelRatio = lowPower ? 1.15 : 1.5;
+    this.renderer.setPixelRatio(Math.min(maxPixelRatio, window.devicePixelRatio));
     this.renderer.setSize(SHOOTER_WIDTH, SHOOTER_HEIGHT, false);
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.enabled = !lowPower;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -87,17 +93,21 @@ export class Shooter3dRenderer {
       1.7 + floorHeight + world.jumpHeight + pitch,
       this.camera.position.z + Math.sin(world.angle),
     );
-    this.camera.fov = world.aiming ? 24 : 68;
-    this.camera.updateProjectionMatrix();
+    const nextFov = world.aiming ? 24 : 68;
+    if (nextFov !== this.lastFov) {
+      this.lastFov = nextFov;
+      this.camera.fov = nextFov;
+      this.camera.updateProjectionMatrix();
+    }
+    const time = this.clock.getElapsedTime();
     syncEnemyModels(this.scene, this.enemies, world, SCALE);
     syncRemotePlayerModels(this.scene, this.remotePlayers, world, SCALE);
     this.syncWeapon(world);
     syncBulletMeshes(this.scene, this.bulletMeshes, world, SCALE);
     syncDroppedWeapons(this.scene, this.droppedWeapons, world, SCALE);
-    syncBombModel(this.bombModel, world, SCALE, this.clock.getElapsedTime());
+    syncBombModel(this.bombModel, world, SCALE, time);
     if (this.weapon) this.weapon.visible = !world.aiming;
     if (this.weapon && !world.aiming) {
-      const time = this.clock.getElapsedTime();
       const recoil = world.player.cooldown > 0
         ? Math.min(.13, world.player.cooldown / 1100)
         : 0;
@@ -122,6 +132,7 @@ export class Shooter3dRenderer {
   }
 
   dispose() {
+    disposeShooterScene(this.scene);
     this.renderer.dispose();
   }
 }
