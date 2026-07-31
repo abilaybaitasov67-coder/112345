@@ -15,7 +15,7 @@ export const shooterTeamSpawns = {
   counter: { x: 960, y: 360, angle: Math.PI / 2 },
 };
 
-export const shooterMapBlocks: ShooterMapBlock[] = [
+const baseShooterMapBlocks: ShooterMapBlock[] = [
   { x: 0, y: 0, width: 150, height: 410, kind: 'stone', wallHeight: 5.8 },
   { x: 280, y: 0, width: 320, height: 140, kind: 'building', wallHeight: 5.8 },
   { x: 600, y: 0, width: 220, height: 300, kind: 'building', wallHeight: 6.2 },
@@ -65,3 +65,10 @@ export const shooterMapBlocks: ShooterMapBlock[] = [
   { x: 1640, y: 1280, width: 160, height: 16, kind: 'cover', wallHeight: 2.7 },
   { x: 1580, y: 1120, width: 20, height: 90, kind: 'cover', wallHeight: 1.15 },
 ];
+
+export const shooterMapBlocks = baseShooterMapBlocks.map((block) => ({
+  ...block,
+  wallHeight: block.kind === 'cover'
+    ? block.wallHeight + (block.wallHeight >= 2.5 ? 1.1 : 0)
+    : block.wallHeight + 1.4,
+}));

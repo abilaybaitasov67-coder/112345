@@ -90,7 +90,7 @@ export function addMapBlocks(scene: THREE.Scene) {
 }
 
 export function addBoundaryWalls(scene: THREE.Scene, width: number, depth: number) {
-  const wallHeight = 5.2;
+  const wallHeight = 6.6;
   const specs = [
     [width / 2, 0, width, .2],
     [width / 2, depth, width, .2],
