@@ -109,6 +109,7 @@ button.small { padding: 6px 10px; font-size: 14px; }
   text-decoration: none;
 }
 .home-play--shooter { margin-left: 10px; background: #34443b; }
+.home-play--fitness { margin-left: 10px; background: #214c3a; }
 .home-auth {
   display: block;
   width: fit-content;

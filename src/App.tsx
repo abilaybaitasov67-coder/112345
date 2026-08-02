@@ -7,6 +7,8 @@ import { AuthPage } from './pages/AuthPage';
 
 const ShooterPage = lazy(() => import('./pages/ShooterPage')
   .then((module) => ({ default: module.ShooterPage })));
+const FitnessPage = lazy(() => import('./pages/FitnessPage')
+  .then((module) => ({ default: module.FitnessPage })));
 
 // Здесь живут только маршруты. Сами экраны складывай в src/pages/.
 export default function App() {
@@ -18,6 +20,7 @@ export default function App() {
           <Route path="/" component={HomePage} />
           <Route path="/game" component={GamePage} />
           <Route path="/shooter" component={ShooterPage} />
+          <Route path="/fitness" component={FitnessPage} />
           <Route path="/auth" component={AuthPage} />
           <Route component={NotFoundPage} />
         </Switch>
