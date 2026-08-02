@@ -1,0 +1,26 @@
+@media (max-width: 760px) {
+  .fitness-page { padding: 14px 14px 90px; }
+  .fitness-header { grid-template-columns: 1fr auto; }
+  .fitness-header > strong { display: none; }
+  .fitness-onboarding { grid-template-columns: 1fr; gap: 30px; margin-top: 45px; }
+  .fitness-onboarding__copy h1 { font-size: 48px; }
+  .onboarding-card { padding: 16px; }
+  .fitness-layout { display: block; margin-top: 42px; }
+  .fitness-nav { position: fixed; z-index: 20; right: 8px; bottom: 8px; left: 8px; flex-direction: row; justify-content: space-around; padding: 6px; background: #183f30eb; border-radius: 15px; backdrop-filter: blur(8px); }
+  .fitness-nav a { flex: 1; flex-direction: column; gap: 2px; padding: 7px 3px; color: #b9c9c2; font-size: 10px; }
+  .fitness-nav a.is-active { color: #173c2d; background: #f2d3a3; }
+  .fitness-title-row { align-items: flex-start; flex-direction: column; }
+  .fitness-title-row h1 { font-size: 43px; }
+  .readiness { align-self: stretch; }
+  .exercise-preview { grid-template-columns: 1fr 1fr; }
+  .today-workout { padding: 20px; }
+  .today-workout h2 { font-size: 28px; }
+  .today-grid, .progress-grid, .achievement-row { grid-template-columns: 1fr; }
+  .week-list__item { grid-template-columns: 42px 1fr auto; padding: 13px; }
+  .coach-message { max-width: 90%; }
+  .coach-form button { padding: 10px; font-size: 12px; }
+  .workout-player { grid-template-columns: 1fr; grid-template-rows: 43% 57%; overflow-y: auto; }
+  .workout-player > section { padding: 25px; }
+  .workout-player h1 { font-size: 42px; }
+  .motion-figure { transform: scale(.65); }
+}

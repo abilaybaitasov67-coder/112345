@@ -20,6 +20,7 @@ export default function App() {
           <Route path="/" component={HomePage} />
           <Route path="/game" component={GamePage} />
           <Route path="/shooter" component={ShooterPage} />
+          <Route path="/fitness/:section" component={FitnessPage} />
           <Route path="/fitness" component={FitnessPage} />
           <Route path="/auth" component={AuthPage} />
           <Route component={NotFoundPage} />
