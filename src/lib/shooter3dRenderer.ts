@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { ShooterWorld, WeaponId } from './shooterTypes';
 import { SHOOTER_HEIGHT, SHOOTER_WIDTH } from './shooterWorld';
 import { weaponInfo } from './shooterWeapons';
-import { syncBulletMeshes, syncDroppedWeapons } from './shooter3dEffects';
+import { syncBulletMeshes, syncDroppedWeapons, syncGrenadeMeshes } from './shooter3dEffects';
 import { buildTacticalMap } from './shooter3dMap';
 import { loadBlenderWeapon } from './shooter3dWeaponLoader';
 import { addShooterAtmosphere } from './shooter3dAtmosphere';
@@ -25,6 +25,7 @@ export class Shooter3dRenderer {
   private weaponRequest = 0;
   private bulletMeshes: THREE.Mesh[] = [];
   private droppedWeapons: THREE.Group[] = [];
+  private grenadeMeshes: THREE.Mesh[] = [];
   private bombModel = createBombModel();
   private muzzleFlash = new THREE.Mesh(
     new THREE.SphereGeometry(.11, 10, 8),
@@ -114,6 +115,7 @@ export class Shooter3dRenderer {
     this.syncWeapon(world);
     syncBulletMeshes(this.scene, this.bulletMeshes, world, SCALE);
     syncDroppedWeapons(this.scene, this.droppedWeapons, world, SCALE);
+    syncGrenadeMeshes(this.scene, this.grenadeMeshes, world, SCALE);
     syncBombModel(this.bombModel, world, SCALE, time);
     if (this.weapon) this.weapon.visible = !world.aiming;
     if (this.weapon && !world.aiming) {

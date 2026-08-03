@@ -4,7 +4,7 @@ import {
   SetStateAction,
   useEffect,
 } from 'react';
-import { ShooterWorld, WeaponId } from '../lib/shooterTypes';
+import { GrenadeId, ShooterWorld, WeaponId } from '../lib/shooterTypes';
 
 const weaponKeys: Record<string, number> = {
   Digit1: 0,
@@ -24,6 +24,7 @@ export function useShooterHotkeys(
   worldRef: MutableRefObject<ShooterWorld>,
   selectWeapon: (weapon: WeaponId) => void,
   setShopOpen: Dispatch<SetStateAction<boolean>>,
+  throwGrenade: (kind: GrenadeId) => void,
 ) {
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -35,6 +36,15 @@ export function useShooterHotkeys(
         if (weapon) selectWeapon(weapon);
         return;
       }
+      const grenadeKeys: Partial<Record<string, GrenadeId>> = {
+        Digit4: 'flash', Digit5: 'frag', Digit6: 'molotov',
+      };
+      const grenade = grenadeKeys[event.code];
+      if (grenade) {
+        event.preventDefault();
+        throwGrenade(grenade);
+        return;
+      }
       if (event.code !== 'KeyB') return;
       event.preventDefault();
       setShopOpen((open) => {
@@ -44,5 +54,5 @@ export function useShooterHotkeys(
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [selectWeapon, setShopOpen, worldRef]);
+  }, [selectWeapon, setShopOpen, throwGrenade, worldRef]);
 }

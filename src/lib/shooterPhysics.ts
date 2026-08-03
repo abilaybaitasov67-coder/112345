@@ -22,6 +22,7 @@ import {
 import { updateShooterJump } from './shooterJump';
 import { getShooterFloorHeight } from './shooterFloorHeight';
 import { updateShooterBots } from './shooterBotCombat';
+import { updateShooterGrenades } from './shooterGrenades';
 
 function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
@@ -96,6 +97,7 @@ export function updateShooter(
   world.player.cooldown = Math.max(0, world.player.cooldown - elapsed);
 
   updateShooterBots(world, elapsed);
+  updateShooterGrenades(world, elapsed);
   updateBomb(world, elapsed);
 
   world.bullets = world.bullets.filter((bullet) => {

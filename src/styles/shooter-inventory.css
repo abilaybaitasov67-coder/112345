@@ -39,3 +39,20 @@
 }
 .shooter-inventory__slots span { font-size: 19px; }
 .shooter-inventory__empty { padding: 8px; color: #aebbb4; font-size: 12px; }
+.shooter-grenades {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 7;
+  display: flex;
+  gap: 6px;
+}
+.shooter-grenades button {
+  padding: 8px 10px;
+  border: 1px solid #7a6850;
+  color: #f3e1ba;
+  background: rgba(28, 34, 31, .9);
+  font-size: 10px;
+}
+.shooter-grenades button:disabled { opacity: .35; }
+.shooter-grenades small { margin-right: 5px; color: #d5ae4d; }

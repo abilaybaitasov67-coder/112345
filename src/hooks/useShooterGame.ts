@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { firePlayer } from '../lib/shooterPhysics';
 import {
   ShooterPoint,
+  GrenadeId,
   ShooterStatus,
   ShooterTeam,
   ShooterWorld,
@@ -22,6 +23,7 @@ import {
 } from '../lib/shooterBomb';
 import { tryShooterJump } from '../lib/shooterJump';
 import { playWeaponShot } from '../lib/shooterAudio';
+import { throwShooterGrenade } from '../lib/shooterGrenades';
 
 function storeWeapon(world: ShooterWorld, weapon: WeaponId) {
   const slot = weaponSlot(weapon);
@@ -43,6 +45,7 @@ export interface ShooterSnapshot {
   spread: number;
   team: ShooterTeam;
   bomb: string;
+  grenadeCounts: Record<GrenadeId, number>;
 }
 
 function snapshot(world: ShooterWorld): ShooterSnapshot {
@@ -59,6 +62,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     money: world.money,
     weapon: world.weapon,
     inventory: [...world.inventory],
+    grenadeCounts: { ...world.grenadeCounts },
     aiming: world.aiming,
     spread: Math.min(
       28,
@@ -161,10 +165,13 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
     world.message = `Выбрано оружие: ${weaponInfo[weapon].name}.`;
     sync();
   }, [sync]);
+  const throwGrenade = useCallback((kind: GrenadeId) => {
+    if (throwShooterGrenade(worldRef.current, kind)) sync();
+  }, [sync]);
 
   return {
     worldRef, keysRef, mobileRef, game, restartKey,
     sync, restart, fire, setMobile, jump, buyWeapon, setAiming,
-    pickUpWeapon, stopAction, selectWeapon,
+    pickUpWeapon, stopAction, selectWeapon, throwGrenade,
   };
 }

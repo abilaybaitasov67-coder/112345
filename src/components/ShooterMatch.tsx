@@ -10,6 +10,7 @@ import { ShooterInventory } from './ShooterInventory';
 import { ShooterMinimap } from './ShooterMinimap';
 import { ShooterMultiplayer } from './ShooterMultiplayer';
 import { WeaponShop } from './WeaponShop';
+import { ShooterGrenades } from './ShooterGrenades';
 
 interface Props {
   primary: WeaponId;
@@ -21,7 +22,9 @@ export function ShooterMatch({ primary, onLobby }: Props) {
   const multiplayer = useShooterMultiplayer(shooter.worldRef);
   const { game } = shooter;
   const [shopOpen, setShopOpen] = useState(false);
-  useShooterHotkeys(shooter.worldRef, shooter.selectWeapon, setShopOpen);
+  useShooterHotkeys(
+    shooter.worldRef, shooter.selectWeapon, setShopOpen, shooter.throwGrenade,
+  );
   const restart = () => {
     setShopOpen(false);
     shooter.restart();
@@ -98,6 +101,7 @@ export function ShooterMatch({ primary, onLobby }: Props) {
             onSelect={shooter.selectWeapon}
           />
         )}
+        <ShooterGrenades counts={game.grenadeCounts} onThrow={shooter.throwGrenade} />
         {game.status !== 'playing' && (
           <div className="shooter-result">
             <h1>{game.status === 'won' ? 'МИССИЯ ВЫПОЛНЕНА' : 'МИССИЯ ПРОВАЛЕНА'}</h1>

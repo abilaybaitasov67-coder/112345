@@ -61,3 +61,30 @@ export function syncDroppedWeapons(
     scene.add(model);
   }
 }
+
+export function syncGrenadeMeshes(
+  scene: THREE.Scene,
+  meshes: THREE.Mesh[],
+  world: ShooterWorld,
+  scale: number,
+) {
+  while (meshes.length < world.grenades.length) {
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(.12, 8, 6),
+      new THREE.MeshBasicMaterial(),
+    );
+    meshes.push(mesh);
+    scene.add(mesh);
+  }
+  while (meshes.length > world.grenades.length) {
+    scene.remove(meshes.pop()!);
+  }
+  meshes.forEach((mesh, index) => {
+    const grenade = world.grenades[index];
+    mesh.position.set(grenade.x * scale, grenade.active ? .08 : .6, grenade.y * scale);
+    mesh.scale.setScalar(grenade.active ? 5 : 1);
+    const color = grenade.kind === 'flash'
+      ? 0xffffff : grenade.kind === 'frag' ? 0x556c4c : 0xff6a20;
+    (mesh.material as THREE.MeshBasicMaterial).color.setHex(color);
+  });
+}

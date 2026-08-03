@@ -39,6 +39,16 @@ export interface DroppedWeapon extends ShooterPoint {
   weapon: WeaponId;
 }
 
+export type GrenadeId = 'flash' | 'frag' | 'molotov';
+
+export interface ShooterGrenade extends ShooterPoint {
+  kind: GrenadeId;
+  dx: number;
+  dy: number;
+  timer: number;
+  active: boolean;
+}
+
 export interface ShooterBomb extends ShooterPoint {
   site: 'A' | 'B' | null;
   timer: number;
@@ -81,6 +91,8 @@ export interface ShooterWorld {
   remotePlayers: RemoteShooter[];
   bullets: ShooterBullet[];
   droppedWeapons: DroppedWeapon[];
+  grenades: ShooterGrenade[];
+  grenadeCounts: Record<GrenadeId, number>;
   bomb: ShooterBomb;
   covers: ShooterCover[];
   aim: ShooterPoint;
