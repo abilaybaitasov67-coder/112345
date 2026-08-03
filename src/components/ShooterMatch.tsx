@@ -23,7 +23,7 @@ export function ShooterMatch({ primary, onLobby }: Props) {
   const { game } = shooter;
   const [shopOpen, setShopOpen] = useState(false);
   useShooterHotkeys(
-    shooter.worldRef, shooter.selectWeapon, setShopOpen, shooter.throwGrenade,
+    shooter.worldRef, shooter.selectWeapon, setShopOpen, shooter.selectGrenade,
   );
   const restart = () => {
     setShopOpen(false);
@@ -32,8 +32,9 @@ export function ShooterMatch({ primary, onLobby }: Props) {
     shooter.sync();
   };
   const fire = () => {
-    shooter.fire();
-    multiplayer.fire();
+    const threwGrenade = shooter.fire();
+    if (!threwGrenade) multiplayer.fire();
+    return threwGrenade;
   };
   return (
     <main className="shooter-page">
@@ -101,7 +102,11 @@ export function ShooterMatch({ primary, onLobby }: Props) {
             onSelect={shooter.selectWeapon}
           />
         )}
-        <ShooterGrenades counts={game.grenadeCounts} onThrow={shooter.throwGrenade} />
+        <ShooterGrenades
+          counts={game.grenadeCounts}
+          selected={game.selectedGrenade}
+          onSelect={shooter.selectGrenade}
+        />
         {game.status !== 'playing' && (
           <div className="shooter-result">
             <h1>{game.status === 'won' ? 'МИССИЯ ВЫПОЛНЕНА' : 'МИССИЯ ПРОВАЛЕНА'}</h1>

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 interface Props {
   aiming: boolean;
   onMove: (x: number, y: number) => void;
-  onFire: () => void;
+  onFire: () => boolean;
   onAim: (aiming: boolean) => void;
   onJump: () => void;
   onPickup: () => void;
@@ -20,7 +20,7 @@ export function ShooterControls({
   };
   const startFire = () => {
     stopFire();
-    onFire();
+    if (onFire()) return;
     fireTimer.current = window.setInterval(onFire, 35);
   };
   useEffect(() => stopFire, []);

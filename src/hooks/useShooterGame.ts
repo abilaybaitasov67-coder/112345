@@ -46,6 +46,7 @@ export interface ShooterSnapshot {
   team: ShooterTeam;
   bomb: string;
   grenadeCounts: Record<GrenadeId, number>;
+  selectedGrenade: GrenadeId | null;
 }
 
 function snapshot(world: ShooterWorld): ShooterSnapshot {
@@ -63,6 +64,7 @@ function snapshot(world: ShooterWorld): ShooterSnapshot {
     weapon: world.weapon,
     inventory: [...world.inventory],
     grenadeCounts: { ...world.grenadeCounts },
+    selectedGrenade: world.selectedGrenade,
     aiming: world.aiming,
     spread: Math.min(
       28,
@@ -96,9 +98,16 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
   }, [primaryWeapon, sync]);
   const fire = useCallback(() => {
     const world = worldRef.current;
+    if (world.selectedGrenade) {
+      const thrown = throwShooterGrenade(world, world.selectedGrenade);
+      world.selectedGrenade = null;
+      sync();
+      return thrown;
+    }
     const weapon = world.weapon;
     if (weapon && firePlayer(world)) playWeaponShot(weapon);
     sync();
+    return false;
   }, [sync]);
   const setMobile = useCallback((x: number, y: number) => {
     mobileRef.current = { x, y };
@@ -116,6 +125,7 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
     }
     world.money -= price;
     world.weapon = weapon;
+    world.selectedGrenade = null;
     storeWeapon(world, weapon);
     world.message = 'Оружие получено. Начинай операцию!';
     sync();
@@ -173,13 +183,17 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
     world.message = `Выбрано оружие: ${weaponInfo[weapon].name}.`;
     sync();
   }, [sync]);
-  const throwGrenade = useCallback((kind: GrenadeId) => {
-    if (throwShooterGrenade(worldRef.current, kind)) sync();
+  const selectGrenade = useCallback((kind: GrenadeId) => {
+    const world = worldRef.current;
+    if (world.grenadeCounts[kind] <= 0) return;
+    world.selectedGrenade = kind;
+    world.message = 'Граната выбрана — нажми ОГОНЬ, чтобы бросить.';
+    sync();
   }, [sync]);
 
   return {
     worldRef, keysRef, mobileRef, game, restartKey,
     sync, restart, fire, setMobile, jump, buyWeapon, buyGrenade, setAiming,
-    pickUpWeapon, stopAction, selectWeapon, throwGrenade,
+    pickUpWeapon, stopAction, selectWeapon, selectGrenade,
   };
 }

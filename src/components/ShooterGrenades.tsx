@@ -2,7 +2,8 @@ import { GrenadeId } from '../lib/shooterTypes';
 
 interface Props {
   counts: Record<GrenadeId, number>;
-  onThrow: (kind: GrenadeId) => void;
+  selected: GrenadeId | null;
+  onSelect: (kind: GrenadeId) => void;
 }
 
 const grenades: Array<{ id: GrenadeId; key: number; label: string }> = [
@@ -11,14 +12,15 @@ const grenades: Array<{ id: GrenadeId; key: number; label: string }> = [
   { id: 'molotov', key: 6, label: 'МОЛОТОВ' },
 ];
 
-export function ShooterGrenades({ counts, onThrow }: Props) {
+export function ShooterGrenades({ counts, selected, onSelect }: Props) {
   return (
     <div className="shooter-grenades">
       {grenades.map((grenade) => (
         <button
           key={grenade.id}
+          className={selected === grenade.id ? 'is-selected' : ''}
           disabled={counts[grenade.id] === 0}
-          onClick={() => onThrow(grenade.id)}
+          onClick={() => onSelect(grenade.id)}
         >
           <small>{grenade.key}</small>
           {grenade.label} ×{counts[grenade.id]}

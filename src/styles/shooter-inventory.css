@@ -55,4 +55,8 @@
   font-size: 10px;
 }
 .shooter-grenades button:disabled { opacity: .35; }
+.shooter-grenades button.is-selected {
+  border-color: #ffca57;
+  box-shadow: 0 0 0 2px rgba(255, 202, 87, .28);
+}
 .shooter-grenades small { margin-right: 5px; color: #d5ae4d; }

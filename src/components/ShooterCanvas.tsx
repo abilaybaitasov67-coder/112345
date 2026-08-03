@@ -11,7 +11,7 @@ interface Props {
   mobileRef: MutableRefObject<ShooterPoint>;
   restartKey: number;
   onUpdate: () => void;
-  onFire: () => void;
+  onFire: () => boolean;
   onAim: (aiming: boolean) => void;
   onJump: () => void;
   onPickup: () => void;
@@ -89,7 +89,7 @@ export function ShooterCanvas(props: Props) {
       const elapsed = Math.min(32, now - previous);
       if (props.keysRef.current.has('arrowleft')) props.worldRef.current.angle -= elapsed * 0.003;
       if (props.keysRef.current.has('arrowright')) props.worldRef.current.angle += elapsed * 0.003;
-      if (firingRef.current) onFireRef.current();
+      if (firingRef.current && onFireRef.current()) firingRef.current = false;
       previous = now;
       updateShooter(props.worldRef.current, elapsed, movement(props.keysRef.current, props.mobileRef.current));
       if (view) view.render(props.worldRef.current);
@@ -140,7 +140,8 @@ export function ShooterCanvas(props: Props) {
         if (event.pointerType === 'mouse') {
           firingRef.current = true;
           void canvasRef.current?.requestPointerLock();
-          onFireRef.current();
+          const oneShot = onFireRef.current();
+          firingRef.current = !oneShot;
         } else {
           pointerX.current = event.clientX;
           pointerY.current = event.clientY;

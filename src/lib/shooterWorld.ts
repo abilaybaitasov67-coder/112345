@@ -58,6 +58,7 @@ export function createShooterWorld(primaryWeapon?: WeaponId): ShooterWorld {
     droppedWeapons: [],
     grenades: [],
     grenadeCounts: { flash: 1, frag: 1, molotov: 1 },
+    selectedGrenade: null,
     bomb: {
       x: 0,
       y: 0,

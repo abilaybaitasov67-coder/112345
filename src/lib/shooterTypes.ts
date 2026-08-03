@@ -93,6 +93,7 @@ export interface ShooterWorld {
   droppedWeapons: DroppedWeapon[];
   grenades: ShooterGrenade[];
   grenadeCounts: Record<GrenadeId, number>;
+  selectedGrenade: GrenadeId | null;
   bomb: ShooterBomb;
   covers: ShooterCover[];
   aim: ShooterPoint;

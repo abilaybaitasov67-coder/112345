@@ -24,7 +24,7 @@ export function useShooterHotkeys(
   worldRef: MutableRefObject<ShooterWorld>,
   selectWeapon: (weapon: WeaponId) => void,
   setShopOpen: Dispatch<SetStateAction<boolean>>,
-  throwGrenade: (kind: GrenadeId) => void,
+  selectGrenade: (kind: GrenadeId) => void,
 ) {
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -42,7 +42,7 @@ export function useShooterHotkeys(
       const grenade = grenadeKeys[event.code];
       if (grenade) {
         event.preventDefault();
-        throwGrenade(grenade);
+        selectGrenade(grenade);
         return;
       }
       if (event.code !== 'KeyB') return;
@@ -54,5 +54,5 @@ export function useShooterHotkeys(
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [selectWeapon, setShopOpen, throwGrenade, worldRef]);
+  }, [selectGrenade, selectWeapon, setShopOpen, worldRef]);
 }
