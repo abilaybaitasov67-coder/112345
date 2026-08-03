@@ -118,6 +118,10 @@ export function ShooterMatch({ primary, onLobby }: Props) {
               shooter.buyWeapon(weapon, price);
               setShopOpen(false);
             }}
+            onBuyGrenade={(kind, price) => {
+              shooter.buyGrenade(kind, price);
+              setShopOpen(false);
+            }}
           />
         )}
       </div>

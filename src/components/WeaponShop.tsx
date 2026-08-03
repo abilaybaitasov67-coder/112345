@@ -1,14 +1,16 @@
-import { ShooterTeam, WeaponId } from '../lib/shooterTypes';
+import { GrenadeId, ShooterTeam, WeaponId } from '../lib/shooterTypes';
 import { teamShopWeapons, weaponInfo } from '../lib/shooterWeapons';
+import { grenadeShopItems } from '../lib/shooterGrenades';
 
 interface Props {
   money: number;
   team: ShooterTeam;
   onBuy: (weapon: WeaponId, price: number) => void;
+  onBuyGrenade: (kind: GrenadeId, price: number) => void;
   onClose?: () => void;
 }
 
-export function WeaponShop({ money, team, onBuy, onClose }: Props) {
+export function WeaponShop({ money, team, onBuy, onBuyGrenade, onClose }: Props) {
   const weaponIds = teamShopWeapons[team];
   return (
     <div className="weapon-shop">
@@ -32,6 +34,21 @@ export function WeaponShop({ money, team, onBuy, onClose }: Props) {
             </button>
             );
           })}
+        </div>
+        <h2 className="weapon-shop__section-title">Гранаты</h2>
+        <div className="weapon-shop__grid weapon-shop__grenades">
+          {grenadeShopItems.map((grenade) => (
+            <button
+              key={grenade.id}
+              disabled={grenade.price > money}
+              onClick={() => onBuyGrenade(grenade.id, grenade.price)}
+            >
+              <span>◉</span>
+              <strong>{grenade.name}</strong>
+              <small>{grenade.detail}</small>
+              <b>${grenade.price}</b>
+            </button>
+          ))}
         </div>
         {onClose && (
           <button className="weapon-shop__close" onClick={onClose}>

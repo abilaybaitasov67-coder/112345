@@ -4,6 +4,12 @@ import { GrenadeId, ShooterWorld } from './shooterTypes';
 const THROW_SPEED = .48;
 const EFFECT_RADIUS = 150;
 
+export const grenadeShopItems = [
+  { id: 'flash', name: 'Световая', detail: 'Ослепляет ботов на 3 секунды', price: 200 },
+  { id: 'frag', name: 'Осколочная', detail: 'Наносит урон в радиусе взрыва', price: 300 },
+  { id: 'molotov', name: 'Молотов', detail: 'Поджигает участок на 5 секунд', price: 400 },
+] as const;
+
 function distance(x1: number, y1: number, x2: number, y2: number) {
   return Math.hypot(x1 - x2, y1 - y2);
 }

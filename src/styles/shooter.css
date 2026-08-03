@@ -102,6 +102,8 @@
 }
 .weapon-shop__grid small { color: #c5cec9; }
 .weapon-shop__close { margin-top: 14px; background: #53645a; }
+.weapon-shop__section-title { margin: 22px 0 10px; font-size: 20px; }
+.weapon-shop__grenades button { min-height: 130px; }
 
 .shooter-result button, .shooter-fire { background: #a53b34; }
 .shooter-message { max-width: 960px; margin: 12px auto; text-align: center; }

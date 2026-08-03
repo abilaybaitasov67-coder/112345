@@ -120,6 +120,14 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
     world.message = 'Оружие получено. Начинай операцию!';
     sync();
   }, [sync]);
+  const buyGrenade = useCallback((kind: GrenadeId, price: number) => {
+    const world = worldRef.current;
+    if (price > world.money) return;
+    world.money -= price;
+    world.grenadeCounts[kind] += 1;
+    world.message = 'Граната добавлена в снаряжение.';
+    sync();
+  }, [sync]);
   const setAiming = useCallback((aiming: boolean) => {
     worldRef.current.aiming = aiming && worldRef.current.weapon === 'sniper';
     sync();
@@ -171,7 +179,7 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
 
   return {
     worldRef, keysRef, mobileRef, game, restartKey,
-    sync, restart, fire, setMobile, jump, buyWeapon, setAiming,
+    sync, restart, fire, setMobile, jump, buyWeapon, buyGrenade, setAiming,
     pickUpWeapon, stopAction, selectWeapon, throwGrenade,
   };
 }
