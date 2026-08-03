@@ -15,6 +15,7 @@ import {
 } from '../lib/shooterWeapons';
 import {
   bombSites,
+  isPlayerNearBomb,
   stopPlayerBombDefuse,
   tryPlantBomb,
   tryStartBombDefuse,
@@ -121,6 +122,11 @@ export function useShooterGame(primaryWeapon?: WeaponId) {
   }, [sync]);
   const pickUpWeapon = useCallback(() => {
     const world = worldRef.current;
+    if (world.team === 'terrorists' && isPlayerNearBomb(world)) {
+      world.message = 'Террористы не могут обезвреживать бомбу — защити её!';
+      sync();
+      return;
+    }
     if (tryStartBombDefuse(world)) {
       sync();
       return;

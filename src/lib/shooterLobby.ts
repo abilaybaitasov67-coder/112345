@@ -60,7 +60,7 @@ export const weaponCases: WeaponCase[] = [
 
 export const lobbyTabs: Array<{ id: LobbyTab; label: string }> = [
   { id: 'play', label: 'Играть' },
-  { id: 'loadout', label: 'Лодаут' },
+  { id: 'loadout', label: 'Оружие' },
   { id: 'inventory', label: 'Инвентарь' },
-  { id: 'cases', label: 'Магазин кейсов' },
+  { id: 'cases', label: 'Кейсы' },
 ];

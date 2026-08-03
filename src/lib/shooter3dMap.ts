@@ -41,7 +41,11 @@ function addSiteMarker(scene: THREE.Scene, x: number, z: number, label: string) 
   scene.add(marker);
 }
 
-export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
+export function buildTacticalMap(
+  scene: THREE.Scene,
+  _world: ShooterWorld,
+  lowPower = false,
+) {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(SHOOTER_WORLD_WIDTH * SCALE, SHOOTER_WORLD_HEIGHT * SCALE),
     dustGroundMaterial,
@@ -59,6 +63,7 @@ export function buildTacticalMap(scene: THREE.Scene, _world: ShooterWorld) {
   addMapBlocks(scene);
   addSiteMarker(scene, bombSites.A.x * SCALE, bombSites.A.y * SCALE, 'A');
   addSiteMarker(scene, bombSites.B.x * SCALE, bombSites.B.y * SCALE, 'B');
+  if (lowPower) return;
   addSiteProps(scene);
   addRouteProps(scene);
   addDustLandmarks(scene);

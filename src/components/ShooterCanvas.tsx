@@ -82,6 +82,10 @@ export function ShooterCanvas(props: Props) {
     let previous = performance.now();
     let syncTimer = 0;
     const loop = (now: number) => {
+      if (view && now - previous < view.frameInterval) {
+        frame = requestAnimationFrame(loop);
+        return;
+      }
       const elapsed = Math.min(32, now - previous);
       if (props.keysRef.current.has('arrowleft')) props.worldRef.current.angle -= elapsed * 0.003;
       if (props.keysRef.current.has('arrowright')) props.worldRef.current.angle += elapsed * 0.003;

@@ -11,6 +11,9 @@
   .game-lobby__content { min-height: 0; }
   .lobby-hero { min-height: 0; grid-template-columns: 1fr; gap: 24px; padding: 34px 4px; }
   .lobby-hero__copy h1 { font-size: 48px; }
+  .lobby-steps li { align-items: flex-start; padding: 10px; }
+  .lobby-steps small { font-size: 11px; line-height: 1.35; }
+  .lobby-hero__copy .lobby-play-button { width: 100%; padding-inline: 12px; }
   .lobby-weapon-card > span { margin: 22px 0; }
   .lobby-panel { padding: 22px 0; }
   .lobby-panel__heading { align-items: flex-start; flex-direction: column; margin-bottom: 18px; }

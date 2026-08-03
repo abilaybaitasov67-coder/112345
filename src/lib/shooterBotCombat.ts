@@ -8,6 +8,7 @@ import { weaponInfo, WeaponInfo } from './shooterWeapons';
 import { createShooterBullet, getTargetSlope } from './shooterBullets';
 import { moveEnemyWithNavigation } from './shooterNavigation';
 import { playWeaponShot } from './shooterAudio';
+import { hasShooterLineOfSight } from './shooterCollision';
 
 const automaticWeapons = new Set<WeaponId>(['smg', 'ak47', 'm4a4']);
 
@@ -42,8 +43,20 @@ export function getBotShotCooldown(
 export function updateShooterBots(world: ShooterWorld, elapsed: number) {
   if (world.pvpMode) return;
   world.enemies.forEach((enemy) => {
+    let canSeePlayer = hasShooterLineOfSight(
+      enemy,
+      world.player,
+      world.covers,
+    );
     if (world.bomb.planted && !world.bomb.exploded) {
       moveEnemyWithNavigation(enemy, world.bomb, world.covers, elapsed);
+    } else if (!canSeePlayer) {
+      moveEnemyWithNavigation(enemy, world.player, world.covers, elapsed);
+      canSeePlayer = hasShooterLineOfSight(
+        enemy,
+        world.player,
+        world.covers,
+      );
     }
     enemy.cooldown -= elapsed;
     const bombDistance = Math.hypot(
@@ -55,7 +68,12 @@ export function updateShooterBots(world: ShooterWorld, elapsed: number) {
       enemy.y - world.player.y,
     );
     const isDefusing = world.bomb.planted && bombDistance <= 70;
-    if (isDefusing || enemy.cooldown > 0 || playerDistance >= 650) return;
+    if (
+      isDefusing
+      || enemy.cooldown > 0
+      || playerDistance >= 650
+      || !canSeePlayer
+    ) return;
     const weaponId = enemy.weapon ?? 'm4a4';
     const weapon = weaponInfo[weaponId];
     world.bullets.push(createShooterBullet(

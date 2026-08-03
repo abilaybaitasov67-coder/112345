@@ -24,6 +24,10 @@ interface EnemyRoute {
 const gridCache = new WeakMap<ShooterCover[], NavigationGrid>();
 const enemyRoutes = new WeakMap<ShooterUnit, EnemyRoute>();
 
+function targetRouteKey(target: ShooterPoint) {
+  return `${Math.round(target.x / CELL_SIZE)}:${Math.round(target.y / CELL_SIZE)}`;
+}
+
 function cellPoint(index: number, grid: NavigationGrid): ShooterPoint {
   return {
     x: SHOOTER_UNIT_RADIUS + index % grid.columns * CELL_SIZE,
@@ -113,7 +117,7 @@ export function findShooterPath(start: ShooterPoint, target: ShooterPoint, cover
 
 function createRoute(enemy: ShooterUnit, target: ShooterPoint, covers: ShooterCover[]) {
   return {
-    targetKey: `${Math.round(target.x)}:${Math.round(target.y)}`,
+    targetKey: targetRouteKey(target),
     points: findShooterPath(enemy, target, covers),
     index: 0,
     stuckFor: 0,
@@ -124,7 +128,7 @@ export function moveEnemyWithNavigation(
   enemy: ShooterUnit, target: ShooterPoint, covers: ShooterCover[], elapsed: number,
 ) {
   if (Math.hypot(target.x - enemy.x, target.y - enemy.y) < 48) return;
-  const targetKey = `${Math.round(target.x)}:${Math.round(target.y)}`;
+  const targetKey = targetRouteKey(target);
   let route = enemyRoutes.get(enemy);
   if (!route || route.targetKey !== targetKey || route.stuckFor >= REPLAN_DELAY) {
     route = createRoute(enemy, target, covers);

@@ -41,7 +41,40 @@
 }
 .lobby-hero__copy h1 { max-width: 650px; margin: 12px 0; font-size: clamp(42px, 7vw, 86px); line-height: .95; }
 .lobby-hero__copy p { max-width: 560px; color: #aeb9b4; font-size: 17px; line-height: 1.6; }
-.lobby-hero__copy button { margin-top: 26px; padding: 16px 34px; background: #b7493e; }
+.lobby-steps {
+  max-width: 620px;
+  display: grid;
+  gap: 9px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lobby-steps li {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 14px;
+  border: 1px solid #3c4944;
+  background: rgba(29, 38, 35, .72);
+}
+.lobby-steps li > b {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #161c19;
+  background: #d5ae4d;
+}
+.lobby-steps span { display: grid; gap: 2px; }
+.lobby-steps small { color: #9eaaa4; }
+.lobby-hero__copy .lobby-play-button {
+  margin-top: 22px;
+  padding: 17px 28px;
+  background: #b7493e;
+  box-shadow: 0 8px 24px rgba(183, 73, 62, .24);
+}
 .lobby-weapon-card {
   padding: 26px;
   border: 1px solid #526059;

@@ -12,6 +12,11 @@ function distance(a: ShooterPoint, b: ShooterPoint) {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
+export function isPlayerNearBomb(world: ShooterWorld) {
+  return world.bomb.planted
+    && distance(world.player, world.bomb) <= DEFUSE_DISTANCE;
+}
+
 export function tryPlantBomb(world: ShooterWorld) {
   if (world.status !== 'playing' || world.bomb.planted) return false;
   const site = (Object.entries(bombSites) as ['A' | 'B', ShooterPoint][])
@@ -36,9 +41,10 @@ export function tryPlantBomb(world: ShooterWorld) {
 export function tryStartBombDefuse(world: ShooterWorld) {
   if (
     world.status !== 'playing'
+    || world.team !== 'counter'
     || !world.bomb.planted
     || world.bomb.exploded
-    || distance(world.player, world.bomb) > DEFUSE_DISTANCE
+    || !isPlayerNearBomb(world)
   ) return false;
   if (world.bomb.defuser !== 'player') world.bomb.defuseTimer = DEFUSE_TIME;
   world.bomb.defuser = 'player';
@@ -74,7 +80,7 @@ function finishDefuse(
 export function updateBomb(world: ShooterWorld, elapsed: number) {
   if (!world.bomb.planted || world.bomb.exploded) return;
   const playerInRange = distance(world.player, world.bomb) <= DEFUSE_DISTANCE;
-  const botInRange = world.enemies.some((enemy) =>
+  const botInRange = world.team === 'terrorists' && world.enemies.some((enemy) =>
     enemy.health > 0 && distance(enemy, world.bomb) <= DEFUSE_DISTANCE);
   if (world.bomb.defuser === 'player' && !playerInRange) {
     stopPlayerBombDefuse(world);

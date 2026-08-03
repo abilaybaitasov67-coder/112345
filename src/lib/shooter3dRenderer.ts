@@ -14,6 +14,7 @@ import { disposeShooterScene } from './shooter3dDispose';
 const SCALE = .025;
 
 export class Shooter3dRenderer {
+  readonly frameInterval: number;
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(68, SHOOTER_WIDTH / SHOOTER_HEIGHT, .05, 80);
@@ -36,18 +37,26 @@ export class Shooter3dRenderer {
     const lowPower = window.innerWidth <= 720
       || window.matchMedia('(pointer: coarse)').matches
       || navigator.hardwareConcurrency <= 4;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !lowPower });
-    const maxPixelRatio = lowPower ? 1.15 : 1.5;
+    this.frameInterval = lowPower ? 1000 / 30 : 0;
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !lowPower,
+      powerPreference: lowPower ? 'low-power' : 'high-performance',
+      precision: lowPower ? 'mediump' : 'highp',
+    });
+    const maxPixelRatio = lowPower ? 1 : 1.5;
     this.renderer.setPixelRatio(Math.min(maxPixelRatio, window.devicePixelRatio));
     this.renderer.setSize(SHOOTER_WIDTH, SHOOTER_HEIGHT, false);
     this.renderer.shadowMap.enabled = !lowPower;
-    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.type = lowPower
+      ? THREE.PCFShadowMap
+      : THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = lowPower ? 1.05 : 1.15;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.scene.fog = new THREE.FogExp2(0xc4a77a, .012);
-    addShooterAtmosphere(this.scene);
-    buildTacticalMap(this.scene, world);
+    this.scene.fog = new THREE.FogExp2(0xa9cee0, .01);
+    addShooterAtmosphere(this.scene, lowPower);
+    buildTacticalMap(this.scene, world, lowPower);
     this.scene.add(this.bombModel);
     this.muzzleFlash.position.set(.05, -.2, -1.8);
     this.muzzleFlash.visible = false;

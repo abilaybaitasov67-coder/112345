@@ -49,17 +49,24 @@ export function ShooterLobby(props: Props) {
         {tab === 'play' && (
           <section className="lobby-hero">
             <div className="lobby-hero__copy">
-              <small>БЫСТРЫЙ МАТЧ · ПЫЛЬНЫЙ РУБЕЖ</small>
-              <h1>Готов к операции?</h1>
-              <p>Установи бомбу на точке A или B и не дай спецназу её обезвредить.</p>
-              <button onClick={props.onPlay}>НАЧАТЬ ИГРУ</button>
+              <small>ШУТЕР · ПЫЛЬНЫЙ РУБЕЖ</small>
+              <h1>Начать матч</h1>
+              <p>После старта выбери игру с ботами или онлайн с другом.</p>
+              <ol className="lobby-steps">
+                <li><b>1</b><span><strong>Выбери режим</strong><small>Боты или PvP-комната</small></span></li>
+                <li><b>2</b><span><strong>Выполни задачу</strong><small>Террористы ставят бомбу, спецназ обезвреживает</small></span></li>
+                <li><b>3</b><span><strong>Управляй бойцом</strong><small>WASD — движение, мышь — прицел, E — действие</small></span></li>
+              </ol>
+              <button className="lobby-play-button" onClick={props.onPlay}>
+                ПЕРЕЙТИ К ВЫБОРУ РЕЖИМА →
+              </button>
             </div>
             <div className="lobby-weapon-card">
-              <small>ТВОЙ ЛОДАУТ</small>
+              <small>ТВОЁ ОСНОВНОЕ ОРУЖИЕ</small>
               <span>{weapon.icon}</span>
               <h2>{weapon.name}</h2>
               <p>{weapon.detail}</p>
-              <button onClick={() => setTab('loadout')}>Изменить</button>
+              <button onClick={() => setTab('loadout')}>Выбрать другое оружие</button>
             </div>
           </section>
         )}
