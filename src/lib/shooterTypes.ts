@@ -45,8 +45,12 @@ export interface ShooterGrenade extends ShooterPoint {
   kind: GrenadeId;
   dx: number;
   dy: number;
+  height: number;
+  verticalVelocity: number;
+  rotation: number;
   timer: number;
   active: boolean;
+  detonated: boolean;
 }
 
 export interface ShooterBomb extends ShooterPoint {

@@ -2,6 +2,7 @@ import { moveShooterPoint } from './shooterCollision';
 import { GrenadeId, ShooterWorld } from './shooterTypes';
 
 const THROW_SPEED = .48;
+const GRAVITY = .000018;
 const EFFECT_RADIUS = 150;
 
 export const grenadeShopItems = [
@@ -23,8 +24,12 @@ export function throwShooterGrenade(world: ShooterWorld, kind: GrenadeId) {
     y: world.player.y,
     dx: Math.cos(world.angle) * THROW_SPEED,
     dy: Math.sin(world.angle) * THROW_SPEED,
-    timer: 650,
+    height: 1.35,
+    verticalVelocity: .006,
+    rotation: 0,
+    timer: 950,
     active: false,
+    detonated: false,
   });
   world.message = kind === 'flash'
     ? 'Световая граната брошена!'
@@ -41,7 +46,9 @@ function activateGrenade(world: ShooterWorld, index: number) {
       }
     });
     world.message = 'Вспышка! Ближайшие боты ослеплены.';
-    world.grenades.splice(index, 1);
+    grenade.active = true;
+    grenade.detonated = true;
+    grenade.timer = 220;
     return;
   }
   if (grenade.kind === 'frag') {
@@ -50,13 +57,16 @@ function activateGrenade(world: ShooterWorld, index: number) {
       if (range <= EFFECT_RADIUS) enemy.health -= Math.round(85 * (1 - range / 220));
     });
     world.message = 'Осколочная граната взорвалась!';
-    world.grenades.splice(index, 1);
+    grenade.active = true;
+    grenade.detonated = true;
+    grenade.timer = 280;
     return;
   }
   grenade.active = true;
   grenade.dx = 0;
   grenade.dy = 0;
   grenade.timer = 5000;
+  grenade.detonated = true;
   world.message = 'Зона горит — не подходи близко!';
 }
 
@@ -65,8 +75,28 @@ export function updateShooterGrenades(world: ShooterWorld, elapsed: number) {
     const grenade = world.grenades[index];
     grenade.timer -= elapsed;
     if (!grenade.active) {
-      moveShooterPoint(grenade, grenade.dx * elapsed, grenade.dy * elapsed, world.covers, 1);
+      const expectedStep = Math.hypot(grenade.dx * elapsed, grenade.dy * elapsed);
+      const moved = moveShooterPoint(
+        grenade, grenade.dx * elapsed, grenade.dy * elapsed, world.covers, grenade.height,
+      );
+      if (moved < expectedStep * .35) {
+        grenade.dx *= -.35;
+        grenade.dy *= -.35;
+      }
+      grenade.verticalVelocity -= GRAVITY * elapsed;
+      grenade.height += grenade.verticalVelocity * elapsed;
+      grenade.rotation += elapsed * .012;
+      if (grenade.height <= .1) {
+        grenade.height = .1;
+        grenade.verticalVelocity = Math.abs(grenade.verticalVelocity) * .42;
+        grenade.dx *= .72;
+        grenade.dy *= .72;
+      }
       if (grenade.timer <= 0) activateGrenade(world, index);
+      continue;
+    }
+    if (grenade.kind !== 'molotov') {
+      if (grenade.timer <= 0) world.grenades.splice(index, 1);
       continue;
     }
     world.enemies.forEach((enemy) => {
