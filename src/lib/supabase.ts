@@ -4,10 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-export const isSupabaseConfigured = Boolean(url && anonKey);
+function isValidSupabaseUrl(value: string | undefined) {
+  if (!value) return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+export const isSupabaseConfigured = Boolean(isValidSupabaseUrl(url) && anonKey);
 
 // Запасные значения позволяют показать понятную подсказку в интерфейсе вместо белого экрана.
 export const supabase = createClient(
-  url ?? 'https://not-configured.supabase.co',
-  anonKey ?? 'not-configured',
+  isSupabaseConfigured ? url! : 'https://not-configured.supabase.co',
+  isSupabaseConfigured ? anonKey! : 'not-configured',
 );
