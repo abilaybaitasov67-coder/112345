@@ -10,9 +10,6 @@ export function HomePage() {
         <Link className="home-play home-play--shooter" href="/auth">
           Начать игру →
         </Link>
-        <Link className="home-play home-play--fitness" href="/fitness">
-          Персональный тренер →
-        </Link>
       </section>
     </main>
   );
