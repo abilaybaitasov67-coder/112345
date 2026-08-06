@@ -18,6 +18,8 @@ interface Props {
   onActionEnd: () => void;
 }
 
+const MAX_VERTICAL_LOOK = 650;
+
 function movement(keys: Set<string>, mobile: ShooterPoint) {
   const left = keys.has('a');
   const right = keys.has('d');
@@ -52,8 +54,11 @@ export function ShooterCanvas(props: Props) {
       if (document.pointerLockElement === canvasRef.current) {
         props.worldRef.current.angle += event.movementX * 0.0025;
         props.worldRef.current.pitch = Math.max(
-          -150,
-          Math.min(150, props.worldRef.current.pitch - event.movementY * 0.65),
+          -MAX_VERTICAL_LOOK,
+          Math.min(
+            MAX_VERTICAL_LOOK,
+            props.worldRef.current.pitch - event.movementY * 0.65,
+          ),
         );
       }
     };
@@ -114,8 +119,11 @@ export function ShooterCanvas(props: Props) {
     }
     if (pointerY.current !== null) {
       props.worldRef.current.pitch = Math.max(
-        -150,
-        Math.min(150, props.worldRef.current.pitch - (clientY - pointerY.current) * 0.8),
+        -MAX_VERTICAL_LOOK,
+        Math.min(
+          MAX_VERTICAL_LOOK,
+          props.worldRef.current.pitch - (clientY - pointerY.current) * 0.8,
+        ),
       );
     }
     pointerX.current = clientX;
