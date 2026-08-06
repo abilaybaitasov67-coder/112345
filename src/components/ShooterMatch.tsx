@@ -11,6 +11,7 @@ import { ShooterMinimap } from './ShooterMinimap';
 import { ShooterMultiplayer } from './ShooterMultiplayer';
 import { WeaponShop } from './WeaponShop';
 import { ShooterGrenades } from './ShooterGrenades';
+import { FullscreenButton } from './FullscreenButton';
 
 interface Props {
   primary: WeaponId;
@@ -37,11 +38,12 @@ export function ShooterMatch({ primary, onLobby }: Props) {
     return threwGrenade;
   };
   return (
-    <main className="shooter-page">
+    <main className="shooter-page" id="shooter-game">
       <header className="shooter-header">
         <button onClick={onLobby}>← Лобби</button>
         <strong>КАРТА «ПЫЛЬНЫЙ РУБЕЖ»</strong>
         <div className="shooter-header__actions">
+          <FullscreenButton targetId="shooter-game" />
           <button onClick={() => setShopOpen(true)}>Магазин</button>
           <button onClick={restart}>↻ Заново</button>
         </div>
