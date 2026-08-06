@@ -38,7 +38,7 @@ export function ShooterMatch({ primary, onLobby }: Props) {
     return threwGrenade;
   };
   return (
-    <main className="shooter-page" id="shooter-game">
+    <main className="shooter-page shooter-page--immersive" id="shooter-game">
       <header className="shooter-header">
         <button onClick={onLobby}>← Лобби</button>
         <strong>КАРТА «ПЫЛЬНЫЙ РУБЕЖ»</strong>
