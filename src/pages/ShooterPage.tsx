@@ -22,6 +22,20 @@ export function ShooterPage() {
   const [equipped, setEquipped] = useState<string | null>('ak-sand');
   const [reward, setReward] = useState<string | null>(null);
 
+  const startMatch = () => {
+    setPlaying(true);
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      void document.documentElement.requestFullscreen().catch(() => undefined);
+    }
+  };
+
+  const leaveMatch = () => {
+    setPlaying(false);
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+    }
+  };
+
   const openCase = (weaponCase: WeaponCase) => {
     if (credits < weaponCase.price) return;
     const rewardId = weaponCase.rewards[Math.floor(Math.random() * weaponCase.rewards.length)];
@@ -34,7 +48,7 @@ export function ShooterPage() {
   };
 
   if (playing) {
-    return <ShooterMatch primary={primary} onLobby={() => setPlaying(false)} />;
+    return <ShooterMatch primary={primary} onLobby={leaveMatch} />;
   }
   return (
     <ShooterLobby
@@ -46,7 +60,7 @@ export function ShooterPage() {
       onPrimaryChange={setPrimary}
       onEquip={setEquipped}
       onOpenCase={openCase}
-      onPlay={() => setPlaying(true)}
+      onPlay={startMatch}
     />
   );
 }
